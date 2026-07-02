@@ -13,8 +13,9 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import { ZodError } from 'zod'
+import { LeadSource, LeadStatus, Prisma, Priority } from '@prisma/client'
 
-import prisma from '@/lib/prisma'
+import prisma, { isDatabaseConfigured } from '@/lib/prisma'
 import { getServerSession } from '@/lib/auth'
 import { enquirySchema } from '@/lib/validations'
 
@@ -38,6 +39,16 @@ export async function POST(request: NextRequest) {
     // ── Validate with Zod schema ───────────────────────────────────────────
     const validatedData = enquirySchema.parse(body)
 
+    if (!isDatabaseConfigured) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Enquiries are temporarily unavailable. Please contact us by phone.',
+        },
+        { status: 503 },
+      )
+    }
+
     // ── Persist lead + activity inside a transaction ───────────────────────
     const lead = await prisma.$transaction(async (tx) => {
       const newLead = await tx.lead.create({
@@ -50,7 +61,7 @@ export async function POST(request: NextRequest) {
           preferredLocation: validatedData.preferredLocation ?? null,
           propertyType: validatedData.propertyType ?? null,
           source: validatedData.source,
-          status: 'NEW',
+          status: validatedData.status,
         },
         select: { id: true },
       })
@@ -58,9 +69,26 @@ export async function POST(request: NextRequest) {
       await tx.leadActivity.create({
         data: {
           leadId: newLead.id,
-          action: `Lead created from website via ${validatedData.source}`,
+          action: 'Lead created from website',
+          newValue: validatedData.message
+            ? `Source: ${validatedData.source}. Message: ${validatedData.message}`
+            : `Source: ${validatedData.source}`,
         },
       })
+
+      if (
+        validatedData.status === 'SITE_VISIT_SCHEDULED' &&
+        validatedData.followUpDate
+      ) {
+        await tx.siteVisit.create({
+          data: {
+            leadId: newLead.id,
+            scheduledAt: new Date(validatedData.followUpDate),
+            location: validatedData.preferredLocation || 'To be confirmed',
+            notes: validatedData.message ?? null,
+          },
+        })
+      }
 
       return newLead
     })
@@ -83,8 +111,14 @@ export async function POST(request: NextRequest) {
 
     console.error('[POST /api/leads] Unexpected error:', error)
     return NextResponse.json(
-      { success: false, error: 'Internal server error.' },
-      { status: 500 },
+      {
+        success: false,
+        error:
+          error instanceof Prisma.PrismaClientInitializationError
+            ? 'Enquiries are temporarily unavailable. Please contact us by phone.'
+            : 'Internal server error.',
+      },
+      { status: error instanceof Prisma.PrismaClientInitializationError ? 503 : 500 },
     )
   }
 }
@@ -121,11 +155,11 @@ export async function GET(request: NextRequest) {
     const dateTo = searchParams.get('dateTo') ?? undefined
 
     // ── Build Prisma `where` clause ────────────────────────────────────────
-    const where: Record<string, unknown> = {}
+    const where: Prisma.LeadWhereInput = {}
 
-    if (status) where.status = status
-    if (source) where.source = source
-    if (priority) where.priority = priority
+    if (status) where.status = status as LeadStatus
+    if (source) where.source = source as LeadSource
+    if (priority) where.priority = priority as Priority
     if (assignedToId) where.assignedToId = assignedToId
 
     if (search) {
@@ -160,9 +194,7 @@ export async function GET(request: NextRequest) {
           assignedTo: {
             select: { id: true, name: true, email: true },
           },
-          _count: {
-            select: { notes: true, activities: true },
-          },
+          _count: { select: { notes: true, activities: true } },
         },
       }),
     ])

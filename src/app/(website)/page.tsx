@@ -25,11 +25,11 @@ const budgetOptions = [
 ];
 
 const propertyTypeOptions = [
-  "Apartment",
-  "Villa",
-  "Plot / Land",
-  "Commercial Space",
-  "Farmhouse",
+  { value: "APARTMENT", label: "Apartment" },
+  { value: "VILLA", label: "Villa" },
+  { value: "PLOT", label: "Plot / Land" },
+  { value: "COMMERCIAL", label: "Commercial Space" },
+  { value: "FARMHOUSE", label: "Farmhouse" },
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -770,8 +770,8 @@ function EnquirySection() {
                     >
                       <option value="">Select property type</option>
                       {propertyTypeOptions.map((o) => (
-                        <option key={o} value={o}>
-                          {o}
+                        <option key={o.value} value={o.value}>
+                          {o.label}
                         </option>
                       ))}
                     </select>

@@ -1,8 +1,7 @@
 import React from "react";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
-import { PropertyType } from "@prisma/client";
-import { Building2, Search, MapPin, Check } from "lucide-react";
+import { isDatabaseConfigured, prisma } from "@/lib/prisma";
+import { Property, PropertyType } from "@prisma/client";
 import ClientPropertiesGrid from "./ClientPropertiesGrid";
 
 export const revalidate = 0; // Fetch fresh properties on every request
@@ -85,16 +84,23 @@ const defaultProperties = [
   },
 ];
 
+type PublicProperty = Omit<Property, "createdAt" | "updatedAt">;
+
 export default async function PropertiesPage() {
-  let properties: any[] = [];
+  let properties: PublicProperty[] = [];
 
   try {
+    if (!isDatabaseConfigured) {
+      throw new Error("Database is not configured; using development fallback properties.");
+    }
     properties = await prisma.property.findMany({
       where: { isActive: true },
       orderBy: { createdAt: "desc" },
     });
   } catch (error) {
-    console.error("Prisma error in properties list:", error);
+    if (isDatabaseConfigured) {
+      console.error("Prisma error in properties list:", error);
+    }
   }
 
   // Fallback to default properties if DB is empty or fails

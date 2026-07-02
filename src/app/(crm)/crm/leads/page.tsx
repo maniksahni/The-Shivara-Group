@@ -73,7 +73,7 @@ export default async function LeadsPage({ searchParams }: PageProps) {
 
   // ---- Fetch leads ----
   const leadsResult = await getLeads(filters)
-  const leads = leadsResult.success ? leadsResult.data : []
+  const leads = leadsResult.success ? (leadsResult.data ?? []) : []
 
   // ---- Fetch agents (for filter dropdown, admin only) ----
   const agents = isAdmin

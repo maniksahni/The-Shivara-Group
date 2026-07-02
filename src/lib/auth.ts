@@ -11,7 +11,13 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import bcrypt from 'bcryptjs'
 import type { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from 'next'
 
-import prisma from './prisma'
+import prisma, { isDatabaseConfigured } from './prisma'
+
+const authSecret =
+  process.env.NEXTAUTH_SECRET ||
+  (process.env.NODE_ENV === 'development'
+    ? 'shivara-development-only-secret-change-in-production'
+    : undefined)
 
 // ---------------------------------------------------------------------------
 // TypeScript module augmentation
@@ -89,6 +95,10 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Email and password are required.')
         }
 
+        if (!isDatabaseConfigured) {
+          return null
+        }
+
         // Look up the user in the database
         const user = await prisma.user.findUnique({
           where: { email: credentials.email.toLowerCase().trim() },
@@ -96,7 +106,7 @@ export const authOptions: NextAuthOptions = {
             id: true,
             name: true,
             email: true,
-            password: true,
+            passwordHash: true,
             role: true,
             isActive: true,
           },
@@ -112,7 +122,7 @@ export const authOptions: NextAuthOptions = {
         }
 
         // Compare the supplied plaintext password against the stored hash
-        const passwordMatch = await bcrypt.compare(credentials.password, user.password)
+        const passwordMatch = await bcrypt.compare(credentials.password, user.passwordHash)
 
         if (!passwordMatch) {
           throw new Error('Invalid email or password.')
@@ -159,7 +169,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   // Secret used to sign JWTs — set NEXTAUTH_SECRET in your .env
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: authSecret,
 
   // Enable debug logging in development
   debug: process.env.NODE_ENV === 'development',
@@ -190,5 +200,9 @@ export async function getServerSession(
     | [GetServerSidePropsContext['req'], GetServerSidePropsContext['res']]
     | [NextApiRequest, NextApiResponse]
 ) {
-  return _getServerSession(...(args as Parameters<typeof _getServerSession>), authOptions)
+  if (args.length === 0) {
+    return _getServerSession(authOptions)
+  }
+
+  return _getServerSession(args[0], args[1], authOptions)
 }

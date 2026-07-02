@@ -7,7 +7,7 @@ import { X, Save, AlertCircle } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 
 interface AddAgentModalProps {
-  trigger: React.ReactElement;
+  trigger: React.ReactElement<{ onClick?: React.MouseEventHandler }>;
   agent?: any; // If editing
 }
 

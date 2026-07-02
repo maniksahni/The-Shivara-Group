@@ -17,6 +17,7 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 import prisma from '@/lib/prisma'
+import type { Prisma } from '@prisma/client'
 
 // ---------------------------------------------------------------------------
 // Zod validation schemas
@@ -27,7 +28,7 @@ const createAgentSchema = z.object({
   email: z.string().email('Valid email is required'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
   phone: z.string().optional(),
-  role: z.enum(['ADMIN', 'AGENT', 'MANAGER']).optional().default('AGENT'),
+  role: z.enum(['ADMIN', 'AGENT']).optional().default('AGENT'),
   isActive: z.boolean().optional().default(true),
 })
 
@@ -35,7 +36,7 @@ const updateAgentSchema = z.object({
   name: z.string().min(1, 'Name is required').optional(),
   email: z.string().email('Valid email is required').optional(),
   phone: z.string().optional(),
-  role: z.enum(['ADMIN', 'AGENT', 'MANAGER']).optional(),
+  role: z.enum(['ADMIN', 'AGENT']).optional(),
   // Password update is optional; if provided it will be re-hashed
   password: z.string().min(8, 'Password must be at least 8 characters').optional(),
 })
@@ -208,7 +209,7 @@ export async function createAgent(
       data: {
         name: validated.name,
         email: validated.email.toLowerCase().trim(),
-        password: hashedPassword,
+        passwordHash: hashedPassword,
         phone: validated.phone ?? null,
         role: validated.role ?? 'AGENT',
         isActive: validated.isActive ?? true,
@@ -221,7 +222,7 @@ export async function createAgent(
     return { success: true, data: { id: agent.id } }
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { success: false, error: error.errors[0]?.message ?? 'Validation failed.' }
+      return { success: false, error: error.issues[0]?.message ?? 'Validation failed.' }
     }
     console.error('[createAgent]', error)
     return { success: false, error: 'Failed to create agent.' }
@@ -260,16 +261,7 @@ export async function updateAgent(
     }
 
     // Build the update payload
-    type UserUpdateData = {
-      name?: string
-      email?: string
-      phone?: string | null
-      role?: string
-      password?: string
-      updatedAt: Date
-    }
-
-    const updateData: UserUpdateData = { updatedAt: new Date() }
+    const updateData: Prisma.UserUpdateInput = {}
 
     if (validated.name !== undefined) updateData.name = validated.name
     if (validated.email !== undefined) updateData.email = validated.email.toLowerCase().trim()
@@ -278,7 +270,7 @@ export async function updateAgent(
 
     if (validated.password) {
       const SALT_ROUNDS = 12
-      updateData.password = await bcrypt.hash(validated.password, SALT_ROUNDS)
+      updateData.passwordHash = await bcrypt.hash(validated.password, SALT_ROUNDS)
     }
 
     const agent = await prisma.user.update({
@@ -293,7 +285,7 @@ export async function updateAgent(
     return { success: true, data: { id: agent.id } }
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { success: false, error: error.errors[0]?.message ?? 'Validation failed.' }
+      return { success: false, error: error.issues[0]?.message ?? 'Validation failed.' }
     }
     console.error('[updateAgent]', error)
     return { success: false, error: 'Failed to update agent.' }

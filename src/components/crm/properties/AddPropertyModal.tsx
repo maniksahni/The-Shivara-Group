@@ -10,7 +10,7 @@ import { X, Save, AlertCircle } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 
 interface AddPropertyModalProps {
-  trigger: React.ReactElement;
+  trigger: React.ReactElement<{ onClick?: React.MouseEventHandler }>;
   property?: any; // If editing
 }
 
@@ -46,7 +46,7 @@ export default function AddPropertyModal({ trigger, property }: AddPropertyModal
   });
 
   // Handle tags for amenities
-  const [amenityText, setAmenityText] = useState(
+  const [amenityText, setAmenityText] = useState<string>(
     property?.amenities ? property.amenities.join(", ") : ""
   );
 
@@ -63,6 +63,7 @@ export default function AddPropertyModal({ trigger, property }: AddPropertyModal
       ...data,
       bedrooms: data.bedrooms ? Number(data.bedrooms) : undefined,
       bathrooms: data.bathrooms ? Number(data.bathrooms) : undefined,
+      area: data.area || undefined,
       amenities: amenitiesArr,
       images: data.images && data.images.length > 0 ? data.images : [],
     };

@@ -1,23 +1,6 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Inter } from "next/font/google";
-import "../globals.css";
 import Navbar from "@/components/website/Navbar";
 import Footer from "@/components/website/Footer";
-
-// ─── Google Fonts ─────────────────────────────────────────────────────────────
-const playfair = Playfair_Display({
-  variable: "--font-playfair",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
-  display: "swap",
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
-});
 
 // ─── Metadata ─────────────────────────────────────────────────────────────────
 export const metadata: Metadata = {
@@ -48,11 +31,7 @@ export default function WebsiteLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`${playfair.variable} ${inter.variable} scroll-smooth`}
-    >
-      <body className="min-h-screen bg-[#F8F7F4] font-[family-name:var(--font-inter)] antialiased">
+    <div className="min-h-screen bg-[#F8F7F4] font-[family-name:var(--font-inter)] antialiased">
         {/* ── Navbar ── */}
         <Navbar />
 
@@ -161,7 +140,6 @@ export default function WebsiteLayout({
           </svg>
           Call Now
         </a>
-      </body>
-    </html>
+    </div>
   );
 }

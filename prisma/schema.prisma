@@ -1,5 +1,5 @@
 // Shivara CRM — Prisma Schema
-// Database: PostgreSQL
+// Database: MySQL
 // ORM: Prisma Client JS
 
 datasource db {
@@ -178,7 +178,7 @@ model Property {
 model SiteVisit {
   id          String          @id @default(cuid())
   leadId      String          @unique
-  lead        Lead            @relation(fields: [leadId], references: [id])
+  lead        Lead            @relation(fields: [leadId], references: [id], onDelete: Cascade)
   scheduledAt DateTime
   location    String
   notes       String? @db.Text

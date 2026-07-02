@@ -17,7 +17,7 @@ interface Agent {
 
 interface AddLeadModalProps {
   agents: Agent[];
-  trigger: React.ReactElement;
+  trigger: React.ReactElement<{ onClick?: React.MouseEventHandler }>;
   lead?: {
     id: string;
     name: string;
@@ -76,6 +76,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
       email: data.email || undefined,
       budget: data.budget || undefined,
       preferredLocation: data.preferredLocation || undefined,
+      propertyType: data.propertyType || undefined,
       assignedToId: data.assignedToId || undefined,
       followUpDate: data.followUpDate ? new Date(data.followUpDate).toISOString() : undefined,
     };

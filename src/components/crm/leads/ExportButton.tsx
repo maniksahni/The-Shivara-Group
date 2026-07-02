@@ -29,7 +29,8 @@ export default function ExportButton({ filters }: ExportButtonProps) {
       if (!res.success) {
         throw new Error(res.error || "Export failed");
       }
-      const rawData = res.data;
+
+      const rawData = res.data ?? [];
 
       // Transform keys into user-friendly uppercase Excel headers
       const formattedData = rawData.map((row: any) => ({

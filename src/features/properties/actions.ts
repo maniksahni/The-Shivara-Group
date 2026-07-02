@@ -13,6 +13,7 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import prisma from '@/lib/prisma'
+import { Prisma, Property, PropertyType } from '@prisma/client'
 
 // ---------------------------------------------------------------------------
 // Zod validation schemas
@@ -20,26 +21,15 @@ import prisma from '@/lib/prisma'
 
 const createPropertySchema = z.object({
   title: z.string().min(1, 'Title is required'),
-  description: z.string().optional(),
-  type: z.string().min(1, 'Property type is required'),   // e.g. APARTMENT, VILLA, PLOT
-  price: z.number().positive('Price must be positive'),
-  area: z.number().positive('Area must be positive').optional(),
-  areaUnit: z.string().optional(),                         // e.g. sqft, sqm
+  description: z.string().min(20, 'Description must be at least 20 characters'),
+  type: z.nativeEnum(PropertyType),
+  price: z.string().min(1, 'Price is required'),
+  area: z.string().optional(),
   bedrooms: z.number().int().min(0).optional(),
   bathrooms: z.number().int().min(0).optional(),
   location: z.string().min(1, 'Location is required'),
-  address: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  pincode: z.string().optional(),
-  latitude: z.number().optional(),
-  longitude: z.number().optional(),
   amenities: z.array(z.string()).optional(),
   images: z.array(z.string().url()).optional(),
-  videoUrl: z.string().url().optional().or(z.literal('')),
-  brochureUrl: z.string().url().optional().or(z.literal('')),
-  reraNumber: z.string().optional(),
-  possessionDate: z.coerce.date().optional(),
   isActive: z.boolean().optional().default(true),
   isFeatured: z.boolean().optional().default(false),
 })
@@ -57,9 +47,6 @@ export interface PropertyFilters {
   type?: string
   isActive?: boolean
   isFeatured?: boolean
-  city?: string
-  minPrice?: number
-  maxPrice?: number
   search?: string
 }
 
@@ -76,23 +63,14 @@ type ActionResult<T = undefined> =
  * featured status, city, price range, and a free-text search.
  */
 export async function getProperties(filters: PropertyFilters = {}): Promise<
-  ActionResult<Record<string, unknown>[]>
+  ActionResult<Property[]>
 > {
   try {
-    const where: Record<string, unknown> = {}
+    const where: Prisma.PropertyWhereInput = {}
 
-    if (filters.type) where.type = filters.type
+    if (filters.type) where.type = filters.type as PropertyType
     if (typeof filters.isActive === 'boolean') where.isActive = filters.isActive
     if (typeof filters.isFeatured === 'boolean') where.isFeatured = filters.isFeatured
-    if (filters.city) where.city = { contains: filters.city, mode: 'insensitive' }
-
-    if (filters.minPrice !== undefined || filters.maxPrice !== undefined) {
-      where.price = {
-        ...(filters.minPrice !== undefined ? { gte: filters.minPrice } : {}),
-        ...(filters.maxPrice !== undefined ? { lte: filters.maxPrice } : {}),
-      }
-    }
-
     if (filters.search) {
       where.OR = [
         { title: { contains: filters.search, mode: 'insensitive' } },
@@ -109,7 +87,7 @@ export async function getProperties(filters: PropertyFilters = {}): Promise<
       ],
     })
 
-    return { success: true, data: properties as unknown as Record<string, unknown>[] }
+    return { success: true, data: properties }
   } catch (error) {
     console.error('[getProperties]', error)
     return { success: false, error: 'Failed to fetch properties.' }
@@ -123,7 +101,7 @@ export async function getProperties(filters: PropertyFilters = {}): Promise<
 /**
  * Fetches a single property by its ID.
  */
-export async function getProperty(id: string): Promise<ActionResult<Record<string, unknown>>> {
+export async function getProperty(id: string): Promise<ActionResult<Property>> {
   try {
     const property = await prisma.property.findUnique({ where: { id } })
 
@@ -131,7 +109,7 @@ export async function getProperty(id: string): Promise<ActionResult<Record<strin
       return { success: false, error: 'Property not found.' }
     }
 
-    return { success: true, data: property as unknown as Record<string, unknown> }
+    return { success: true, data: property }
   } catch (error) {
     console.error('[getProperty]', error)
     return { success: false, error: 'Failed to fetch property.' }
@@ -154,26 +132,15 @@ export async function createProperty(
     const property = await prisma.property.create({
       data: {
         title: validated.title,
-        description: validated.description ?? null,
+        description: validated.description,
         type: validated.type,
         price: validated.price,
         area: validated.area ?? null,
-        areaUnit: validated.areaUnit ?? null,
         bedrooms: validated.bedrooms ?? null,
         bathrooms: validated.bathrooms ?? null,
         location: validated.location,
-        address: validated.address ?? null,
-        city: validated.city ?? null,
-        state: validated.state ?? null,
-        pincode: validated.pincode ?? null,
-        latitude: validated.latitude ?? null,
-        longitude: validated.longitude ?? null,
         amenities: validated.amenities ?? [],
         images: validated.images ?? [],
-        videoUrl: validated.videoUrl || null,
-        brochureUrl: validated.brochureUrl || null,
-        reraNumber: validated.reraNumber ?? null,
-        possessionDate: validated.possessionDate ?? null,
         isActive: validated.isActive ?? true,
         isFeatured: validated.isFeatured ?? false,
       },
@@ -185,7 +152,7 @@ export async function createProperty(
     return { success: true, data: { id: property.id } }
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { success: false, error: error.errors[0]?.message ?? 'Validation failed.' }
+      return { success: false, error: error.issues[0]?.message ?? 'Validation failed.' }
     }
     console.error('[createProperty]', error)
     return { success: false, error: 'Failed to create property.' }
@@ -213,12 +180,7 @@ export async function updateProperty(
 
     const property = await prisma.property.update({
       where: { id },
-      data: {
-        ...validated,
-        videoUrl: validated.videoUrl || undefined,
-        brochureUrl: validated.brochureUrl || undefined,
-        updatedAt: new Date(),
-      },
+      data: validated,
       select: { id: true },
     })
 
@@ -228,7 +190,7 @@ export async function updateProperty(
     return { success: true, data: { id: property.id } }
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { success: false, error: error.errors[0]?.message ?? 'Validation failed.' }
+      return { success: false, error: error.issues[0]?.message ?? 'Validation failed.' }
     }
     console.error('[updateProperty]', error)
     return { success: false, error: 'Failed to update property.' }

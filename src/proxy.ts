@@ -1,5 +1,5 @@
 /**
- * src/middleware.ts
+ * src/proxy.ts
  *
  * Next.js Edge Middleware for Shivara CRM route protection.
  *
@@ -33,7 +33,7 @@ const ADMIN_ONLY_PREFIX = '/crm/agents'
 // Middleware function
 // ---------------------------------------------------------------------------
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // ── 1. Always allow the login page through ──────────────────────────────
@@ -48,7 +48,11 @@ export async function middleware(request: NextRequest) {
   // When running on the Edge runtime the secret must be set via NEXTAUTH_SECRET.
   const token = await getToken({
     req: request,
-    secret: process.env.NEXTAUTH_SECRET,
+    secret:
+      process.env.NEXTAUTH_SECRET ||
+      (process.env.NODE_ENV === 'development'
+        ? 'shivara-development-only-secret-change-in-production'
+        : undefined),
   })
 
   // ── 3. Redirect unauthenticated users to login ──────────────────────────
@@ -86,5 +90,5 @@ export const config = {
    * The negative lookahead `(?!login)` excludes /crm/login and any
    * sub-paths under it (e.g. /crm/login?callbackUrl=...).
    */
-  matcher: ['/crm/:path*'],
+  matcher: ['/crm/((?!login(?:/|$)).*)'],
 }

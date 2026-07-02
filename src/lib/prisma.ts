@@ -14,6 +14,8 @@
 
 import { PrismaClient } from '@prisma/client'
 
+export const isDatabaseConfigured = Boolean(process.env.DATABASE_URL)
+
 // Extend globalThis so TypeScript accepts our custom property.
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
@@ -32,4 +34,3 @@ export const prisma =
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
 export default prisma
-

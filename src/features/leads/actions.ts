@@ -16,7 +16,7 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import prisma from '@/lib/prisma'
-import { LeadStatus, LeadSource, Priority, PropertyType } from '@prisma/client'
+import { LeadSource, LeadStatus, Priority, PropertyType, Prisma } from '@prisma/client'
 
 // ---------------------------------------------------------------------------
 // Zod schemas for validation
@@ -27,13 +27,14 @@ const createLeadSchema = z.object({
   phone: z.string().min(10, 'Valid phone number required'),
   whatsappNumber: z.string().optional(),
   email: z.string().email().optional().or(z.literal('')),
-  budget: z.number().positive().optional(),
+  budget: z.string().max(50).optional(),
   preferredLocation: z.string().optional(),
-  propertyType: z.string().optional(),
-  source: z.string().min(1, 'Source is required'),
-  message: z.string().optional(),
-  priority: z.enum(['LOW', 'MEDIUM', 'HIGH']).optional(),
+  propertyType: z.nativeEnum(PropertyType).optional(),
+  source: z.nativeEnum(LeadSource),
+  status: z.nativeEnum(LeadStatus).optional(),
+  priority: z.nativeEnum(Priority).optional(),
   assignedToId: z.string().optional(),
+  followUpDate: z.string().datetime().optional(),
 })
 
 const updateLeadSchema = createLeadSchema.partial()
@@ -60,7 +61,6 @@ export interface DashboardStats {
   newLeads: number
   activeLeads: number
   closedLeads: number
-  pendingFollowUps: number
   siteVisitsScheduled: number
   leadsByStatus: Record<string, number>
   leadsBySource: Record<string, number>
@@ -72,20 +72,6 @@ export interface DashboardStats {
     status: string
     source: string
     createdAt: Date
-  }>
-  recentActivities: Array<{
-    id: string
-    action: string
-    oldValue: string | null
-    newValue: string | null
-    createdAt: Date
-    lead: {
-      id: string
-      name: string
-    }
-    user: {
-      name: string
-    } | null
   }>
   upcomingSiteVisits: Array<{
     id: string
@@ -102,13 +88,12 @@ export interface ExportLeadRow {
   phone: string
   whatsappNumber: string | null
   email: string | null
-  budget: number | null
+  budget: string | null
   preferredLocation: string | null
   propertyType: string | null
   source: string
   status: string
-  priority: string | null
-  message: string | null
+  priority: string
   assignedTo: string | null
   createdAt: string
   lastActivityAt: string | null
@@ -136,9 +121,8 @@ async function logActivity(
   await tx.leadActivity.create({
     data: {
       leadId: opts.leadId,
-      action: opts.action,
-      description: opts.description ?? null,
-      performedById: opts.performedById ?? null,
+      action: opts.description ? `${opts.action}: ${opts.description}` : opts.action,
+      userId: opts.performedById ?? null,
       oldValue: opts.oldValue ?? null,
       newValue: opts.newValue ?? null,
     },
@@ -169,10 +153,10 @@ export async function createLead(
           preferredLocation: validated.preferredLocation ?? null,
           propertyType: validated.propertyType ?? null,
           source: validated.source,
-          message: validated.message ?? null,
           priority: validated.priority ?? 'MEDIUM',
           assignedToId: validated.assignedToId ?? null,
-          status: 'NEW',
+          status: validated.status ?? 'NEW',
+          followUpDate: validated.followUpDate ? new Date(validated.followUpDate) : null,
         },
         select: { id: true },
       })
@@ -193,7 +177,7 @@ export async function createLead(
     return { success: true, data: { id: lead.id } }
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { success: false, error: error.errors[0]?.message ?? 'Validation failed.' }
+      return { success: false, error: error.issues[0]?.message ?? 'Validation failed.' }
     }
     console.error('[createLead]', error)
     return { success: false, error: 'Failed to create lead.' }
@@ -231,9 +215,10 @@ export async function updateLead(
           preferredLocation: validated.preferredLocation,
           propertyType: validated.propertyType,
           source: validated.source,
-          message: validated.message,
           priority: validated.priority,
           assignedToId: validated.assignedToId,
+          status: validated.status,
+          followUpDate: validated.followUpDate ? new Date(validated.followUpDate) : undefined,
           updatedAt: new Date(),
         },
         select: { id: true },
@@ -261,7 +246,7 @@ export async function updateLead(
     return { success: true, data: { id: lead.id } }
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return { success: false, error: error.errors[0]?.message ?? 'Validation failed.' }
+      return { success: false, error: error.issues[0]?.message ?? 'Validation failed.' }
     }
     console.error('[updateLead]', error)
     return { success: false, error: 'Failed to update lead.' }
@@ -282,6 +267,7 @@ export async function updateLeadStatus(
   userId?: string,
 ): Promise<ActionResult<{ id: string }>> {
   try {
+    const validStatus = z.nativeEnum(LeadStatus).parse(status)
     const existing = await prisma.lead.findUnique({ where: { id }, select: { id: true, status: true } })
     if (!existing) {
       return { success: false, error: 'Lead not found.' }
@@ -290,17 +276,17 @@ export async function updateLeadStatus(
     const lead = await prisma.$transaction(async (tx) => {
       const updated = await tx.lead.update({
         where: { id },
-        data: { status, updatedAt: new Date() },
+        data: { status: validStatus },
         select: { id: true },
       })
 
       await logActivity(tx, {
         leadId: id,
         action: 'Status changed',
-        description: `Status updated from ${existing.status} to ${status}`,
+        description: `Status updated from ${existing.status} to ${validStatus}`,
         performedById: userId,
         oldValue: existing.status,
-        newValue: status,
+        newValue: validStatus,
       })
 
       return updated
@@ -419,7 +405,7 @@ export async function addNote(
   leadId: string,
   content: string,
   userId: string,
-): Promise<ActionResult<{ id: string }>> {
+) {
   try {
     if (!content.trim()) {
       return { success: false, error: 'Note content cannot be empty.' }
@@ -435,9 +421,14 @@ export async function addNote(
         data: {
           leadId,
           content: content.trim(),
-          createdById: userId,
+          authorId: userId,
         },
-        select: { id: true },
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          author: { select: { id: true, name: true } },
+        },
       })
 
       await logActivity(tx, {
@@ -452,7 +443,7 @@ export async function addNote(
 
     revalidatePath(`/crm/leads/${leadId}`)
 
-    return { success: true, data: { id: note.id } }
+    return { success: true as const, data: note }
   } catch (error) {
     console.error('[addNote]', error)
     return { success: false, error: 'Failed to add note.' }
@@ -469,12 +460,13 @@ export async function addNote(
  */
 export async function scheduleSiteVisit(
   leadId: string,
-  scheduledAt: Date,
+  scheduledAt: Date | string,
   location: string,
   notes?: string,
 ): Promise<ActionResult<{ id: string }>> {
   try {
-    if (!(scheduledAt instanceof Date) || isNaN(scheduledAt.getTime())) {
+    const visitDate = scheduledAt instanceof Date ? scheduledAt : new Date(scheduledAt)
+    if (isNaN(visitDate.getTime())) {
       return { success: false, error: 'A valid scheduled date is required.' }
     }
     if (!location.trim()) {
@@ -488,10 +480,17 @@ export async function scheduleSiteVisit(
 
     const siteVisit = await prisma.$transaction(async (tx) => {
       // Upsert: update the most recent pending visit, or create a new one
-      const visit = await tx.siteVisit.create({
-        data: {
+      const visit = await tx.siteVisit.upsert({
+        where: { leadId },
+        create: {
           leadId,
-          scheduledAt,
+          scheduledAt: visitDate,
+          location: location.trim(),
+          notes: notes?.trim() ?? null,
+          status: 'SCHEDULED',
+        },
+        update: {
+          scheduledAt: visitDate,
           location: location.trim(),
           notes: notes?.trim() ?? null,
           status: 'SCHEDULED',
@@ -502,13 +501,13 @@ export async function scheduleSiteVisit(
       // Update lead status
       await tx.lead.update({
         where: { id: leadId },
-        data: { status: 'SITE_VISIT_SCHEDULED', updatedAt: new Date() },
+        data: { status: 'SITE_VISIT_SCHEDULED' },
       })
 
       await logActivity(tx, {
         leadId,
         action: 'Site visit scheduled',
-        description: `Site visit scheduled at ${location} on ${scheduledAt.toISOString()}`,
+        description: `Site visit scheduled at ${location} on ${visitDate.toISOString()}`,
         oldValue: existing.status,
         newValue: 'SITE_VISIT_SCHEDULED',
       })
@@ -534,35 +533,13 @@ export async function scheduleSiteVisit(
  * Fetches leads with optional filtering. Returns leads with key relations
  * pre-loaded for list and kanban views.
  */
-export async function getLeads(filters: LeadFilters = {}): Promise<
-  ActionResult<
-    Array<{
-      id: string
-      name: string
-      phone: string
-      whatsappNumber: string | null
-      email: string | null
-      budget: string | null
-      preferredLocation: string | null
-      propertyType: PropertyType | null
-      source: LeadSource
-      status: LeadStatus
-      priority: Priority
-      assignedToId: string | null
-      followUpDate: Date | null
-      createdAt: Date
-      updatedAt: Date
-      assignedTo: { id: string; name: string; email: string } | null
-      _count: { notes: number; activities: number; siteVisits: number }
-    }>
-  >
-> {
+export async function getLeads(filters: LeadFilters = {}) {
   try {
-    const where: Record<string, unknown> = {}
+    const where: Prisma.LeadWhereInput = {}
 
-    if (filters.status) where.status = filters.status
-    if (filters.source) where.source = filters.source
-    if (filters.priority) where.priority = filters.priority
+    if (filters.status) where.status = filters.status as LeadStatus
+    if (filters.source) where.source = filters.source as LeadSource
+    if (filters.priority) where.priority = filters.priority as Priority
     if (filters.assignedToId) where.assignedToId = filters.assignedToId
 
     if (filters.search) {
@@ -587,9 +564,7 @@ export async function getLeads(filters: LeadFilters = {}): Promise<
         assignedTo: {
           select: { id: true, name: true, email: true },
         },
-        _count: {
-          select: { notes: true, activities: true, siteVisits: true },
-        },
+        _count: { select: { notes: true, activities: true } },
       },
     })
 
@@ -608,7 +583,7 @@ export async function getLeads(filters: LeadFilters = {}): Promise<
  * Fetches a single lead with all its related data: activities, notes,
  * site visits, and assigned agent.
  */
-export async function getLeadById(id: string): Promise<ActionResult<Record<string, unknown>>> {
+export async function getLeadById(id: string) {
   try {
     const lead = await prisma.lead.findUnique({
       where: { id },
@@ -619,18 +594,16 @@ export async function getLeadById(id: string): Promise<ActionResult<Record<strin
         activities: {
           orderBy: { createdAt: 'desc' },
           include: {
-            performedBy: { select: { id: true, name: true } },
+            user: { select: { id: true, name: true } },
           },
         },
         notes: {
           orderBy: { createdAt: 'desc' },
           include: {
-            createdBy: { select: { id: true, name: true } },
+            author: { select: { id: true, name: true } },
           },
         },
-        siteVisits: {
-          orderBy: { scheduledAt: 'asc' },
-        },
+        siteVisit: true,
       },
     })
 
@@ -638,7 +611,7 @@ export async function getLeadById(id: string): Promise<ActionResult<Record<strin
       return { success: false, error: 'Lead not found.' }
     }
 
-    return { success: true, data: lead as unknown as Record<string, unknown> }
+    return { success: true as const, data: lead }
   } catch (error) {
     console.error('[getLeadById]', error)
     return { success: false, error: 'Failed to fetch lead.' }
@@ -661,7 +634,6 @@ export async function getDashboardStats(): Promise<ActionResult<DashboardStats>>
       leadsByPriorityRaw,
       recentLeads,
       upcomingSiteVisits,
-      recentActivities,
     ] = await Promise.all([
       // Total leads
       prisma.lead.count(),
@@ -682,7 +654,6 @@ export async function getDashboardStats(): Promise<ActionResult<DashboardStats>>
       prisma.lead.groupBy({
         by: ['priority'],
         _count: { priority: true },
-        where: { priority: { not: null } },
       }),
 
       // 10 most recent leads
@@ -713,25 +684,6 @@ export async function getDashboardStats(): Promise<ActionResult<DashboardStats>>
           },
         },
       }),
-
-      // 10 most recent activities
-      prisma.leadActivity.findMany({
-        take: 10,
-        orderBy: { createdAt: 'desc' },
-        include: {
-          lead: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          user: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      }),
     ])
 
     // Reshape grouped results into plain objects
@@ -744,7 +696,7 @@ export async function getDashboardStats(): Promise<ActionResult<DashboardStats>>
     )
 
     const leadsByPriority = Object.fromEntries(
-      leadsByPriorityRaw.map((row) => [row.priority ?? 'NONE', row._count.priority]),
+      leadsByPriorityRaw.map((row) => [row.priority, row._count.priority]),
     )
 
     const stats: DashboardStats = {
@@ -755,13 +707,11 @@ export async function getDashboardStats(): Promise<ActionResult<DashboardStats>>
         (leadsByStatus['SITE_VISIT_SCHEDULED'] ?? 0) +
         (leadsByStatus['NEGOTIATION'] ?? 0),
       closedLeads: leadsByStatus['CLOSED'] ?? 0,
-      pendingFollowUps: leadsByStatus['FOLLOW_UP'] ?? 0,
       siteVisitsScheduled: leadsByStatus['SITE_VISIT_SCHEDULED'] ?? 0,
       leadsByStatus,
       leadsBySource,
       leadsByPriority,
       recentLeads,
-      recentActivities,
       upcomingSiteVisits: upcomingSiteVisits.map((v) => ({
         id: v.id,
         scheduledAt: v.scheduledAt,
@@ -790,11 +740,11 @@ export async function exportLeads(
   filters: LeadFilters = {},
 ): Promise<ActionResult<ExportLeadRow[]>> {
   try {
-    const where: Record<string, unknown> = {}
+    const where: Prisma.LeadWhereInput = {}
 
-    if (filters.status) where.status = filters.status
-    if (filters.source) where.source = filters.source
-    if (filters.priority) where.priority = filters.priority
+    if (filters.status) where.status = filters.status as LeadStatus
+    if (filters.source) where.source = filters.source as LeadSource
+    if (filters.priority) where.priority = filters.priority as Priority
     if (filters.assignedToId) where.assignedToId = filters.assignedToId
 
     if (filters.search) {
@@ -837,7 +787,6 @@ export async function exportLeads(
       source: lead.source,
       status: lead.status,
       priority: lead.priority,
-      message: lead.message,
       assignedTo: lead.assignedTo?.name ?? null,
       createdAt: lead.createdAt.toISOString(),
       lastActivityAt: lead.activities[0]?.createdAt.toISOString() ?? null,

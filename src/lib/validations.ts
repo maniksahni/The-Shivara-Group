@@ -60,14 +60,14 @@ const RoleEnum = z.enum(['ADMIN', 'AGENT'])
 export const loginSchema = z.object({
   /** Must be a valid e-mail address. */
   email: z
-    .string({ required_error: 'Email is required' })
+    .string('Email is required')
     .email('Please enter a valid email address')
     .toLowerCase()
     .trim(),
 
   /** Minimum 6 characters to allow existing bcrypt-hashed passwords. */
   password: z
-    .string({ required_error: 'Password is required' })
+    .string('Password is required')
     .min(6, 'Password must be at least 6 characters'),
 })
 
@@ -84,14 +84,14 @@ export type LoginInput = z.infer<typeof loginSchema>
 export const leadSchema = z.object({
   /** Full name of the prospect — required. */
   name: z
-    .string({ required_error: 'Name is required' })
+    .string('Name is required')
     .min(2, 'Name must be at least 2 characters')
     .max(100, 'Name must be at most 100 characters')
     .trim(),
 
   /** Primary contact number — minimum 10 digits. */
   phone: z
-    .string({ required_error: 'Phone number is required' })
+    .string('Phone number is required')
     .min(10, 'Phone number must be at least 10 digits')
     .max(15, 'Phone number must be at most 15 digits')
     .trim(),
@@ -137,13 +137,13 @@ export const leadSchema = z.object({
   propertyType: PropertyTypeEnum.optional().nullable(),
 
   /** Channel through which the lead was acquired. */
-  source: LeadSourceEnum.default('WEBSITE'),
+  source: LeadSourceEnum,
 
   /** Current stage in the sales pipeline. */
-  status: LeadStatusEnum.default('NEW'),
+  status: LeadStatusEnum,
 
   /** Urgency / importance rating. */
-  priority: PriorityEnum.default('MEDIUM'),
+  priority: PriorityEnum,
 
   /** ID of the agent this lead is assigned to. */
   assignedToId: z
@@ -172,14 +172,14 @@ export type LeadInput = z.infer<typeof leadSchema>
 export const propertySchema = z.object({
   /** Display name / headline for the property. */
   title: z
-    .string({ required_error: 'Title is required' })
+    .string('Title is required')
     .min(5, 'Title must be at least 5 characters')
     .max(200, 'Title must be at most 200 characters')
     .trim(),
 
   /** Detailed description shown on the listing page. */
   description: z
-    .string({ required_error: 'Description is required' })
+    .string('Description is required')
     .min(20, 'Description must be at least 20 characters')
     .trim(),
 
@@ -188,14 +188,14 @@ export const propertySchema = z.object({
    * "1.2 Cr" — stored as text to avoid floating-point issues.
    */
   price: z
-    .string({ required_error: 'Price is required' })
+    .string('Price is required')
     .min(1, 'Price is required')
     .max(50, 'Price must be at most 50 characters')
     .trim(),
 
   /** Full address or area description. */
   location: z
-    .string({ required_error: 'Location is required' })
+    .string('Location is required')
     .min(3, 'Location must be at least 3 characters')
     .max(300, 'Location must be at most 300 characters')
     .trim(),
@@ -230,20 +230,16 @@ export const propertySchema = z.object({
     .nullable(),
 
   /** List of available amenities, e.g. ["Swimming Pool", "Gym"]. */
-  amenities: z
-    .array(z.string().trim())
-    .default([]),
+  amenities: z.array(z.string().trim()),
 
   /** Array of public image URLs. */
-  images: z
-    .array(z.string().url('Each image must be a valid URL'))
-    .default([]),
+  images: z.array(z.string().url('Each image must be a valid URL')),
 
   /** Whether the listing is visible to the public / active. */
-  isActive: z.boolean().default(true),
+  isActive: z.boolean(),
 
   /** Whether to feature this property on the home page. */
-  isFeatured: z.boolean().default(false),
+  isFeatured: z.boolean(),
 })
 
 export type PropertyInput = z.infer<typeof propertySchema>
@@ -260,21 +256,21 @@ export type PropertyInput = z.infer<typeof propertySchema>
 export const agentSchema = z.object({
   /** Full name of the agent. */
   name: z
-    .string({ required_error: 'Name is required' })
+    .string('Name is required')
     .min(2, 'Name must be at least 2 characters')
     .max(100, 'Name must be at most 100 characters')
     .trim(),
 
   /** Unique e-mail used for login. */
   email: z
-    .string({ required_error: 'Email is required' })
+    .string('Email is required')
     .email('Please enter a valid email address')
     .toLowerCase()
     .trim(),
 
   /** Initial password — must be at least 8 characters for security. */
   password: z
-    .string({ required_error: 'Password is required' })
+    .string('Password is required')
     .min(8, 'Password must be at least 8 characters')
     .max(72, 'Password must be at most 72 characters (bcrypt limit)'),
 
@@ -303,7 +299,7 @@ export type AgentInput = z.infer<typeof agentSchema>
 export const noteSchema = z.object({
   /** Body of the note — must not be blank. */
   content: z
-    .string({ required_error: 'Note content is required' })
+    .string('Note content is required')
     .min(1, 'Note content cannot be empty')
     .max(5000, 'Note must be at most 5,000 characters')
     .trim(),
@@ -322,14 +318,14 @@ export type NoteInput = z.infer<typeof noteSchema>
 export const enquirySchema = z.object({
   /** Full name of the person enquiring. */
   name: z
-    .string({ required_error: 'Name is required' })
+    .string('Name is required')
     .min(2, 'Name must be at least 2 characters')
     .max(100, 'Name must be at most 100 characters')
     .trim(),
 
   /** Primary phone number — minimum 10 digits. */
   phone: z
-    .string({ required_error: 'Phone number is required' })
+    .string('Phone number is required')
     .min(10, 'Phone number must be at least 10 digits')
     .max(15, 'Phone number must be at most 15 digits')
     .trim(),
@@ -348,6 +344,7 @@ export const enquirySchema = z.object({
     .string()
     .email('Please enter a valid email address')
     .max(200, 'Email must be at most 200 characters')
+    .toLowerCase()
     .trim()
     .optional()
     .nullable(),
@@ -376,6 +373,14 @@ export const enquirySchema = z.object({
 
   /** Channel through which this enquiry arrived. */
   source: LeadSourceEnum.default('WEBSITE'),
+
+  status: z.enum(['NEW', 'SITE_VISIT_SCHEDULED']).default('NEW'),
+
+  followUpDate: z
+    .string()
+    .datetime('Site visit date must be a valid ISO datetime')
+    .optional()
+    .nullable(),
 
   /** Optional free-text message from the enquirer. */
   message: z

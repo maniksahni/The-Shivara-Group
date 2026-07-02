@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { Users, UserCheck, Calendar, CheckSquare, Building2, TrendingUp } from "lucide-react";
 
 import { getServerSession } from "@/lib/auth";
-import { getDashboardStats } from "@/features/leads/actions";
+import { getDashboardStats } from "@/features/dashboard/actions";
 import StatsCard from "@/components/crm/dashboard/StatsCard";
 import Charts from "@/components/crm/dashboard/Charts";
 import ActivityFeed from "@/components/crm/dashboard/ActivityFeed";
@@ -20,17 +20,16 @@ export default async function DashboardPage() {
   }
 
   // Fetch dashboard stats from our server actions
-  const statsRes = await getDashboardStats();
-  const stats = statsRes.success && statsRes.data ? statsRes.data : {
+  const stats = await getDashboardStats().catch(() => ({
     totalLeads: 0,
-    newLeads: 0,
+    todayLeads: 0,
     pendingFollowUps: 0,
     siteVisitsScheduled: 0,
-    closedLeads: 0,
-    leadsBySource: {} as Record<string, number>,
-    leadsByStatus: {} as Record<string, number>,
+    closedDeals: 0,
+    leadsBySource: [],
+    leadsByStatus: [],
     recentActivities: [],
-  };
+  }));
 
   // Fetch number of active properties
   let activePropertiesCount = 0;
@@ -42,7 +41,10 @@ export default async function DashboardPage() {
     console.error("Failed to count properties", err);
   }
 
-  let todaysFollowUps: any[] = [];
+  // Fetch today's follow-up leads
+  let todaysFollowUps: Array<Awaited<ReturnType<typeof prisma.lead.findMany>>[number] & {
+    assignedTo: { name: string } | null
+  }> = [];
   try {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
@@ -95,11 +97,12 @@ export default async function DashboardPage() {
           color="blue"
         />
         <StatsCard
-          title="New Leads"
-          value={stats.newLeads}
-          subtitle="Awaiting first contact"
+          title="Today's Leads"
+          value={stats.todayLeads}
+          subtitle="Received since midnight"
           icon={TrendingUp}
           color="gold"
+          trend={{ value: stats.todayLeads, isUp: stats.todayLeads > 0 }}
         />
         <StatsCard
           title="Pending Follow-ups"
@@ -117,7 +120,7 @@ export default async function DashboardPage() {
         />
         <StatsCard
           title="Closed Deals"
-          value={stats.closedLeads}
+          value={stats.closedDeals}
           subtitle="Successful conversions"
           icon={UserCheck}
           color="emerald"
@@ -137,15 +140,9 @@ export default async function DashboardPage() {
         <div className="lg:col-span-8 bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-6">
           <h2 className="text-lg font-semibold border-b border-slate-800 pb-3">Leads Overview & Pipeline</h2>
           <Suspense fallback={<div className="h-72 w-full skeleton" />}>
-             <Charts
-              sourceData={Object.entries(stats.leadsBySource).map(([source, count]) => ({
-                source,
-                count: Number(count),
-              }))}
-              statusData={Object.entries(stats.leadsByStatus).map(([status, count]) => ({
-                status,
-                count: Number(count),
-              }))}
+            <Charts
+              sourceData={stats.leadsBySource}
+              statusData={stats.leadsByStatus}
             />
           </Suspense>
         </div>

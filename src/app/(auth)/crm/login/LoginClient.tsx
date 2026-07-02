@@ -1,7 +1,7 @@
 'use client'
 
 /**
- * src/app/(crm)/crm/login/page.tsx
+ * Public CRM login page.
  *
  * Premium CRM login page for Shivara Group.
  *
@@ -119,7 +119,7 @@ interface FormState {
 // Page component
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function CRMLoginPage() {
+export default function CRMLoginClient() {
   const router = useRouter()
   const searchParams = useSearchParams()
 

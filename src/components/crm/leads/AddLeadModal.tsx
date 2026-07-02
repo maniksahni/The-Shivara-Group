@@ -48,7 +48,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<LeadInput>({
+  } = useForm({
     resolver: zodResolver(leadSchema),
     defaultValues: {
       name: lead?.name || "",
@@ -68,7 +68,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
     },
   });
 
-  const onSubmit = async (data: LeadInput) => {
+  const onSubmit = async (data: any) => {
     setError("");
     const formattedData = {
       ...data,
@@ -119,7 +119,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
 
   return (
     <>
-      {React.cloneElement(trigger, { onClick: handleOpen })}
+      <span onClick={handleOpen} style={{ display: 'contents' }}>{trigger}</span>
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

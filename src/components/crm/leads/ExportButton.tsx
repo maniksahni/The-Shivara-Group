@@ -26,10 +26,9 @@ export default function ExportButton({ filters }: ExportButtonProps) {
     setLoading(true);
     try {
       const res = await exportLeads(filters);
-      if (!res.success || !res.data) {
+      if (!res.success) {
         throw new Error(res.error || "Export failed");
       }
-
       const rawData = res.data;
 
       // Transform keys into user-friendly uppercase Excel headers

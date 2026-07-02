@@ -16,6 +16,7 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import prisma from '@/lib/prisma'
+import { LeadStatus, LeadSource, Priority, PropertyType } from '@prisma/client'
 
 // ---------------------------------------------------------------------------
 // Zod schemas for validation
@@ -59,6 +60,7 @@ export interface DashboardStats {
   newLeads: number
   activeLeads: number
   closedLeads: number
+  pendingFollowUps: number
   siteVisitsScheduled: number
   leadsByStatus: Record<string, number>
   leadsBySource: Record<string, number>
@@ -70,6 +72,20 @@ export interface DashboardStats {
     status: string
     source: string
     createdAt: Date
+  }>
+  recentActivities: Array<{
+    id: string
+    action: string
+    oldValue: string | null
+    newValue: string | null
+    createdAt: Date
+    lead: {
+      id: string
+      name: string
+    }
+    user: {
+      name: string
+    } | null
   }>
   upcomingSiteVisits: Array<{
     id: string
@@ -526,17 +542,17 @@ export async function getLeads(filters: LeadFilters = {}): Promise<
       phone: string
       whatsappNumber: string | null
       email: string | null
-      budget: number | null
+      budget: string | null
       preferredLocation: string | null
-      propertyType: string | null
-      source: string
-      status: string
-      priority: string | null
-      message: string | null
+      propertyType: PropertyType | null
+      source: LeadSource
+      status: LeadStatus
+      priority: Priority
       assignedToId: string | null
+      followUpDate: Date | null
       createdAt: Date
       updatedAt: Date
-      assignedTo: { id: string; name: string | null; email: string } | null
+      assignedTo: { id: string; name: string; email: string } | null
       _count: { notes: number; activities: number; siteVisits: number }
     }>
   >
@@ -645,6 +661,7 @@ export async function getDashboardStats(): Promise<ActionResult<DashboardStats>>
       leadsByPriorityRaw,
       recentLeads,
       upcomingSiteVisits,
+      recentActivities,
     ] = await Promise.all([
       // Total leads
       prisma.lead.count(),
@@ -696,6 +713,25 @@ export async function getDashboardStats(): Promise<ActionResult<DashboardStats>>
           },
         },
       }),
+
+      // 10 most recent activities
+      prisma.leadActivity.findMany({
+        take: 10,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          lead: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      }),
     ])
 
     // Reshape grouped results into plain objects
@@ -719,11 +755,13 @@ export async function getDashboardStats(): Promise<ActionResult<DashboardStats>>
         (leadsByStatus['SITE_VISIT_SCHEDULED'] ?? 0) +
         (leadsByStatus['NEGOTIATION'] ?? 0),
       closedLeads: leadsByStatus['CLOSED'] ?? 0,
+      pendingFollowUps: leadsByStatus['FOLLOW_UP'] ?? 0,
       siteVisitsScheduled: leadsByStatus['SITE_VISIT_SCHEDULED'] ?? 0,
       leadsByStatus,
       leadsBySource,
       leadsByPriority,
       recentLeads,
+      recentActivities,
       upcomingSiteVisits: upcomingSiteVisits.map((v) => ({
         id: v.id,
         scheduledAt: v.scheduledAt,

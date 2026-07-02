@@ -343,6 +343,15 @@ export const enquirySchema = z.object({
     .optional()
     .nullable(),
 
+  /** Optional email address of the enquirer. */
+  email: z
+    .string()
+    .email('Please enter a valid email address')
+    .max(200, 'Email must be at most 200 characters')
+    .trim()
+    .optional()
+    .nullable(),
+
   /**
    * Budget range the enquirer is comfortable with.
    * Free-form text, e.g. "50–70 Lakh".

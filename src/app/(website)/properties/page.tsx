@@ -86,7 +86,7 @@ const defaultProperties = [
 ];
 
 export default async function PropertiesPage() {
-  let properties = [];
+  let properties: any[] = [];
 
   try {
     properties = await prisma.property.findMany({

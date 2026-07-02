@@ -98,7 +98,7 @@ export default function AddAgentModal({ trigger, agent }: AddAgentModalProps) {
 
   return (
     <>
-      {React.cloneElement(trigger, { onClick: handleOpen })}
+      <span onClick={handleOpen} style={{ display: 'contents' }}>{trigger}</span>
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

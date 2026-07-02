@@ -50,7 +50,6 @@ export async function POST(request: NextRequest) {
           preferredLocation: validatedData.preferredLocation ?? null,
           propertyType: validatedData.propertyType ?? null,
           source: validatedData.source,
-          message: validatedData.message ?? null,
           status: 'NEW',
         },
         select: { id: true },
@@ -59,8 +58,7 @@ export async function POST(request: NextRequest) {
       await tx.leadActivity.create({
         data: {
           leadId: newLead.id,
-          action: 'Lead created from website',
-          description: `Enquiry submitted via source: ${validatedData.source}`,
+          action: `Lead created from website via ${validatedData.source}`,
         },
       })
 
@@ -163,7 +161,7 @@ export async function GET(request: NextRequest) {
             select: { id: true, name: true, email: true },
           },
           _count: {
-            select: { notes: true, activities: true, siteVisits: true },
+            select: { notes: true, activities: true },
           },
         },
       }),

@@ -114,7 +114,7 @@ export default async function PropertiesPage() {
     )
   }
 
-  const properties = result.data as PropertyRecord[]
+  const properties = result.data as unknown as PropertyRecord[]
 
   // ── Compute stats ────────────────────────────────────────────────────────
   const totalCount     = properties.length

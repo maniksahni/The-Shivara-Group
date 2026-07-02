@@ -27,7 +27,7 @@ export default function AddPropertyModal({ trigger, property }: AddPropertyModal
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<PropertyInput>({
+  } = useForm({
     resolver: zodResolver(propertySchema),
     defaultValues: {
       title: property?.title || "",
@@ -50,14 +50,14 @@ export default function AddPropertyModal({ trigger, property }: AddPropertyModal
     property?.amenities ? property.amenities.join(", ") : ""
   );
 
-  const onSubmit = async (data: PropertyInput) => {
+  const onSubmit = async (data: any) => {
     setError("");
 
     // Process amenities array
     const amenitiesArr = amenityText
       .split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag.length > 0);
+      .map((tag: string) => tag.trim())
+      .filter((tag: string) => tag.length > 0);
 
     const formattedData = {
       ...data,
@@ -111,7 +111,7 @@ export default function AddPropertyModal({ trigger, property }: AddPropertyModal
 
   return (
     <>
-      {React.cloneElement(trigger, { onClick: handleOpen })}
+      <span onClick={handleOpen} style={{ display: 'contents' }}>{trigger}</span>
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

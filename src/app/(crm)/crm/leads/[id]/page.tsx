@@ -34,7 +34,7 @@ export default async function LeadDetailPage({ params }: PageProps) {
   const lead = leadRes.data;
 
   // Fetch list of agents for assigning/reassigning leads
-  let agents = [];
+  let agents: any[] = [];
   try {
     agents = await prisma.user.findMany({
       where: { isActive: true },

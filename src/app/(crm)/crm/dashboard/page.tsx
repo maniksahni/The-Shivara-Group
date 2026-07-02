@@ -23,12 +23,12 @@ export default async function DashboardPage() {
   const statsRes = await getDashboardStats();
   const stats = statsRes.success && statsRes.data ? statsRes.data : {
     totalLeads: 0,
-    todayLeads: 0,
+    newLeads: 0,
     pendingFollowUps: 0,
     siteVisitsScheduled: 0,
-    closedDeals: 0,
-    leadsBySource: [],
-    leadsByStatus: [],
+    closedLeads: 0,
+    leadsBySource: {} as Record<string, number>,
+    leadsByStatus: {} as Record<string, number>,
     recentActivities: [],
   };
 
@@ -42,8 +42,7 @@ export default async function DashboardPage() {
     console.error("Failed to count properties", err);
   }
 
-  // Fetch today's follow-up leads
-  let todaysFollowUps: Awaited<ReturnType<typeof prisma.lead.findMany>> = [];
+  let todaysFollowUps: any[] = [];
   try {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);
@@ -96,12 +95,11 @@ export default async function DashboardPage() {
           color="blue"
         />
         <StatsCard
-          title="Today's Leads"
-          value={stats.todayLeads}
-          subtitle="Received since midnight"
+          title="New Leads"
+          value={stats.newLeads}
+          subtitle="Awaiting first contact"
           icon={TrendingUp}
           color="gold"
-          trend={{ value: stats.todayLeads > 0 ? "New" : "Flat", isUp: stats.todayLeads > 0 }}
         />
         <StatsCard
           title="Pending Follow-ups"
@@ -119,7 +117,7 @@ export default async function DashboardPage() {
         />
         <StatsCard
           title="Closed Deals"
-          value={stats.closedDeals}
+          value={stats.closedLeads}
           subtitle="Successful conversions"
           icon={UserCheck}
           color="emerald"
@@ -139,9 +137,15 @@ export default async function DashboardPage() {
         <div className="lg:col-span-8 bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-6">
           <h2 className="text-lg font-semibold border-b border-slate-800 pb-3">Leads Overview & Pipeline</h2>
           <Suspense fallback={<div className="h-72 w-full skeleton" />}>
-            <Charts
-              sourceData={stats.leadsBySource}
-              statusData={stats.leadsByStatus}
+             <Charts
+              sourceData={Object.entries(stats.leadsBySource).map(([source, count]) => ({
+                source,
+                count: Number(count),
+              }))}
+              statusData={Object.entries(stats.leadsByStatus).map(([status, count]) => ({
+                status,
+                count: Number(count),
+              }))}
             />
           </Suspense>
         </div>

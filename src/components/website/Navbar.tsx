@@ -264,7 +264,7 @@ export default function Navbar() {
 
           {/* Quick call button in mobile menu */}
           <a
-            href="tel:+919897012345"
+            href="tel:+917060788407"
             className="
               mt-2 py-2.5 px-4 text-center
               text-sm font-semibold
@@ -273,7 +273,7 @@ export default function Navbar() {
               transition-colors duration-200
             "
           >
-            📞 Call Now: +91-9897012345
+            📞 Call Now: +91 7060788407
           </a>
         </nav>
       </div>

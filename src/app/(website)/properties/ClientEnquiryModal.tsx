@@ -114,7 +114,7 @@ export default function ClientEnquiryModal({
               </p>
               <div className="pt-4 flex justify-center gap-3">
                 <a
-                  href={`https://wa.me/919897012345?text=Hi, I just submitted an enquiry for ${encodeURIComponent(
+                  href={`https://wa.me/917060788407?text=Hi, I just submitted an enquiry for ${encodeURIComponent(
                     property.title
                   )}.`}
                   target="_blank"

@@ -127,7 +127,7 @@ function HeroSection() {
         <div className="flex items-center justify-center gap-3 mb-6">
           <span className="block h-px w-12 bg-[#C9A84C]" />
           <span className="text-[#C9A84C] text-xs font-medium tracking-[0.3em] uppercase">
-            Bareilly, Uttar Pradesh
+            Bareilly · Delhi NCR
           </span>
           <span className="block h-px w-12 bg-[#C9A84C]" />
         </div>
@@ -141,10 +141,10 @@ function HeroSection() {
             leading-tight mb-6
           "
         >
-          Find Your{" "}
-          <span className="text-[#C9A84C] italic">Dream Home</span>
+          Bespoke Real Estate{" "}
+          <span className="text-[#C9A84C] italic">Strategies</span>
           <br className="hidden sm:block" />
-          in Bareilly
+          Defining Legacies
         </h1>
 
         {/* Subheading */}
@@ -155,9 +155,8 @@ function HeroSection() {
             font-[family-name:var(--font-inter)]
           "
         >
-          The Shivara Group — Bareilly&apos;s most trusted real estate
-          consultancy. We connect families with their perfect properties across
-          Civil Lines, Cantt, and all prime localities.
+          The Shivara Group curates premium real estate opportunities across
+          Bareilly and Delhi NCR — defining legacies, one address at a time.
         </p>
 
         {/* CTA Buttons */}
@@ -215,9 +214,9 @@ function HeroSection() {
           "
         >
           {[
-            { value: "500+", label: "Happy Clients" },
-            { value: "200+", label: "Properties Sold" },
-            { value: "10+", label: "Years Experience" },
+            { value: "Bareilly", label: "Primary Market" },
+            { value: "Delhi NCR", label: "Advisory Reach" },
+            { value: "Aurika", label: "Featured Project" },
           ].map((stat, i) => (
             <div key={i} className="flex items-center gap-2">
               {i > 0 && (
@@ -594,19 +593,18 @@ function EnquirySection() {
               <span className="text-[#C9A84C]">Perfect Property</span>
             </h2>
             <p className="text-gray-600 text-base leading-relaxed mb-8">
-              With over a decade of expertise in Bareilly&apos;s real estate
-              market, The Shivara Group has helped 500+ families find their
-              dream homes. Fill in the form and our expert consultants will get
-              back to you within 24 hours.
+              Tell us what you are looking for in Bareilly or Delhi NCR. The
+              Shivara Group will help you plan the next step, from property
+              discovery to site-visit coordination.
             </p>
 
             {/* USP list */}
             <ul className="space-y-4">
               {[
                 "No obligation — 100% free consultation",
-                "Expert guidance for first-time buyers",
-                "Transparent pricing, no hidden charges",
-                "10+ years of local market knowledge",
+                "Bespoke real estate strategy",
+                "Luxury homes, plots, and portfolio guidance",
+                "Site visits available by appointment",
               ].map((point) => (
                 <li key={point} className="flex items-start gap-3">
                   <span className="flex-shrink-0 w-5 h-5 rounded-full bg-[#C9A84C]/20 flex items-center justify-center mt-0.5">
@@ -655,7 +653,7 @@ function EnquirySection() {
                   within 24 hours.
                 </p>
                 <a
-                  href="https://wa.me/919897012345"
+                  href="https://wa.me/917060788407"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-[#25D366] text-white text-sm font-semibold rounded-lg hover:bg-[#1ebe59] transition-colors"
@@ -865,15 +863,15 @@ function EnquirySection() {
 const reasons = [
   {
     icon: "🏆",
-    title: "10+ Years Experience",
+    title: "Bespoke Strategy",
     description:
-      "Over a decade of serving Bareilly's real estate market with deep local knowledge and trusted expertise.",
+      "Curated real estate guidance for buyers, investors, and families planning their next address.",
   },
   {
     icon: "😊",
-    title: "500+ Happy Clients",
+    title: "Bareilly & Delhi NCR",
     description:
-      "Our track record speaks for itself — hundreds of families successfully settled across Bareilly and UP.",
+      "Public brand communication highlights Bareilly and Delhi NCR as the company's active markets.",
   },
   {
     icon: "🎁",
@@ -1108,7 +1106,7 @@ function CTABanner() {
             Book a Site Visit
           </Link>
           <a
-            href="tel:+919897012345"
+            href="tel:+917060788407"
             className="
               inline-flex items-center gap-2
               px-8 py-4 rounded-lg
@@ -1130,7 +1128,7 @@ function CTABanner() {
                 clipRule="evenodd"
               />
             </svg>
-            +91-9897012345
+            +91 7060788407
           </a>
         </div>
       </div>

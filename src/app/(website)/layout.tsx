@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     template: "%s | The Shivara Group",
   },
   description:
-    "Bareilly's most trusted real estate consultancy. Explore premium residential and commercial properties in Civil Lines, Cantt, and across Uttar Pradesh.",
+    "Bespoke real estate strategies across Bareilly and Delhi NCR. Explore premium residences, plots, and site-visit-led property guidance from The Shivara Group.",
   keywords: [
     "real estate Bareilly",
     "property in Bareilly",
@@ -43,7 +43,7 @@ export default function WebsiteLayout({
 
         {/* ── WhatsApp Float Button (bottom-right, always visible) ── */}
         <a
-          href="https://wa.me/919897012345"
+          href="https://wa.me/917060788407"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Chat on WhatsApp"
@@ -84,7 +84,7 @@ export default function WebsiteLayout({
 
         {/* ── Call Now Sticky Button (bottom-left on mobile, right side on desktop) ── */}
         <a
-          href="tel:+919897012345"
+          href="tel:+917060788407"
           aria-label="Call Now"
           className="
             fixed bottom-6 left-6 z-50
@@ -114,7 +114,7 @@ export default function WebsiteLayout({
 
         {/* ── Call Now sticky — desktop version (hidden on mobile, shown on desktop as a side label) ── */}
         <a
-          href="tel:+919897012345"
+          href="tel:+917060788407"
           aria-label="Call Now"
           className="
             hidden md:flex

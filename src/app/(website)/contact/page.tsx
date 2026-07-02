@@ -106,7 +106,7 @@ export default function ContactPage() {
             Connect With The Shivara Group
           </h1>
           <p className="mt-2 max-w-xl text-white/70 text-sm sm:text-base">
-            Have questions about real estate in Bareilly? Fill in our enquiry form or book a free physical site visit with our senior consultants.
+            Have questions about premium real estate in Bareilly or Delhi NCR? Fill in the enquiry form or book a site visit with The Shivara Group.
           </p>
         </div>
       </section>
@@ -122,7 +122,7 @@ export default function ContactPage() {
               </h2>
               <div className="w-12 h-0.5 bg-[#C9A84C] rounded" />
               <p className="text-gray-600 text-sm leading-relaxed">
-                Visit our office or call us. We welcome consultations regarding property purchases, registry processes, and local bank home loan queries.
+                Public Instagram information confirms Bareilly and Delhi NCR coverage. Exact office address, email, maps link, and working hours should be completed manually if required.
               </p>
             </div>
 
@@ -136,8 +136,8 @@ export default function ContactPage() {
                 <div>
                   <h3 className="font-semibold text-sm text-[#0F1B2D]">Address</h3>
                   <p className="text-gray-500 text-xs mt-1 leading-relaxed">
-                    123 Civil Lines, Near Kutchery Crossing,<br />
-                    Bareilly, Uttar Pradesh - 243001
+                    Bareilly, Uttar Pradesh<br />
+                    Full office address: Manual completion required
                   </p>
                 </div>
               </div>
@@ -150,8 +150,8 @@ export default function ContactPage() {
                 <div>
                   <h3 className="font-semibold text-sm text-[#0F1B2D]">Call Support</h3>
                   <p className="text-gray-500 text-xs mt-1 leading-relaxed">
-                    Mobile: +91-9897012345<br />
-                    Toll-Free Helpline: 1800-XXX-XXXX
+                    Mobile / WhatsApp: +91 7060788407<br />
+                    Alternate number: Manual completion required
                   </p>
                 </div>
               </div>
@@ -164,8 +164,8 @@ export default function ContactPage() {
                 <div>
                   <h3 className="font-semibold text-sm text-[#0F1B2D]">Email</h3>
                   <p className="text-gray-500 text-xs mt-1 leading-relaxed">
-                    info@shivaragroup.com<br />
-                    sales@shivaragroup.com
+                    Manual completion required<br />
+                    Instagram: @theshivaragroup
                   </p>
                 </div>
               </div>
@@ -178,8 +178,8 @@ export default function ContactPage() {
                 <div>
                   <h3 className="font-semibold text-sm text-[#0F1B2D]">Office Hours</h3>
                   <p className="text-gray-500 text-xs mt-1 leading-relaxed">
-                    Monday to Saturday: 9:30 AM – 7:30 PM<br />
-                    Sunday: Closed (Available via WhatsApp)
+                    Manual completion required<br />
+                    Site visits available by appointment
                   </p>
                 </div>
               </div>
@@ -236,7 +236,7 @@ export default function ContactPage() {
                 </p>
                 <div className="pt-6 flex justify-center gap-4">
                   <a
-                    href="https://wa.me/919897012345"
+                    href="https://wa.me/917060788407"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="px-6 py-3 bg-[#25D366] text-white font-semibold text-xs rounded-lg hover:bg-[#1ebe59] shadow-sm transition-colors"

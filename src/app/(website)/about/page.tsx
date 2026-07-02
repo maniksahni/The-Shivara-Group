@@ -6,34 +6,27 @@ import { Sparkles, Building2, Trophy, Users, ShieldCheck, HeartHandshake } from 
 
 export default function AboutPage() {
   const stats = [
-    { value: "10+", label: "Years of Trust", icon: Trophy },
-    { value: "500+", label: "Happy Families", icon: Users },
-    { value: "200+", label: "Deals Closed", icon: Building2 },
+    { value: "Bareilly", label: "Primary Market", icon: Trophy },
+    { value: "Delhi NCR", label: "Advisory Reach", icon: Users },
+    { value: "Aurika", label: "Featured Project", icon: Building2 },
   ];
 
   const values = [
     {
       title: "Integrity",
-      description: "We believe in honest, transparent transactions. What we promise is what we deliver.",
+      description: "We believe real estate is more than a transaction — it is the careful curation of a lifestyle and legacy.",
       icon: ShieldCheck,
     },
     {
       title: "Client-Centricity",
-      description: "Our clients are our top priority. We tailor our services to meet your specific housing needs.",
+      description: "Every recommendation is shaped around the client's goals, preferred location, budget, and long-term portfolio vision.",
       icon: HeartHandshake,
     },
     {
-      title: "Local Market Expertise",
-      description: "Having operated in Bareilly for over a decade, we know the local market and legal procedures inside out.",
+      title: "Premium Market Focus",
+      description: "Our public portfolio highlights Bareilly, Delhi NCR, luxury residences, plots, and site-visit-led real estate advisory.",
       icon: Sparkles,
     },
-  ];
-
-  const team = [
-    { name: "Shri S. K. Gupta", role: "Founder & Chairman", initials: "SG" },
-    { name: "Rahul Sharma", role: "Senior Property Consultant", initials: "RS" },
-    { name: "Priya Singh", role: "Client Relations Manager", initials: "PS" },
-    { name: "Amit Kumar", role: "Sales Specialist", initials: "AK" },
   ];
 
   return (
@@ -51,7 +44,7 @@ export default function AboutPage() {
             About <span className="text-[#C9A84C]">The Shivara Group</span>
           </h1>
           <p className="max-w-2xl mx-auto text-white/70 text-base sm:text-lg">
-            Building trust and helping families find their perfect properties in Bareilly, Uttar Pradesh since 2016.
+            Bespoke real estate strategies defining legacies, one address at a time.
           </p>
         </div>
       </section>
@@ -61,17 +54,17 @@ export default function AboutPage() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-7 space-y-6">
             <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-[#0F1B2D]">
-              A Decade of Real Estate Excellence in Bareilly
+              Where Legacy Meets Location
             </h2>
             <div className="w-16 h-1 bg-[#C9A84C] rounded" />
             <p className="text-gray-600 leading-relaxed">
-              Founded in 2016, The Shivara Group started with a simple vision: to make property buying in Bareilly direct, transparent, and completely stress-free. At that time, buyers struggled with unverified listings, hidden commissions, and complex legal paperwork.
+              The Shivara Group presents premium real estate opportunities across Bareilly and Delhi NCR with a tone of curated, lifestyle-led advisory. Public Instagram content positions the brand around luxury real estate, portfolio management, site visits, and landmark residential opportunities.
             </p>
             <p className="text-gray-600 leading-relaxed">
-              Over the past ten years, we have grown into one of Bareilly&apos;s leading and most trusted property consultancies. We specialize in premium residential apartments, luxury villas, commercial showrooms, and development plots across prime locations including Civil Lines, Cantt Area, Pilibhit Road, and Kutchery Road.
+              The brand highlights that real estate is more than a transaction: it is the curation of lifestyle, location, and legacy. Its visible project communication includes Aurika / The Residences in Bareilly and consultation-led property discovery.
             </p>
             <p className="text-gray-600 leading-relaxed font-semibold text-[#0F1B2D]">
-              Whether you are buying your first home, looking for a prime commercial showroom, or expanding your investment portfolio, The Shivara Group is here to guide you every step of the way.
+              For verified project details, exact office address, team profiles, testimonials, and working hours, please confirm manually from the company before publishing.
             </p>
           </div>
 
@@ -117,16 +110,21 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── Team Section ── */}
-      <section className="py-20 max-w-6xl mx-auto px-6" aria-label="Our Team">
+      {/* ── Publicly Available Brand Information ── */}
+      <section className="py-20 max-w-6xl mx-auto px-6" aria-label="Public Brand Information">
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <span className="text-[#C9A84C] text-xs font-semibold uppercase tracking-[0.2em] block mb-2">The Experts</span>
-          <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-[#0F1B2D]">Meet Our Dedicated Consultants</h2>
+          <span className="text-[#C9A84C] text-xs font-semibold uppercase tracking-[0.2em] block mb-2">Verified From Instagram</span>
+          <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-bold text-[#0F1B2D]">Public Brand Signals</h2>
           <div className="w-16 h-1 bg-[#C9A84C] rounded mx-auto mt-4" />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {team.map((t, i) => (
+          {[
+            { name: "Premium Real Estate", role: "Luxury homes, plots, and advisory", initials: "RE" },
+            { name: "Aurika / The Residences", role: "Featured Bareilly project", initials: "AU" },
+            { name: "Site Visits", role: "Public captions invite bookings", initials: "SV" },
+            { name: "Team Details", role: "Manual completion required", initials: "MC" },
+          ].map((t, i) => (
             <div key={i} className="bg-white rounded-2xl border border-gray-200 p-6 text-center shadow-sm hover:shadow-md transition-shadow duration-300">
               <div className="w-20 h-20 rounded-full bg-[#0F1B2D] text-[#C9A84C] font-bold text-2xl flex items-center justify-center mx-auto mb-4 border-2 border-[#C9A84C]">
                 {t.initials}
@@ -134,7 +132,7 @@ export default function AboutPage() {
               <h3 className="font-[family-name:var(--font-playfair)] text-lg font-bold text-[#0F1B2D]">{t.name}</h3>
               <p className="text-[#C9A84C] text-xs font-semibold uppercase tracking-wider mt-1">{t.role}</p>
               <p className="text-gray-500 text-xs mt-3 leading-relaxed">
-                Expert consultancy in Bareilly regions with a focus on verified properties and customer delight.
+                {t.role}
               </p>
             </div>
           ))}
@@ -149,7 +147,7 @@ export default function AboutPage() {
             Ready to find your next home in Bareilly?
           </h2>
           <p className="text-white/70 max-w-xl mx-auto text-sm sm:text-base">
-            Reach out to our experts today for a personalized property listing presentation. Zero hidden costs, full transparency.
+            Reach out for curated real estate guidance, property discovery, and site-visit assistance.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
             <Link
@@ -159,12 +157,12 @@ export default function AboutPage() {
               Contact Us Now
             </Link>
             <a
-              href="https://wa.me/919897012345"
+              href="https://wa.me/917060788407"
               target="_blank"
               rel="noopener noreferrer"
               className="px-8 py-3.5 border border-white/20 hover:border-[#C9A84C] hover:text-[#C9A84C] font-semibold text-sm rounded-lg transition-all"
             >
-              Consult via WhatsApp
+              WhatsApp: 7060788407
             </a>
           </div>
         </div>

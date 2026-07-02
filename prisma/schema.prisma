@@ -3,7 +3,7 @@
 // ORM: Prisma Client JS
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -164,8 +164,8 @@ model Property {
   area      String?
 
   // Stored as plain text arrays (comma-separated amenities, image URLs)
-  amenities String[]
-  images    String[]
+  amenities Json     @default("[]")
+  images    Json     @default("[]")
 
   isActive   Boolean @default(true)
   isFeatured Boolean @default(false)

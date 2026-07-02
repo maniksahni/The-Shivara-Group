@@ -16,11 +16,11 @@
  */
 
 import { redirect } from 'next/navigation'
-import { SessionProvider } from 'next-auth/react'
 
 import { getServerSession } from '@/lib/auth'
 import CRMSidebar from '@/components/crm/Sidebar'
 import CRMTopbar from '@/components/crm/Topbar'
+import CRMProviders from '@/components/crm/CRMProviders'
 
 // ---------------------------------------------------------------------------
 // Props
@@ -51,7 +51,7 @@ export default async function CRMLayout({ children }: CRMLayoutProps) {
   // We pass the raw session to SessionProvider so that the initial client-side
   // state is already populated — avoids a loading flicker on first render.
   return (
-    <SessionProvider session={session}>
+    <CRMProviders session={session}>
       {/*
        * Full-viewport flex container.
        * Sidebar is fixed-width (260 px); the right pane takes remaining space.
@@ -81,6 +81,6 @@ export default async function CRMLayout({ children }: CRMLayoutProps) {
           </main>
         </div>
       </div>
-    </SessionProvider>
+    </CRMProviders>
   )
 }

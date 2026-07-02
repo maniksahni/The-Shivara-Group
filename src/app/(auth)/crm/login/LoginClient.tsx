@@ -433,14 +433,14 @@ export default function CRMLoginClient() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium text-slate-300">Agent</p>
-                  <p className="text-xs text-slate-500">agent@shivaragroup.com</p>
+                  <p className="text-xs text-slate-500">agent1@shivaragroup.com</p>
                 </div>
                 <button
                   type="button"
                   onClick={() =>
                     setForm((prev) => ({
                       ...prev,
-                      email: 'agent@shivaragroup.com',
+                      email: 'agent1@shivaragroup.com',
                       password: 'agent123',
                       error: null,
                     }))

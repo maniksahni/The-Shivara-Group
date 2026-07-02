@@ -12,7 +12,7 @@ export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: {
     path: "prisma/migrations",
-    seed: "ts-node --compiler-options '{\"module\":\"CommonJS\"}' prisma/seed.ts",
+    seed: "TS_NODE_COMPILER_OPTIONS={\"module\":\"CommonJS\"} ts-node prisma/seed.ts",
   },
   datasource: {
     url: databaseUrl,

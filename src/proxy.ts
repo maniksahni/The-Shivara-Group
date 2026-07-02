@@ -29,6 +29,26 @@ const DASHBOARD_PATH = '/crm/dashboard'
 /** Routes that only ADMIN users may access. */
 const ADMIN_ONLY_PREFIX = '/crm/agents'
 
+function getPublicOrigin(request: NextRequest) {
+  if (process.env.NEXTAUTH_URL) {
+    return process.env.NEXTAUTH_URL
+  }
+
+  const forwardedHost = request.headers.get('x-forwarded-host')
+  const forwardedProto = request.headers.get('x-forwarded-proto') || 'https'
+
+  if (forwardedHost) {
+    return `${forwardedProto}://${forwardedHost}`
+  }
+
+  return request.nextUrl.origin
+}
+
+function getPublicUrl(request: NextRequest, pathname: string) {
+  const url = new URL(pathname, getPublicOrigin(request))
+  return url
+}
+
 // ---------------------------------------------------------------------------
 // Middleware function
 // ---------------------------------------------------------------------------
@@ -57,9 +77,12 @@ export async function proxy(request: NextRequest) {
 
   // ── 3. Redirect unauthenticated users to login ──────────────────────────
   if (!token) {
-    const loginUrl = new URL(LOGIN_PATH, request.url)
+    const loginUrl = getPublicUrl(request, LOGIN_PATH)
     // Preserve the intended destination so we can redirect back after login
-    loginUrl.searchParams.set('callbackUrl', request.url)
+    loginUrl.searchParams.set(
+      'callbackUrl',
+      `${getPublicOrigin(request)}${request.nextUrl.pathname}${request.nextUrl.search}`
+    )
     return NextResponse.redirect(loginUrl)
   }
 
@@ -69,7 +92,7 @@ export async function proxy(request: NextRequest) {
 
     if (userRole !== 'ADMIN') {
       // Authenticated but insufficient privileges — send to dashboard
-      const dashboardUrl = new URL(DASHBOARD_PATH, request.url)
+      const dashboardUrl = getPublicUrl(request, DASHBOARD_PATH)
       return NextResponse.redirect(dashboardUrl)
     }
   }

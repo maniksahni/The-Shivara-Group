@@ -13,7 +13,7 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import prisma from '@/lib/prisma'
-import { Prisma, Property, PropertyType } from '@prisma/client'
+import { Prisma, PropertyType } from '@prisma/client'
 
 // ---------------------------------------------------------------------------
 // Zod validation schemas
@@ -54,6 +54,12 @@ type ActionResult<T = undefined> =
   | { success: true; data: T }
   | { success: false; error: string }
 
+function toStringArray(value: Prisma.JsonValue): string[] {
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === 'string')
+    : []
+}
+
 // ---------------------------------------------------------------------------
 // getProperties
 // ---------------------------------------------------------------------------
@@ -62,9 +68,7 @@ type ActionResult<T = undefined> =
  * Fetches properties with optional filtering by type, active status,
  * featured status, city, price range, and a free-text search.
  */
-export async function getProperties(filters: PropertyFilters = {}): Promise<
-  ActionResult<Property[]>
-> {
+export async function getProperties(filters: PropertyFilters = {}) {
   try {
     const where: Prisma.PropertyWhereInput = {}
 
@@ -73,9 +77,9 @@ export async function getProperties(filters: PropertyFilters = {}): Promise<
     if (typeof filters.isFeatured === 'boolean') where.isFeatured = filters.isFeatured
     if (filters.search) {
       where.OR = [
-        { title: { contains: filters.search, mode: 'insensitive' } },
-        { location: { contains: filters.search, mode: 'insensitive' } },
-        { description: { contains: filters.search, mode: 'insensitive' } },
+        { title: { contains: filters.search } },
+        { location: { contains: filters.search } },
+        { description: { contains: filters.search } },
       ]
     }
 
@@ -87,7 +91,14 @@ export async function getProperties(filters: PropertyFilters = {}): Promise<
       ],
     })
 
-    return { success: true, data: properties }
+    return {
+      success: true as const,
+      data: properties.map((property) => ({
+        ...property,
+        amenities: toStringArray(property.amenities),
+        images: toStringArray(property.images),
+      })),
+    }
   } catch (error) {
     console.error('[getProperties]', error)
     return { success: false, error: 'Failed to fetch properties.' }
@@ -101,7 +112,7 @@ export async function getProperties(filters: PropertyFilters = {}): Promise<
 /**
  * Fetches a single property by its ID.
  */
-export async function getProperty(id: string): Promise<ActionResult<Property>> {
+export async function getProperty(id: string) {
   try {
     const property = await prisma.property.findUnique({ where: { id } })
 
@@ -109,7 +120,14 @@ export async function getProperty(id: string): Promise<ActionResult<Property>> {
       return { success: false, error: 'Property not found.' }
     }
 
-    return { success: true, data: property }
+    return {
+      success: true as const,
+      data: {
+        ...property,
+        amenities: toStringArray(property.amenities),
+        images: toStringArray(property.images),
+      },
+    }
   } catch (error) {
     console.error('[getProperty]', error)
     return { success: false, error: 'Failed to fetch property.' }

@@ -84,7 +84,13 @@ const defaultProperties = [
   },
 ];
 
-type PublicProperty = Omit<Property, "createdAt" | "updatedAt">;
+type PublicProperty = Omit<
+  Property,
+  "createdAt" | "updatedAt" | "amenities" | "images"
+> & {
+  amenities: string[];
+  images: string[];
+};
 
 export default async function PropertiesPage() {
   let properties: PublicProperty[] = [];
@@ -93,10 +99,23 @@ export default async function PropertiesPage() {
     if (!isDatabaseConfigured) {
       throw new Error("Database is not configured; using development fallback properties.");
     }
-    properties = await prisma.property.findMany({
+    const databaseProperties = await prisma.property.findMany({
       where: { isActive: true },
       orderBy: { createdAt: "desc" },
     });
+    properties = databaseProperties.map((property) => ({
+      ...property,
+      amenities: Array.isArray(property.amenities)
+        ? property.amenities.filter(
+            (item): item is string => typeof item === "string"
+          )
+        : [],
+      images: Array.isArray(property.images)
+        ? property.images.filter(
+            (item): item is string => typeof item === "string"
+          )
+        : [],
+    }));
   } catch (error) {
     if (isDatabaseConfigured) {
       console.error("Prisma error in properties list:", error);

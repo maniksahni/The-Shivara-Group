@@ -1,12 +1,10 @@
-import { defineConfig, env } from "prisma/config";
+import { defineConfig } from "prisma/config";
 
 const databaseUrl =
   process.env.DATABASE_URL ||
-  (process.env.NODE_ENV !== "production"
-    ? "mysql://root:password@localhost:3306/shivara"
-    : env("DATABASE_URL"));
+  "mysql://root:password@127.0.0.1:3306/shivara";
 
-if (!process.env.DATABASE_URL && process.env.NODE_ENV !== "production") {
+if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL = databaseUrl;
 }
 

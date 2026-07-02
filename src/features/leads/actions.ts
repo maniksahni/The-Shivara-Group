@@ -544,9 +544,9 @@ export async function getLeads(filters: LeadFilters = {}) {
 
     if (filters.search) {
       where.OR = [
-        { name: { contains: filters.search, mode: 'insensitive' } },
+        { name: { contains: filters.search } },
         { phone: { contains: filters.search } },
-        { email: { contains: filters.search, mode: 'insensitive' } },
+        { email: { contains: filters.search } },
       ]
     }
 
@@ -749,9 +749,9 @@ export async function exportLeads(
 
     if (filters.search) {
       where.OR = [
-        { name: { contains: filters.search, mode: 'insensitive' } },
+        { name: { contains: filters.search } },
         { phone: { contains: filters.search } },
-        { email: { contains: filters.search, mode: 'insensitive' } },
+        { email: { contains: filters.search } },
       ]
     }
 

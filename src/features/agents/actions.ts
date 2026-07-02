@@ -70,6 +70,7 @@ export interface AgentPerformanceStat {
   id: string
   name: string | null
   email: string
+  phone: string | null
   totalLeads: number
   closedLeads: number
   pendingFollowUps: number
@@ -144,11 +145,11 @@ export async function getAgent(id: string): Promise<ActionResult<AgentWithStats>
 
     // Fetch status-specific counts for this agent
     const [closedLeads, openLeads, siteVisits] = await Promise.all([
-      prisma.lead.count({ where: { assignedToId: id, status: 'CLOSED_WON' } }),
+      prisma.lead.count({ where: { assignedToId: id, status: 'CLOSED' } }),
       prisma.lead.count({
         where: {
           assignedToId: id,
-          status: { notIn: ['CLOSED_WON', 'CLOSED_LOST'] },
+          status: { notIn: ['CLOSED', 'LOST'] },
         },
       }),
       prisma.lead.count({ where: { assignedToId: id, status: 'SITE_VISIT_SCHEDULED' } }),
@@ -355,7 +356,7 @@ export async function getAgentStats(): Promise<ActionResult<AgentPerformanceStat
     const agents = await prisma.user.findMany({
       where: { isActive: true },
       orderBy: { name: 'asc' },
-      select: { id: true, name: true, email: true },
+      select: { id: true, name: true, email: true, phone: true },
     })
 
     // Fetch all aggregated lead counts per agent in a single query each
@@ -365,7 +366,7 @@ export async function getAgentStats(): Promise<ActionResult<AgentPerformanceStat
         const [totalLeads, closedLeads, pendingFollowUps, siteVisitsScheduled] =
           await Promise.all([
             prisma.lead.count({ where: { assignedToId: agent.id } }),
-            prisma.lead.count({ where: { assignedToId: agent.id, status: 'CLOSED_WON' } }),
+            prisma.lead.count({ where: { assignedToId: agent.id, status: 'CLOSED' } }),
             prisma.lead.count({ where: { assignedToId: agent.id, status: 'FOLLOW_UP' } }),
             prisma.lead.count({
               where: { assignedToId: agent.id, status: 'SITE_VISIT_SCHEDULED' },
@@ -379,6 +380,7 @@ export async function getAgentStats(): Promise<ActionResult<AgentPerformanceStat
           id: agent.id,
           name: agent.name,
           email: agent.email,
+          phone: agent.phone,
           totalLeads,
           closedLeads,
           pendingFollowUps,

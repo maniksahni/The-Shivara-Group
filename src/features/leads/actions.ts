@@ -717,8 +717,8 @@ export async function getDashboardStats(): Promise<ActionResult<DashboardStats>>
       activeLeads:
         (leadsByStatus['CONTACTED'] ?? 0) +
         (leadsByStatus['SITE_VISIT_SCHEDULED'] ?? 0) +
-        (leadsByStatus['NEGOTIATING'] ?? 0),
-      closedLeads: leadsByStatus['CLOSED_WON'] ?? 0,
+        (leadsByStatus['NEGOTIATION'] ?? 0),
+      closedLeads: leadsByStatus['CLOSED'] ?? 0,
       siteVisitsScheduled: leadsByStatus['SITE_VISIT_SCHEDULED'] ?? 0,
       leadsByStatus,
       leadsBySource,

@@ -30,3 +30,6 @@ export const prisma =
 
 // In development, persist the client across hot-reloads.
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+
+export default prisma
+

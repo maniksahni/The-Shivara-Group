@@ -1,0 +1,189 @@
+// Shivara CRM — Prisma Schema
+// Database: PostgreSQL
+// ORM: Prisma Client JS
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ─────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  AGENT
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  FOLLOW_UP
+  SITE_VISIT_SCHEDULED
+  NEGOTIATION
+  CLOSED
+  LOST
+}
+
+enum LeadSource {
+  INSTAGRAM
+  WHATSAPP
+  WEBSITE
+  FACEBOOK
+  GOOGLE
+  REFERRAL
+  OTHER
+}
+
+enum Priority {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum PropertyType {
+  APARTMENT
+  VILLA
+  PLOT
+  COMMERCIAL
+  FARMHOUSE
+}
+
+enum SiteVisitStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+// ─────────────────────────────────────────────
+// Models
+// ─────────────────────────────────────────────
+
+/// CRM user — can be an ADMIN or a sales AGENT.
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         Role     @default(AGENT)
+  phone        String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  leads      Lead[]         @relation("assignedTo")
+  notes      LeadNote[]
+  activities LeadActivity[]
+}
+
+/// A prospective buyer / enquiry coming from any channel.
+model Lead {
+  id                String       @id @default(cuid())
+  name              String
+  phone             String
+  whatsappNumber    String?
+  email             String?
+  budget            String?
+  preferredLocation String?
+  propertyType      PropertyType?
+  source            LeadSource   @default(WEBSITE)
+  status            LeadStatus   @default(NEW)
+  priority          Priority     @default(MEDIUM)
+
+  // Assignment
+  assignedToId String?
+  assignedTo   User?   @relation("assignedTo", fields: [assignedToId], references: [id])
+
+  // Follow-up scheduling
+  followUpDate DateTime?
+
+  // Relations
+  notes      LeadNote[]
+  activities LeadActivity[]
+  siteVisit  SiteVisit?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Indexes for common query patterns
+  @@index([status])
+  @@index([source])
+  @@index([assignedToId])
+  @@index([followUpDate])
+  @@index([createdAt])
+}
+
+/// Free-text note added to a lead by any team member.
+model LeadNote {
+  id      String @id @default(cuid())
+  content String
+
+  leadId String
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+/// Audit trail entry — records every meaningful change on a lead.
+model LeadActivity {
+  id       String  @id @default(cuid())
+  action   String        // e.g. "Status changed", "Note added", "Assigned to agent"
+  oldValue String?
+  newValue String?
+
+  leadId String
+  lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+/// Real-estate inventory item listed by Shivara Group.
+model Property {
+  id          String       @id @default(cuid())
+  title       String
+  description String
+  price       String
+  location    String
+  type        PropertyType
+
+  // Optional structural details
+  bedrooms  Int?
+  bathrooms Int?
+  area      String?
+
+  // Stored as plain text arrays (comma-separated amenities, image URLs)
+  amenities String[]
+  images    String[]
+
+  isActive   Boolean @default(true)
+  isFeatured Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// A physical or virtual site visit booked for a lead.
+model SiteVisit {
+  id          String          @id @default(cuid())
+  leadId      String          @unique
+  lead        Lead            @relation(fields: [leadId], references: [id])
+  scheduledAt DateTime
+  location    String
+  notes       String?
+  status      SiteVisitStatus @default(SCHEDULED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

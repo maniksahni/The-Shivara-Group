@@ -122,7 +122,7 @@ model Lead {
 /// Free-text note added to a lead by any team member.
 model LeadNote {
   id      String @id @default(cuid())
-  content String
+  content String @db.Text
 
   leadId String
   lead   Lead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
@@ -136,7 +136,7 @@ model LeadNote {
 /// Audit trail entry — records every meaningful change on a lead.
 model LeadActivity {
   id       String  @id @default(cuid())
-  action   String        // e.g. "Status changed", "Note added", "Assigned to agent"
+  action   String @db.Text  // e.g. "Status changed", "Note added", "Assigned to agent"
   oldValue String?
   newValue String?
 
@@ -153,7 +153,7 @@ model LeadActivity {
 model Property {
   id          String       @id @default(cuid())
   title       String
-  description String
+  description String  @db.Text
   price       String
   location    String
   type        PropertyType
@@ -181,7 +181,7 @@ model SiteVisit {
   lead        Lead            @relation(fields: [leadId], references: [id])
   scheduledAt DateTime
   location    String
-  notes       String?
+  notes       String? @db.Text
   status      SiteVisitStatus @default(SCHEDULED)
 
   createdAt DateTime @default(now())

@@ -43,7 +43,7 @@ export default async function DashboardPage() {
   }
 
   // Fetch today's follow-up leads
-  let todaysFollowUps = [];
+  let todaysFollowUps: Awaited<ReturnType<typeof prisma.lead.findMany>> = [];
   try {
     const todayStart = new Date();
     todayStart.setHours(0, 0, 0, 0);

@@ -1,207 +1,266 @@
 "use client";
 
-import React, { useState } from "react";
+import Link from "next/link";
+import { useMemo, useState } from "react";
 import { PropertyType } from "@prisma/client";
-import { Search, MapPin, Sparkles } from "lucide-react";
+import { Bath, BedDouble, Heart, MapPin, MessageCircle, Phone, Ruler, Search, Sparkles } from "lucide-react";
 import ClientEnquiryModal from "./ClientEnquiryModal";
+import { siteConfig, type PublicProperty } from "@/components/website/site-data";
 
-interface Property {
-  id: string;
-  title: string;
-  description: string;
-  price: string;
-  location: string;
-  type: PropertyType;
-  bedrooms: number | null;
-  bathrooms: number | null;
-  area: string | null;
-  amenities: string[];
-  images: string[];
-  isActive: boolean;
-  isFeatured: boolean;
-}
+const propertyImages = [
+  "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80",
+  "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1200&q=80",
+];
+
+const filterTabs = [
+  { value: "ALL", label: "All" },
+  { value: PropertyType.APARTMENT, label: "Apartments" },
+  { value: PropertyType.VILLA, label: "Villas" },
+  { value: PropertyType.PLOT, label: "Plots" },
+  { value: PropertyType.COMMERCIAL, label: "Commercial" },
+  { value: PropertyType.FARMHOUSE, label: "Farmhouse" },
+];
 
 export default function ClientPropertiesGrid({
   initialProperties,
 }: {
-  initialProperties: Property[];
+  initialProperties: PublicProperty[];
 }) {
-  const [selectedType, setSelectedType] = useState<string>("ALL");
+  const [selectedType, setSelectedType] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
+  const [selectedProperty, setSelectedProperty] = useState<PublicProperty | null>(null);
+  const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
 
-  const filterTabs = [
-    { value: "ALL", label: "All Properties" },
-    { value: PropertyType.APARTMENT, label: "Apartments" },
-    { value: PropertyType.VILLA, label: "Villas" },
-    { value: PropertyType.PLOT, label: "Plots & Land" },
-    { value: PropertyType.COMMERCIAL, label: "Commercial" },
-    { value: PropertyType.FARMHOUSE, label: "Farmhouses" },
-  ];
+  const filteredProperties = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    return initialProperties.filter((property) => {
+      const matchesType = selectedType === "ALL" || property.type === selectedType;
+      const matchesSearch =
+        !query ||
+        property.title.toLowerCase().includes(query) ||
+        property.location.toLowerCase().includes(query) ||
+        property.description.toLowerCase().includes(query);
+      return matchesType && matchesSearch;
+    });
+  }, [initialProperties, searchQuery, selectedType]);
 
-  const filteredProperties = initialProperties.filter((property) => {
-    const matchesType = selectedType === "ALL" || property.type === selectedType;
-    const matchesSearch =
-      property.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      property.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      property.description.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesType && matchesSearch;
-  });
+  const toggleSaved = (id: string) => {
+    setSavedIds((current) => {
+      const next = new Set(current);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
 
   return (
     <div className="space-y-8">
-      {/* ── Filter Controls Bar ── */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 flex flex-col md:flex-row gap-6 justify-between items-center">
-        {/* Type Filter Buttons */}
-        <div className="flex flex-wrap gap-2 w-full md:w-auto">
-          {filterTabs.map((tab) => (
-            <button
-              key={tab.value}
-              onClick={() => setSelectedType(tab.value)}
-              className={`px-4 py-2 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all ${
-                selectedType === tab.value
-                  ? "bg-[#C9A84C] text-[#0F1B2D]"
-                  : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Search Input */}
-        <div className="relative w-full md:w-80">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search location or project..."
-            className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/40 focus:border-[#C9A84C] text-sm text-gray-800"
-          />
-          <Search className="absolute left-3.5 top-3 w-4.5 h-4.5 text-gray-400" />
+      <div className="rounded-[2rem] border border-[#081120]/8 bg-white p-4 shadow-[0_24px_70px_rgba(8,17,32,0.07)] sm:p-5">
+        <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
+          <div className="relative">
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#9B7A19]" />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="Search project, location, category..."
+              className="min-h-14 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] pl-12 pr-4 text-sm font-semibold outline-none transition placeholder:text-[#6B7280]/70 focus:border-[#D4AF37] focus:bg-white focus:ring-4 focus:ring-[#D4AF37]/14"
+            />
+          </div>
+          <div className="flex gap-2 overflow-x-auto pb-1 lg:pb-0">
+            {filterTabs.map((tab) => (
+              <button
+                key={tab.value}
+                type="button"
+                onClick={() => setSelectedType(tab.value)}
+                className={`min-h-11 shrink-0 rounded-full px-4 text-xs font-black uppercase tracking-[0.14em] transition ${
+                  selectedType === tab.value
+                    ? "bg-[#081120] text-white"
+                    : "bg-[#F8F5EE] text-[#4B5563] hover:bg-[#D4AF37] hover:text-[#081120]"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* ── Properties Grid ── */}
-      {filteredProperties.length === 0 ? (
-        <div className="bg-white rounded-2xl py-20 text-center border border-gray-200 shadow-sm">
-          <Search className="w-12 h-12 text-[#C9A84C] mx-auto mb-4 opacity-50" />
-          <h3 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-[#0F1B2D]">
-            No Properties Found
-          </h3>
-          <p className="text-gray-500 text-sm max-w-sm mx-auto mt-2">
-            Try adjusting your search filters or browse other property categories.
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[0.24em] text-[#9B7A19]">
+            {filteredProperties.length} properties found
           </p>
+          <h2 className="mt-1 font-[family-name:var(--font-playfair)] text-3xl font-semibold text-[#081120]">
+            Curated opportunities
+          </h2>
+        </div>
+        <a
+          href={siteConfig.whatsappHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hidden min-h-12 items-center gap-2 rounded-full bg-[#10B981] px-5 text-sm font-black text-white shadow-lg transition hover:-translate-y-0.5 sm:inline-flex"
+        >
+          <MessageCircle className="h-4 w-4" />
+          Ask on WhatsApp
+        </a>
+      </div>
+
+      {filteredProperties.length === 0 ? (
+        <div className="rounded-[2.4rem] border border-[#081120]/8 bg-white p-10 text-center shadow-[0_24px_70px_rgba(8,17,32,0.07)]">
+          <Search className="mx-auto h-12 w-12 text-[#D4AF37]" />
+          <h3 className="mt-5 font-[family-name:var(--font-playfair)] text-3xl font-semibold">
+            No matching properties found.
+          </h3>
+          <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-[#4B5563]">
+            Try another category or send your requirement. The team can manually shortlist options.
+          </p>
+          <button
+            type="button"
+            onClick={() => {
+              setSearchQuery("");
+              setSelectedType("ALL");
+            }}
+            className="mt-6 min-h-12 rounded-full bg-[#081120] px-6 text-sm font-black uppercase tracking-[0.14em] text-white"
+          >
+            Reset filters
+          </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProperties.map((property) => (
-            <div
-              key={property.id}
-              className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group border border-gray-200/80 flex flex-col"
-            >
-              {/* Image box (premium gold gradient overlay) */}
-              <div
-                className="relative h-52 overflow-hidden flex-shrink-0"
-                style={{
-                  background:
-                    "linear-gradient(135deg, #0F1B2D 0%, #162236 50%, #C9A84C22 100%)",
-                }}
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {filteredProperties.map((property, index) => {
+            const image = property.images[0] || propertyImages[index % propertyImages.length];
+            const isSaved = savedIds.has(property.id);
+            return (
+              <article
+                key={property.id}
+                className="group overflow-hidden rounded-[2.2rem] border border-[#081120]/8 bg-white shadow-[0_24px_70px_rgba(8,17,32,0.07)] transition duration-500 hover:-translate-y-2 hover:shadow-[0_32px_90px_rgba(8,17,32,0.16)]"
               >
-                {/* SVG decorative house silhouette */}
-                <div className="absolute inset-0 flex items-end justify-center pb-4 opacity-25 transition-transform duration-500 group-hover:scale-105">
-                  <svg
-                    viewBox="0 0 200 100"
-                    className="w-48 h-24 text-[#C9A84C]"
-                    fill="currentColor"
+                <Link href={`/properties/${property.id}`} className="block">
+                  <div
+                    className="relative h-72 overflow-hidden bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.02]"
+                    style={{
+                      backgroundImage: `linear-gradient(180deg,rgba(8,17,32,0.02),rgba(8,17,32,0.68)),url(${image})`,
+                    }}
                   >
-                    <rect x="25" y="30" width="30" height="70" />
-                    <rect x="65" y="10" width="40" height="90" />
-                    <rect x="115" y="40" width="25" height="60" />
-                    <rect x="150" y="20" width="25" height="80" />
-                  </svg>
-                </div>
-
-                {/* Badge Type */}
-                <div className="absolute top-4 left-4 flex gap-2">
-                  <span className="text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 bg-white/90 text-[#0F1B2D] rounded-full shadow-sm">
-                    {property.type}
-                  </span>
-                  {property.isFeatured && (
-                    <span className="text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 bg-[#C9A84C] text-[#0F1B2D] rounded-full shadow-sm flex items-center gap-1">
-                      <Sparkles className="w-3 h-3 fill-current" /> Featured
-                    </span>
-                  )}
-                </div>
-
-                {/* Price pill */}
-                <div className="absolute bottom-4 right-4 bg-[#C9A84C] text-[#0F1B2D] px-3.5 py-1.5 rounded-lg shadow-md">
-                  <span className="font-[family-name:var(--font-playfair)] font-bold text-lg">
-                    {property.price}
-                  </span>
-                </div>
-              </div>
-
-              {/* Info Body */}
-              <div className="p-6 flex flex-col flex-grow">
-                <h3 className="font-[family-name:var(--font-playfair)] text-lg font-bold text-[#0F1B2D] line-clamp-1 group-hover:text-[#C9A84C] transition-colors duration-300">
-                  {property.title}
-                </h3>
-                <div className="flex items-center gap-1 text-gray-500 text-xs mt-2 mb-3">
-                  <MapPin className="w-3.5 h-3.5 text-[#C9A84C]" />
-                  {property.location}
-                </div>
-
-                {/* Details layout */}
-                {(property.bedrooms || property.bathrooms || property.area) && (
-                  <div className="flex flex-wrap items-center gap-4 text-xs font-semibold text-gray-600 mb-4 pb-4 border-b border-gray-100">
-                    {property.bedrooms && <span>🛏 {property.bedrooms} Beds</span>}
-                    {property.bathrooms && <span>🚿 {property.bathrooms} Baths</span>}
-                    {property.area && <span>📐 {property.area}</span>}
-                  </div>
-                )}
-
-                <p className="text-gray-500 text-xs leading-relaxed mb-6 flex-grow line-clamp-3">
-                  {property.description}
-                </p>
-
-                {/* Amenities tag list (max 3 on card) */}
-                <div className="flex flex-wrap gap-1.5 mb-6">
-                  {property.amenities.slice(0, 3).map((amenity, i) => (
-                    <span
-                      key={i}
-                      className="text-[10px] font-medium bg-gray-100 text-gray-600 px-2 py-0.5 rounded"
+                    <div className="absolute left-4 top-4 flex gap-2">
+                      <span className="rounded-full bg-white px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-[#081120]">
+                        {property.type.replace("_", " ")}
+                      </span>
+                      {property.isFeatured && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[#D4AF37] px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-[#081120]">
+                          <Sparkles className="h-3 w-3" />
+                          Featured
+                        </span>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        toggleSaved(property.id);
+                      }}
+                      className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-[#081120] shadow-lg transition hover:scale-105"
+                      aria-label={isSaved ? "Remove saved property" : "Save property"}
                     >
-                      {amenity}
-                    </span>
-                  ))}
-                  {property.amenities.length > 3 && (
-                    <span className="text-[10px] font-semibold text-[#C9A84C] px-1 py-0.5">
-                      +{property.amenities.length - 3} more
-                    </span>
-                  )}
-                </div>
+                      <Heart className={`h-5 w-5 ${isSaved ? "fill-[#D4AF37] text-[#D4AF37]" : ""}`} />
+                    </button>
+                    <div className="absolute bottom-4 left-4 right-4 text-white">
+                      <p className="text-sm font-black uppercase tracking-[0.2em] text-[#F5D67B]">
+                        {property.price}
+                      </p>
+                      <h3 className="mt-2 font-[family-name:var(--font-playfair)] text-3xl font-semibold leading-tight">
+                        {property.title}
+                      </h3>
+                    </div>
+                  </div>
+                </Link>
 
-                {/* CTA */}
-                <button
-                  onClick={() => setSelectedProperty(property)}
-                  className="w-full mt-auto py-3 bg-[#0F1B2D] text-white text-xs font-semibold rounded-xl hover:bg-[#C9A84C] hover:text-[#0F1B2D] hover:shadow-md transition-all duration-300 uppercase tracking-wider"
-                >
-                  Enquire Now
-                </button>
-              </div>
-            </div>
-          ))}
+                <div className="p-6">
+                  <p className="flex items-center gap-2 text-sm font-bold text-[#4B5563]">
+                    <MapPin className="h-4 w-4 text-[#D4AF37]" />
+                    {property.location}
+                  </p>
+
+                  <div className="mt-5 grid grid-cols-3 gap-2">
+                    <Fact icon={<BedDouble className="h-4 w-4" />} value={property.bedrooms ? `${property.bedrooms} Beds` : "On request"} />
+                    <Fact icon={<Bath className="h-4 w-4" />} value={property.bathrooms ? `${property.bathrooms} Baths` : "Verified"} />
+                    <Fact icon={<Ruler className="h-4 w-4" />} value={property.area || "Area TBC"} />
+                  </div>
+
+                  <p className="mt-5 line-clamp-3 text-sm leading-7 text-[#4B5563]">
+                    {property.description}
+                  </p>
+
+                  <div className="mt-5 flex flex-wrap gap-2">
+                    {property.amenities.slice(0, 3).map((amenity) => (
+                      <span
+                        key={amenity}
+                        className="rounded-full bg-[#F8F5EE] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#4B5563]"
+                      >
+                        {amenity}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="mt-6 grid grid-cols-[1fr_auto_auto] gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedProperty(property)}
+                      className="min-h-12 rounded-full bg-[#081120] px-4 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-[#D4AF37] hover:text-[#081120]"
+                    >
+                      Quick Enquiry
+                    </button>
+                    <a
+                      href={siteConfig.phoneHref}
+                      className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F8F5EE] text-[#081120]"
+                      aria-label="Call"
+                    >
+                      <Phone className="h-5 w-5" />
+                    </a>
+                    <a
+                      href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(
+                        `Hi The Shivara Group, I am interested in ${property.title}. Please share details.`,
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-12 w-12 items-center justify-center rounded-full bg-[#10B981] text-white"
+                      aria-label="WhatsApp"
+                    >
+                      <MessageCircle className="h-5 w-5" />
+                    </a>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
         </div>
       )}
 
-      {/* Modal handler */}
       {selectedProperty && (
         <ClientEnquiryModal
           property={selectedProperty}
           onClose={() => setSelectedProperty(null)}
         />
       )}
+    </div>
+  );
+}
+
+function Fact({ icon, value }: { icon: React.ReactNode; value: string }) {
+  return (
+    <div className="min-w-0 rounded-2xl bg-[#F8F5EE] p-3 text-center">
+      <div className="mx-auto mb-1 flex h-7 w-7 items-center justify-center rounded-full bg-white text-[#9B7A19]">
+        {icon}
+      </div>
+      <p className="truncate text-[11px] font-black uppercase tracking-[0.08em] text-[#4B5563]">
+        {value}
+      </p>
     </div>
   );
 }

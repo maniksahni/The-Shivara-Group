@@ -1,44 +1,44 @@
 "use client";
 
-import React, { useState } from "react";
-import { X, Send, CheckCircle2 } from "lucide-react";
-import { PropertyType } from "@prisma/client";
-
-interface Property {
-  id: string;
-  title: string;
-  price: string;
-  location: string;
-  type: PropertyType;
-}
+import { useEffect, useState } from "react";
+import { CheckCircle2, MessageCircle, Send, X } from "lucide-react";
+import type { PublicProperty } from "@/components/website/site-data";
+import { siteConfig } from "@/components/website/site-data";
 
 export default function ClientEnquiryModal({
   property,
   onClose,
 }: {
-  property: Property;
+  property: PublicProperty;
   onClose: () => void;
 }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [message, setMessage] = useState(
-    `I am interested in "${property.title}" (Price: ${property.price}) located in ${property.location}. Please share the details.`
+    `I am interested in ${property.title} at ${property.location}. Please share verified pricing, availability, and site visit details.`,
   );
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     setError("");
 
     if (!name.trim() || !phone.trim()) {
-      setError("Please fill in your Name and Phone Number.");
+      setError("Please enter your name and mobile number.");
       return;
     }
     if (!/^[6-9]\d{9}$/.test(phone.trim())) {
-      setError("Please enter a valid 10-digit mobile number.");
+      setError("Please enter a valid 10-digit Indian mobile number.");
       return;
     }
 
@@ -50,12 +50,14 @@ export default function ClientEnquiryModal({
         body: JSON.stringify({
           name: name.trim(),
           phone: phone.trim(),
-          whatsappNumber: whatsappNumber.trim() || undefined,
-          budget: property.price,
-          preferredLocation: property.location,
+          whatsappNumber: whatsappNumber.trim() || null,
+          budget: property.price || null,
+          preferredLocation: property.location || null,
           propertyType: property.type,
           source: "WEBSITE",
-          message: message.trim(),
+          status: "NEW",
+          followUpDate: null,
+          message: message.trim() || null,
         }),
       });
 
@@ -65,154 +67,144 @@ export default function ClientEnquiryModal({
 
       setSubmitted(true);
     } catch {
-      setError("Failed to submit request. Please try calling us directly.");
+      setError("We could not submit this enquiry. Please call or WhatsApp us directly.");
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-[#0F1B2D]/60 backdrop-blur-sm transition-opacity duration-300"
+    <div className="fixed inset-0 z-[70] flex items-end justify-center p-0 sm:items-center sm:p-5" role="dialog" aria-modal="true">
+      <button
+        type="button"
+        className="absolute inset-0 bg-[#081120]/74 backdrop-blur-md"
         onClick={onClose}
+        aria-label="Close enquiry modal"
       />
 
-      {/* Modal Container */}
-      <div className="relative bg-white w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl border border-gray-100 z-10 animate-fade-in-scale">
-        {/* Header */}
-        <div className="bg-[#0F1B2D] text-white px-6 py-5 flex items-center justify-between border-b border-[#C9A84C]/20">
-          <div>
-            <span className="text-[10px] uppercase tracking-wider text-[#C9A84C] font-semibold">
-              Property Enquiry
-            </span>
-            <h3 className="font-[family-name:var(--font-playfair)] text-base font-bold truncate max-w-[280px] sm:max-w-sm">
-              {property.title}
-            </h3>
+      <div className="relative max-h-[94svh] w-full max-w-2xl overflow-hidden rounded-t-[2rem] border border-white/20 bg-white shadow-[0_30px_120px_rgba(0,0,0,0.36)] sm:rounded-[2.4rem]">
+        <div className="bg-[#081120] p-6 text-white sm:p-8">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-[#D4AF37]">
+                Property enquiry
+              </p>
+              <h2 className="mt-2 font-[family-name:var(--font-playfair)] text-3xl font-semibold tracking-[-0.03em]">
+                {property.title}
+              </h2>
+              <p className="mt-2 text-sm text-white/58">
+                {property.location} • {property.price}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/18"
+              aria-label="Close"
+            >
+              <X className="h-5 w-5" />
+            </button>
           </div>
-          <button
-            onClick={onClose}
-            className="text-white/70 hover:text-white p-1.5 rounded-lg hover:bg-white/10 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
         </div>
 
-        {/* Content Body */}
-        <div className="p-6">
+        <div className="max-h-[calc(94svh-150px)] overflow-y-auto p-5 sm:p-8">
           {submitted ? (
-            <div className="text-center py-8 space-y-4">
-              <div className="w-14 h-14 bg-green-50 rounded-full flex items-center justify-center mx-auto text-green-500 border border-green-200">
-                <CheckCircle2 className="w-7 h-7" />
-              </div>
-              <h4 className="font-[family-name:var(--font-playfair)] text-lg font-bold text-[#0F1B2D]">
-                Enquiry Submitted!
-              </h4>
-              <p className="text-gray-500 text-xs max-w-xs mx-auto leading-relaxed">
-                Thank you for your interest. A consultant from The Shivara Group will call you back shortly.
+            <div className="py-8 text-center">
+              <CheckCircle2 className="mx-auto h-16 w-16 text-[#10B981]" />
+              <h3 className="mt-5 font-[family-name:var(--font-playfair)] text-3xl font-semibold text-[#081120]">
+                Enquiry submitted.
+              </h3>
+              <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-[#4B5563]">
+                A consultant will contact you soon. You can also confirm the enquiry instantly on WhatsApp.
               </p>
-              <div className="pt-4 flex justify-center gap-3">
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center">
                 <a
-                  href={`https://wa.me/917060788407?text=Hi, I just submitted an enquiry for ${encodeURIComponent(
-                    property.title
-                  )}.`}
+                  href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(
+                    `Hi, I just submitted an enquiry for ${property.title}.`,
+                  )}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-5 py-2.5 bg-[#25D366] text-white font-semibold text-xs rounded-lg hover:bg-[#1ebe59] shadow-sm transition-colors flex items-center gap-1.5"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#10B981] px-6 text-sm font-black uppercase tracking-[0.14em] text-white"
                 >
+                  <MessageCircle className="h-4 w-4" />
                   Confirm on WhatsApp
                 </a>
                 <button
+                  type="button"
                   onClick={onClose}
-                  className="px-5 py-2.5 bg-gray-100 text-gray-700 font-semibold text-xs rounded-lg hover:bg-gray-200 transition-colors"
+                  className="min-h-12 rounded-full bg-[#081120] px-6 text-sm font-black uppercase tracking-[0.14em] text-white"
                 >
                   Close
                 </button>
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Error indicator */}
+            <form onSubmit={handleSubmit} className="space-y-5">
               {error && (
-                <div className="bg-red-50 text-red-600 text-xs p-3 rounded-lg border border-red-200">
+                <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700">
                   {error}
                 </div>
               )}
 
-              {/* Name */}
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  Full Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your name"
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] text-gray-800"
-                />
-              </div>
-
-              {/* Phone & WhatsApp Side-by-side */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
-                    Phone Number <span className="text-red-500">*</span>
-                  </label>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block">
+                  <span className={labelClass}>Full name *</span>
                   <input
-                    type="tel"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
                     required
-                    maxLength={10}
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="10-digit mobile number"
-                    className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] text-gray-800"
+                    placeholder="Your name"
+                    className={inputClass}
                   />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
-                    WhatsApp Number
-                  </label>
+                </label>
+                <label className="block">
+                  <span className={labelClass}>Mobile number *</span>
                   <input
                     type="tel"
+                    value={phone}
                     maxLength={10}
-                    value={whatsappNumber}
-                    onChange={(e) => setWhatsappNumber(e.target.value)}
-                    placeholder="WhatsApp number (optional)"
-                    className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] text-gray-800"
+                    onChange={(event) => setPhone(event.target.value.replace(/\D/g, ""))}
+                    required
+                    placeholder="10-digit mobile"
+                    className={inputClass}
                   />
-                </div>
-              </div>
-
-              {/* Message */}
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 mb-1">
-                  Your Message
                 </label>
-                <textarea
-                  rows={3}
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] text-gray-800 resize-none"
+              </div>
+
+              <label className="block">
+                <span className={labelClass}>WhatsApp number</span>
+                <input
+                  type="tel"
+                  value={whatsappNumber}
+                  maxLength={10}
+                  onChange={(event) => setWhatsappNumber(event.target.value.replace(/\D/g, ""))}
+                  placeholder="Optional"
+                  className={inputClass}
                 />
+              </label>
+
+              <label className="block">
+                <span className={labelClass}>Message</span>
+                <textarea
+                  value={message}
+                  onChange={(event) => setMessage(event.target.value)}
+                  rows={5}
+                  className={`${inputClass} min-h-36 resize-none py-4`}
+                />
+              </label>
+
+              <div className="rounded-2xl bg-[#F8F5EE] p-4 text-sm text-[#4B5563]">
+                This creates a CRM lead with source <strong>Website</strong>. Final pricing and
+                inventory will be confirmed manually by The Shivara Group.
               </div>
 
-              {/* Price/Location read-only details */}
-              <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 flex justify-between items-center text-[10px] text-gray-500">
-                <span>📍 {property.location}</span>
-                <span className="font-bold text-[#C9A84C]">💰 Budget: {property.price}</span>
-              </div>
-
-              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-3 bg-[#0F1B2D] text-white font-semibold text-xs rounded-xl hover:bg-[#C9A84C] hover:text-[#0F1B2D] transition-all flex items-center justify-center gap-1.5 shadow-md uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-[#D4AF37] px-6 text-sm font-black uppercase tracking-[0.16em] text-[#081120] shadow-[0_18px_45px_rgba(212,175,55,0.24)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {submitting ? "Sending..." : "Submit Enquiry"}
-                <Send className="w-3.5 h-3.5" />
+                {submitting ? "Submitting..." : "Submit Enquiry"}
+                <Send className="h-4 w-4" />
               </button>
             </form>
           )}
@@ -221,3 +213,9 @@ export default function ClientEnquiryModal({
     </div>
   );
 }
+
+const labelClass =
+  "mb-2 block text-xs font-black uppercase tracking-[0.16em] text-[#4B5563]";
+
+const inputClass =
+  "min-h-12 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] px-4 text-sm font-semibold text-[#081120] outline-none transition placeholder:text-[#6B7280]/65 focus:border-[#D4AF37] focus:bg-white focus:ring-4 focus:ring-[#D4AF37]/14";

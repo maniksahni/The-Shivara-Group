@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
-import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, Calendar } from "lucide-react";
+import { useState } from "react";
+import { Calendar, CheckCircle2, Clock, Mail, MapPin, MessageCircle, Phone, Send, Sparkles } from "lucide-react";
 import { PropertyType } from "@prisma/client";
+import { LuxuryButton } from "@/components/website/LuxurySection";
+import { siteConfig } from "@/components/website/site-data";
 
 function toDateTimeLocalValue(date: Date): string {
   const pad = (value: number) => String(value).padStart(2, "0");
@@ -11,8 +13,6 @@ function toDateTimeLocalValue(date: Date): string {
 
 export default function ContactPage() {
   const [activeTab, setActiveTab] = useState<"enquiry" | "visit">("enquiry");
-
-  // Form State
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
@@ -22,414 +22,316 @@ export default function ContactPage() {
   const [location, setLocation] = useState("");
   const [visitDate, setVisitDate] = useState("");
   const [message, setMessage] = useState("");
-
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
 
-  const handleTabChange = (tab: "enquiry" | "visit") => {
+  const resetFeedback = (tab: "enquiry" | "visit") => {
     setActiveTab(tab);
     setError("");
     setSubmitted(false);
-    // Reset form states
-    setName("");
-    setPhone("");
-    setWhatsapp("");
-    setEmail("");
-    setBudget("");
-    setPropertyType("");
-    setLocation("");
-    setVisitDate("");
-    setMessage("");
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
     setError("");
 
-    if (!name.trim() || !phone.trim()) {
-      setError("Name and Phone Number are required.");
+    const cleanPhone = phone.trim();
+    if (!name.trim() || !cleanPhone) {
+      setError("Please enter your name and mobile number.");
       return;
     }
-    if (!/^[6-9]\d{9}$/.test(phone.trim())) {
-      setError("Please enter a valid 10-digit mobile number.");
+    if (!/^[6-9]\d{9}$/.test(cleanPhone)) {
+      setError("Please enter a valid 10-digit Indian mobile number.");
       return;
+    }
+
+    let followUpDate: string | null = null;
+    let status = "NEW";
+    let finalMessage = message.trim();
+
+    if (activeTab === "visit") {
+      status = "SITE_VISIT_SCHEDULED";
+      if (!visitDate) {
+        setError("Please select your preferred site visit date and time.");
+        return;
+      }
+      const parsedVisitDate = new Date(visitDate);
+      if (Number.isNaN(parsedVisitDate.getTime())) {
+        setError("Please select a valid site visit date and time.");
+        return;
+      }
+      followUpDate = parsedVisitDate.toISOString();
+      finalMessage = `[Requested site visit: ${followUpDate}] ${finalMessage}`.trim();
     }
 
     setSubmitting(true);
     try {
-      let finalMessage = message.trim();
-      let status = "NEW";
-      let followUpDate: string | null = null;
-
-      if (activeTab === "visit") {
-        status = "SITE_VISIT_SCHEDULED";
-        if (!visitDate) {
-          setError("Please select a preferred site visit date and time.");
-          setSubmitting(false);
-          return;
-        }
-
-        const selectedVisitDate = new Date(visitDate);
-        if (Number.isNaN(selectedVisitDate.getTime())) {
-          setError("Please select a valid site visit date and time.");
-          setSubmitting(false);
-          return;
-        }
-
-        followUpDate = selectedVisitDate.toISOString();
-        finalMessage = `[REQUESTED SITE VISIT ON ${visitDate}] ${message}`.trim();
-      }
-
-      const res = await fetch("/api/leads", {
+      const response = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: name.trim(),
-          phone: phone.trim(),
+          phone: cleanPhone,
           whatsappNumber: whatsapp.trim() || null,
           email: email.trim() || null,
-          budget: budget || null,
+          budget: budget.trim() || null,
           propertyType: propertyType ? (propertyType as PropertyType) : null,
-          preferredLocation: location || null,
+          preferredLocation: location.trim() || null,
           source: "WEBSITE",
           status,
           followUpDate,
-          message: finalMessage,
+          message: finalMessage || null,
         }),
       });
 
-      if (!res.ok) throw new Error();
+      if (!response.ok) {
+        throw new Error("Lead submission failed");
+      }
+
       setSubmitted(true);
+      setName("");
+      setPhone("");
+      setWhatsapp("");
+      setEmail("");
+      setBudget("");
+      setPropertyType("");
+      setLocation("");
+      setVisitDate("");
+      setMessage("");
     } catch {
-      setError("Something went wrong. Please call us directly or chat via WhatsApp.");
+      setError("We could not submit this request. Please call or WhatsApp us directly.");
     } finally {
       setSubmitting(false);
     }
   };
 
   return (
-    <main className="bg-[#F8F7F4] min-h-screen text-[#1A1A2E] font-[family-name:var(--font-inter)]">
-      {/* ── Header banner ── */}
-      <section className="relative py-20 bg-[#0F1B2D] text-white overflow-hidden" aria-label="Contact Banner">
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(circle at 10% 80%, #C9A84C 0%, transparent 50%)" }} />
-        <div className="relative z-10 max-w-6xl mx-auto px-6">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="block h-px w-8 bg-[#C9A84C]" />
-            <span className="text-[#C9A84C] text-xs font-semibold uppercase tracking-[0.2em]">Contact Us</span>
-          </div>
-          <h1 className="font-[family-name:var(--font-playfair)] text-4xl sm:text-5xl font-bold tracking-tight">
-            Connect With The Shivara Group
-          </h1>
-          <p className="mt-2 max-w-xl text-white/70 text-sm sm:text-base">
-            Have questions about premium real estate in Bareilly or Delhi NCR? Fill in the enquiry form or book a site visit with The Shivara Group.
+    <main className="bg-[#F8F5EE]">
+      <section className="bg-[#081120] px-5 pb-16 pt-32 text-white sm:px-8 lg:px-12 lg:pt-40">
+        <div className="mx-auto max-w-7xl">
+          <p className="text-xs font-black uppercase tracking-[0.34em] text-[#D4AF37]">
+            Contact & site visits
           </p>
+          <div className="mt-5 grid gap-8 lg:grid-cols-[1fr_0.75fr] lg:items-end">
+            <h1 className="font-[family-name:var(--font-playfair)] text-5xl font-semibold leading-[0.95] tracking-[-0.06em] sm:text-7xl lg:text-8xl">
+              Start with a call. Continue with confidence.
+            </h1>
+            <p className="text-lg leading-8 text-white/66">
+              Send an enquiry, book a site visit, or connect instantly on WhatsApp. Every form
+              submission creates a lead for the CRM team to follow up.
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* ── Two-Column Layout ── */}
-      <section className="max-w-6xl mx-auto px-6 py-16" aria-label="Contact Channels">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Left Column: Office Details */}
-          <div className="lg:col-span-5 space-y-8">
-            <div className="space-y-4">
-              <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-bold text-[#0F1B2D]">
-                Office Headquarters
+      <section className="px-5 py-14 pb-28 sm:px-8 lg:px-12 lg:py-20">
+        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr]">
+          <aside className="space-y-4">
+            {[
+              {
+                icon: Phone,
+                title: "Call support",
+                text: siteConfig.phone,
+                href: siteConfig.phoneHref,
+              },
+              {
+                icon: MessageCircle,
+                title: "WhatsApp enquiry",
+                text: "Fastest way to share your requirement",
+                href: siteConfig.whatsappHref,
+              },
+              {
+                icon: Sparkles,
+                title: "Instagram",
+                text: siteConfig.instagramHandle,
+                href: siteConfig.instagram,
+              },
+              {
+                icon: MapPin,
+                title: "Office location",
+                text: "Bareilly, Uttar Pradesh — full address manual completion required",
+              },
+              {
+                icon: Clock,
+                title: "Working hours",
+                text: "Manual completion required. Site visits available by appointment.",
+              },
+              {
+                icon: Mail,
+                title: "Email",
+                text: "Manual completion required",
+              },
+            ].map((item) => (
+              <div key={item.title} className="rounded-[2rem] border border-[#081120]/8 bg-white p-5 shadow-[0_18px_50px_rgba(8,17,32,0.05)]">
+                <div className="flex gap-4">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#F8F5EE] text-[#9B7A19]">
+                    <item.icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h2 className="font-bold text-[#081120]">{item.title}</h2>
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        target={item.href.startsWith("http") ? "_blank" : undefined}
+                        rel={item.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                        className="mt-1 block text-sm leading-6 text-[#4B5563] transition hover:text-[#9B7A19]"
+                      >
+                        {item.text}
+                      </a>
+                    ) : (
+                      <p className="mt-1 text-sm leading-6 text-[#4B5563]">{item.text}</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            <div className="rounded-[2rem] bg-[#081120] p-6 text-white">
+              <p className="text-xs font-black uppercase tracking-[0.24em] text-[#D4AF37]">
+                Instant help
+              </p>
+              <h2 className="mt-3 font-[family-name:var(--font-playfair)] text-3xl font-semibold">
+                Prefer talking directly?
               </h2>
-              <div className="w-12 h-0.5 bg-[#C9A84C] rounded" />
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Public Instagram information confirms Bareilly and Delhi NCR coverage. Exact office address, email, maps link, and working hours should be completed manually if required.
+              <p className="mt-3 text-sm leading-7 text-white/62">
+                Use WhatsApp for quick property shortlisting and site visit confirmation.
               </p>
-            </div>
-
-            {/* Channels Cards */}
-            <div className="space-y-4">
-              {/* Address */}
-              <div className="bg-white border border-gray-200 rounded-xl p-5 flex gap-4 shadow-sm">
-                <div className="w-10 h-10 rounded-lg bg-[#C9A84C]/10 text-[#C9A84C] flex items-center justify-center flex-shrink-0">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-sm text-[#0F1B2D]">Address</h3>
-                  <p className="text-gray-500 text-xs mt-1 leading-relaxed">
-                    Bareilly, Uttar Pradesh<br />
-                    Full office address: Manual completion required
-                  </p>
-                </div>
-              </div>
-
-              {/* Phone */}
-              <div className="bg-white border border-gray-200 rounded-xl p-5 flex gap-4 shadow-sm">
-                <div className="w-10 h-10 rounded-lg bg-[#C9A84C]/10 text-[#C9A84C] flex items-center justify-center flex-shrink-0">
-                  <Phone className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-sm text-[#0F1B2D]">Call Support</h3>
-                  <p className="text-gray-500 text-xs mt-1 leading-relaxed">
-                    Mobile / WhatsApp: +91 7060788407<br />
-                    Alternate number: Manual completion required
-                  </p>
-                </div>
-              </div>
-
-              {/* Email */}
-              <div className="bg-white border border-gray-200 rounded-xl p-5 flex gap-4 shadow-sm">
-                <div className="w-10 h-10 rounded-lg bg-[#C9A84C]/10 text-[#C9A84C] flex items-center justify-center flex-shrink-0">
-                  <Mail className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-sm text-[#0F1B2D]">Email</h3>
-                  <p className="text-gray-500 text-xs mt-1 leading-relaxed">
-                    Manual completion required<br />
-                    Instagram: @theshivaragroup
-                  </p>
-                </div>
-              </div>
-
-              {/* Hours */}
-              <div className="bg-white border border-gray-200 rounded-xl p-5 flex gap-4 shadow-sm">
-                <div className="w-10 h-10 rounded-lg bg-[#C9A84C]/10 text-[#C9A84C] flex items-center justify-center flex-shrink-0">
-                  <Clock className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="font-semibold text-sm text-[#0F1B2D]">Office Hours</h3>
-                  <p className="text-gray-500 text-xs mt-1 leading-relaxed">
-                    Manual completion required<br />
-                    Site visits available by appointment
-                  </p>
-                </div>
+              <div className="mt-6">
+                <LuxuryButton href="/properties" variant="light">
+                  View Properties
+                </LuxuryButton>
               </div>
             </div>
+          </aside>
 
-            {/* Maps placeholder */}
-            <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm relative h-48 bg-[#0F1B2D]/5 flex items-center justify-center px-6 text-center">
-              <p className="text-sm text-gray-500 leading-relaxed">
-                Google Maps location was not publicly available from Instagram.
-                Add the verified office map embed here after manual confirmation.
-              </p>
-            </div>
-          </div>
-
-          {/* Right Column: Interaction Form */}
-          <div className="lg:col-span-7 bg-white rounded-2xl shadow-sm border border-gray-200 p-8 flex flex-col">
-            {/* Tabs */}
-            <div className="flex border-b border-gray-100 pb-4 mb-6">
+          <div id="site-visit" className="rounded-[2.4rem] border border-[#081120]/8 bg-white p-5 shadow-[0_28px_90px_rgba(8,17,32,0.1)] sm:p-8">
+            <div className="mb-6 grid grid-cols-2 gap-2 rounded-2xl bg-[#F8F5EE] p-2">
               <button
-                onClick={() => handleTabChange("enquiry")}
-                className={`flex-1 pb-3 text-center text-xs uppercase font-bold tracking-wider transition-all border-b-2 ${
+                type="button"
+                onClick={() => resetFeedback("enquiry")}
+                className={`min-h-12 rounded-xl text-sm font-black transition ${
                   activeTab === "enquiry"
-                    ? "border-[#C9A84C] text-[#C9A84C]"
-                    : "border-transparent text-gray-400 hover:text-gray-600"
+                    ? "bg-[#081120] text-white shadow-lg"
+                    : "text-[#4B5563] hover:bg-white"
                 }`}
               >
                 Send Enquiry
               </button>
               <button
-                onClick={() => handleTabChange("visit")}
-                className={`flex-1 pb-3 text-center text-xs uppercase font-bold tracking-wider transition-all border-b-2 ${
+                type="button"
+                onClick={() => resetFeedback("visit")}
+                className={`min-h-12 rounded-xl text-sm font-black transition ${
                   activeTab === "visit"
-                    ? "border-[#C9A84C] text-[#C9A84C]"
-                    : "border-transparent text-gray-400 hover:text-gray-600"
+                    ? "bg-[#D4AF37] text-[#081120] shadow-lg"
+                    : "text-[#4B5563] hover:bg-white"
                 }`}
               >
-                Book a Site Visit
+                Book Site Visit
               </button>
             </div>
 
+            <div className="mb-7">
+              <p className="text-xs font-black uppercase tracking-[0.28em] text-[#9B7A19]">
+                {activeTab === "visit" ? "Private site visit request" : "Buyer enquiry"}
+              </p>
+              <h2 className="mt-2 font-[family-name:var(--font-playfair)] text-4xl font-semibold tracking-[-0.04em] text-[#081120]">
+                {activeTab === "visit" ? "Choose a preferred visit slot." : "Tell us what you are looking for."}
+              </h2>
+            </div>
+
             {submitted ? (
-              <div className="text-center py-16 space-y-4 my-auto">
-                <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mx-auto text-green-500 border border-green-200">
-                  <CheckCircle2 className="w-8 h-8" />
-                </div>
-                <h3 className="font-[family-name:var(--font-playfair)] text-xl font-bold text-[#0F1B2D]">
-                  Request Submitted Successfully!
+              <div className="rounded-[2rem] border border-[#10B981]/20 bg-[#ECFDF5] p-8 text-center">
+                <CheckCircle2 className="mx-auto h-14 w-14 text-[#10B981]" />
+                <h3 className="mt-5 font-[family-name:var(--font-playfair)] text-3xl font-semibold text-[#081120]">
+                  Request submitted successfully.
                 </h3>
-                <p className="text-gray-500 text-sm max-w-sm mx-auto leading-relaxed">
-                  We have successfully created a CRM lead record for your enquiry. A sales advisor will review your preferences and get back to you shortly.
+                <p className="mx-auto mt-3 max-w-lg text-sm leading-7 text-[#4B5563]">
+                  Your enquiry has been sent to the CRM. A consultant will connect with you soon.
                 </p>
-                <div className="pt-6 flex justify-center gap-4">
-                  <a
-                    href="https://wa.me/917060788407"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-6 py-3 bg-[#25D366] text-white font-semibold text-xs rounded-lg hover:bg-[#1ebe59] shadow-sm transition-colors"
-                  >
-                    Ping us on WhatsApp
-                  </a>
-                  <button
-                    onClick={() => setSubmitted(false)}
-                    className="px-6 py-3 bg-gray-100 text-gray-700 font-semibold text-xs rounded-lg hover:bg-gray-200 transition-colors"
-                  >
-                    Submit Another Request
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setSubmitted(false)}
+                  className="mt-6 min-h-12 rounded-full bg-[#081120] px-6 text-sm font-black uppercase tracking-[0.14em] text-white"
+                >
+                  Submit another request
+                </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 {error && (
-                  <div className="bg-red-50 text-red-600 text-xs p-3 rounded-lg border border-red-200">
+                  <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700">
                     {error}
                   </div>
                 )}
 
-                {/* Base Details */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">
-                      Full Name <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="Your full name"
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] text-gray-800"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">
-                      Phone Number <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="tel"
-                      required
-                      maxLength={10}
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="10-digit mobile number"
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] text-gray-800"
-                    />
-                  </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field label="Full name" required>
+                    <input value={name} onChange={(event) => setName(event.target.value)} required placeholder="Your name" className={inputClass} />
+                  </Field>
+                  <Field label="Mobile number" required>
+                    <input type="tel" maxLength={10} value={phone} onChange={(event) => setPhone(event.target.value.replace(/\D/g, ""))} required placeholder="10-digit mobile" className={inputClass} />
+                  </Field>
+                  <Field label="WhatsApp number">
+                    <input type="tel" maxLength={10} value={whatsapp} onChange={(event) => setWhatsapp(event.target.value.replace(/\D/g, ""))} placeholder="Optional" className={inputClass} />
+                  </Field>
+                  <Field label="Email">
+                    <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Optional" className={inputClass} />
+                  </Field>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">
-                      WhatsApp Number
-                    </label>
-                    <input
-                      type="tel"
-                      maxLength={10}
-                      value={whatsapp}
-                      onChange={(e) => setWhatsapp(e.target.value)}
-                      placeholder="WhatsApp (optional)"
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] text-gray-800"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">
-                      Email Address
-                    </label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Email (optional)"
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] text-gray-800"
-                    />
-                  </div>
-                </div>
-
-                {/* Preference Row */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">
-                      Property Type
-                    </label>
-                    <select
-                      value={propertyType}
-                      onChange={(e) => setPropertyType(e.target.value)}
-                      className="w-full px-4 py-2.5 bg-white rounded-lg border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] text-gray-800"
-                    >
-                      <option value="">Any</option>
+                <div className="grid gap-4 lg:grid-cols-3">
+                  <Field label="Property type">
+                    <select value={propertyType} onChange={(event) => setPropertyType(event.target.value)} className={inputClass}>
+                      <option value="">Any property</option>
                       <option value={PropertyType.APARTMENT}>Apartment</option>
                       <option value={PropertyType.VILLA}>Villa</option>
                       <option value={PropertyType.PLOT}>Plot / Land</option>
                       <option value={PropertyType.COMMERCIAL}>Commercial</option>
                       <option value={PropertyType.FARMHOUSE}>Farmhouse</option>
                     </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">
-                      Budget / Price Range
-                    </label>
-                    <input
-                      type="text"
-                      value={budget}
-                      onChange={(e) => setBudget(e.target.value)}
-                      placeholder="e.g. ₹40 - 50 Lakh"
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] text-gray-800"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">
-                      Location of Interest
-                    </label>
-                    <input
-                      type="text"
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                      placeholder="e.g. Civil Lines, Cantt"
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] text-gray-800"
-                    />
-                  </div>
+                  </Field>
+                  <Field label="Budget">
+                    <input value={budget} onChange={(event) => setBudget(event.target.value)} placeholder="e.g. ₹50L - ₹1Cr" className={inputClass} />
+                  </Field>
+                  <Field label="Preferred location">
+                    <input value={location} onChange={(event) => setLocation(event.target.value)} placeholder="Bareilly, Civil Lines..." className={inputClass} />
+                  </Field>
                 </div>
 
-                {/* Date Picker (Site Visit only) */}
                 {activeTab === "visit" && (
-                  <div className="animate-fade-in">
-                    <label className="block text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5 text-[#C9A84C]" />
-                      Preferred Date & Time <span className="text-red-500">*</span>
-                    </label>
-                    <input
-                      type="datetime-local"
-                      required
-                      value={visitDate}
-                      onChange={(e) => setVisitDate(e.target.value)}
-                      min={toDateTimeLocalValue(new Date())}
-                      className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] text-gray-800"
-                    />
-                    <span className="text-[10px] text-gray-400 mt-1 block">
-                      We will assign a dedicated consultant and vehicle for your physical site visit.
-                    </span>
-                  </div>
+                  <Field label="Preferred date & time" required>
+                    <div className="relative">
+                      <Calendar className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#9B7A19]" />
+                      <input
+                        type="datetime-local"
+                        value={visitDate}
+                        onChange={(event) => setVisitDate(event.target.value)}
+                        min={toDateTimeLocalValue(new Date())}
+                        required
+                        className={`${inputClass} pl-12`}
+                      />
+                    </div>
+                  </Field>
                 )}
 
-                {/* Message Textbox */}
-                <div>
-                  <label className="block text-xs font-semibold text-gray-700 mb-1">
-                    Describe Your Requirements
-                  </label>
+                <Field label="Requirement details">
                   <textarea
-                    rows={4}
+                    rows={5}
                     value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Tell us about size, preferred facing, floor choice, or any other preferences..."
-                    className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] text-gray-800 resize-none"
+                    onChange={(event) => setMessage(event.target.value)}
+                    placeholder="Tell us about budget, facing, preferred project, floor, possession timeline..."
+                    className={`${inputClass} min-h-36 resize-none py-4`}
                   />
-                </div>
+                </Field>
 
-                {/* Submit */}
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-3.5 bg-[#0F1B2D] text-white font-semibold text-xs rounded-xl hover:bg-[#C9A84C] hover:text-[#0F1B2D] transition-all flex items-center justify-center gap-1.5 shadow-md uppercase tracking-wider disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-[#D4AF37] px-6 text-sm font-black uppercase tracking-[0.16em] text-[#081120] shadow-[0_18px_45px_rgba(212,175,55,0.24)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {submitting ? (
-                    "Submitting Request..."
-                  ) : activeTab === "visit" ? (
-                    <>
-                      Book Physical Site Visit
-                      <Calendar className="w-4 h-4" />
-                    </>
-                  ) : (
-                    <>
-                      Send Enquiry Message
-                      <Send className="w-3.5 h-3.5" />
-                    </>
-                  )}
+                  {submitting ? "Submitting..." : activeTab === "visit" ? "Book Site Visit" : "Submit Enquiry"}
+                  <Send className="h-4 w-4" />
                 </button>
               </form>
             )}
@@ -437,5 +339,27 @@ export default function ContactPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+const inputClass =
+  "min-h-12 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] px-4 text-sm font-semibold text-[#081120] outline-none transition placeholder:text-[#6B7280]/65 focus:border-[#D4AF37] focus:bg-white focus:ring-4 focus:ring-[#D4AF37]/14";
+
+function Field({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-xs font-black uppercase tracking-[0.16em] text-[#4B5563]">
+        {label} {required && <span className="text-red-500">*</span>}
+      </span>
+      {children}
+    </label>
   );
 }

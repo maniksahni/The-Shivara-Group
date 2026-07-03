@@ -1,5 +1,3 @@
-'use client'
-
 /**
  * src/components/crm/dashboard/StatsCard.tsx
  *
@@ -22,7 +20,6 @@
 
 import React from 'react'
 import { TrendingUp, TrendingDown } from 'lucide-react'
-import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -94,18 +91,14 @@ export default function StatsCard({
   const { hex, bgClass, textClass } = COLOR_CONFIG[color]
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 16, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      whileHover={{ y: -5, scale: 1.01 }}
-      transition={{ duration: 0.28, ease: 'easeOut' }}
+    <article
       className={cn(
         // Shape & spacing
         'relative flex min-h-[156px] flex-col gap-4 overflow-hidden rounded-[22px] p-5',
         // Background & border
         'border border-white/10 bg-[#162032]/80 shadow-xl shadow-black/20 backdrop-blur-xl',
         // Subtle lift on hover
-        'transition-shadow duration-200 hover:shadow-2xl hover:shadow-[#F4B400]/10',
+        'transition-all duration-200 hover:-translate-y-1 hover:scale-[1.01] hover:shadow-2xl hover:shadow-[#F4B400]/10',
         className
       )}
       aria-label={`${title}: ${value}`}
@@ -177,6 +170,6 @@ export default function StatsCard({
           <span className="text-xs text-gray-500">vs last week</span>
         </div>
       )}
-    </motion.article>
+    </article>
   )
 }

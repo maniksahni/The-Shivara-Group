@@ -34,6 +34,74 @@ function endOfToday(): Date {
   return d
 }
 
+function dayRange(offsetDays = 0) {
+  const start = new Date()
+  start.setDate(start.getDate() + offsetDays)
+  start.setHours(0, 0, 0, 0)
+
+  const end = new Date(start)
+  end.setHours(23, 59, 59, 999)
+
+  return { start, end }
+}
+
+export interface DailyLeadItem {
+  id: string
+  name: string
+  phone: string
+  status: string
+  priority: string
+  source: string
+  followUpDate: Date | null
+  createdAt: Date
+  assignedTo: { id: string; name: string; email: string } | null
+}
+
+export interface DailyVisitItem {
+  id: string
+  scheduledAt: Date
+  location: string
+  status: string
+  notes: string | null
+  customerFeedback: string | null
+  completedAt: Date | null
+  lead: {
+    id: string
+    name: string
+    phone: string
+    priority: string
+    assignedTo: { id: string; name: string; email: string } | null
+  }
+}
+
+export interface AgentWorkloadItem {
+  id: string
+  name: string
+  email: string
+  phone: string | null
+  totalLeads: number
+  newAssignedLeads: number
+  pendingFollowUps: number
+  todayVisits: number
+  completedVisits: number
+  closedDeals: number
+  lostLeads: number
+  conversionRate: number
+}
+
+export interface DailyOperationsData {
+  todayLeads: DailyLeadItem[]
+  newAssignedLeads: DailyLeadItem[]
+  pendingFollowUps: DailyLeadItem[]
+  missedFollowUps: DailyLeadItem[]
+  overdueLeads: DailyLeadItem[]
+  todaySiteVisits: DailyVisitItem[]
+  tomorrowMeetings: DailyVisitItem[]
+  upcomingSiteVisits: DailyVisitItem[]
+  completedVisits: DailyVisitItem[]
+  agentWorkload: AgentWorkloadItem[]
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // getDashboardStats
 // ─────────────────────────────────────────────────────────────────────────────
@@ -192,4 +260,234 @@ export async function getTodayFollowUps(): Promise<LeadWithAgent[]> {
   })
 
   return leads as LeadWithAgent[]
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// getDailyOperations
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Returns the lead-assignment, daily visit, calendar, reminder, and workload
+ * data used by the CRM daily command center.
+ *
+ * Agents only see their assigned leads. Admins see all leads plus workload for
+ * every active agent.
+ */
+export async function getDailyOperations(): Promise<DailyOperationsData> {
+  const session = await getServerSession()
+
+  const isAdmin = session?.user?.role === 'ADMIN'
+  const agentFilter = isAdmin ? {} : { assignedToId: session?.user?.id }
+  const visitFilter = isAdmin ? {} : { lead: { assignedToId: session?.user?.id } }
+
+  const today = dayRange(0)
+  const tomorrow = dayRange(1)
+  const now = new Date()
+  const nextThirtyDays = new Date()
+  nextThirtyDays.setDate(nextThirtyDays.getDate() + 30)
+
+  const leadSelect = {
+    id: true,
+    name: true,
+    phone: true,
+    status: true,
+    priority: true,
+    source: true,
+    followUpDate: true,
+    createdAt: true,
+    assignedTo: { select: { id: true, name: true, email: true } },
+  }
+
+  const visitInclude = {
+    lead: {
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        priority: true,
+        assignedTo: { select: { id: true, name: true, email: true } },
+      },
+    },
+  }
+
+  const [
+    todayLeads,
+    newAssignedLeads,
+    pendingFollowUps,
+    missedFollowUps,
+    overdueLeads,
+    todaySiteVisits,
+    tomorrowMeetings,
+    upcomingSiteVisits,
+    completedVisits,
+    agents,
+  ] = await Promise.all([
+    prisma.lead.findMany({
+      where: {
+        ...agentFilter,
+        createdAt: { gte: today.start, lte: today.end },
+      },
+      select: leadSelect,
+      orderBy: [{ priority: 'desc' }, { createdAt: 'desc' }],
+      take: 12,
+    }),
+    prisma.lead.findMany({
+      where: {
+        ...agentFilter,
+        assignedToId: { not: null },
+        status: { in: ['ASSIGNED', 'NEW'] },
+      },
+      select: leadSelect,
+      orderBy: { updatedAt: 'desc' },
+      take: 12,
+    }),
+    prisma.lead.findMany({
+      where: {
+        ...agentFilter,
+        followUpDate: { gte: today.start, lte: today.end },
+        status: { notIn: ['CLOSED', 'LOST'] },
+      },
+      select: leadSelect,
+      orderBy: [{ priority: 'desc' }, { followUpDate: 'asc' }],
+      take: 20,
+    }),
+    prisma.lead.findMany({
+      where: {
+        ...agentFilter,
+        followUpDate: { lt: today.start },
+        status: { notIn: ['CLOSED', 'LOST'] },
+      },
+      select: leadSelect,
+      orderBy: [{ priority: 'desc' }, { followUpDate: 'asc' }],
+      take: 20,
+    }),
+    prisma.lead.findMany({
+      where: {
+        ...agentFilter,
+        OR: [
+          { followUpDate: { lt: now } },
+          {
+            siteVisit: {
+              scheduledAt: { lt: now },
+              status: 'SCHEDULED',
+            },
+          },
+        ],
+        status: { notIn: ['CLOSED', 'LOST'] },
+      },
+      select: leadSelect,
+      orderBy: [{ priority: 'desc' }, { updatedAt: 'asc' }],
+      take: 20,
+    }),
+    prisma.siteVisit.findMany({
+      where: {
+        ...visitFilter,
+        scheduledAt: { gte: today.start, lte: today.end },
+      },
+      include: visitInclude,
+      orderBy: { scheduledAt: 'asc' },
+      take: 20,
+    }),
+    prisma.siteVisit.findMany({
+      where: {
+        ...visitFilter,
+        scheduledAt: { gte: tomorrow.start, lte: tomorrow.end },
+        status: 'SCHEDULED',
+      },
+      include: visitInclude,
+      orderBy: { scheduledAt: 'asc' },
+      take: 20,
+    }),
+    prisma.siteVisit.findMany({
+      where: {
+        ...visitFilter,
+        scheduledAt: { gt: today.end, lte: nextThirtyDays },
+        status: 'SCHEDULED',
+      },
+      include: visitInclude,
+      orderBy: { scheduledAt: 'asc' },
+      take: 30,
+    }),
+    prisma.siteVisit.findMany({
+      where: {
+        ...visitFilter,
+        status: 'COMPLETED',
+      },
+      include: visitInclude,
+      orderBy: { completedAt: 'desc' },
+      take: 20,
+    }),
+    isAdmin
+      ? prisma.user.findMany({
+          where: { isActive: true },
+          select: { id: true, name: true, email: true, phone: true },
+          orderBy: { name: 'asc' },
+        })
+      : Promise.resolve([]),
+  ])
+
+  const agentWorkload = await Promise.all(
+    agents.map(async (agent) => {
+      const [
+        totalLeads,
+        newAssignedLeadsCount,
+        pendingFollowUpsCount,
+        todayVisits,
+        completedVisitsCount,
+        closedDeals,
+        lostLeads,
+      ] = await Promise.all([
+        prisma.lead.count({ where: { assignedToId: agent.id } }),
+        prisma.lead.count({
+          where: { assignedToId: agent.id, status: { in: ['ASSIGNED', 'NEW'] } },
+        }),
+        prisma.lead.count({
+          where: {
+            assignedToId: agent.id,
+            followUpDate: { lte: today.end },
+            status: { notIn: ['CLOSED', 'LOST'] },
+          },
+        }),
+        prisma.siteVisit.count({
+          where: {
+            lead: { assignedToId: agent.id },
+            scheduledAt: { gte: today.start, lte: today.end },
+          },
+        }),
+        prisma.siteVisit.count({
+          where: { lead: { assignedToId: agent.id }, status: 'COMPLETED' },
+        }),
+        prisma.lead.count({ where: { assignedToId: agent.id, status: 'CLOSED' } }),
+        prisma.lead.count({ where: { assignedToId: agent.id, status: 'LOST' } }),
+      ])
+
+      return {
+        id: agent.id,
+        name: agent.name,
+        email: agent.email,
+        phone: agent.phone,
+        totalLeads,
+        newAssignedLeads: newAssignedLeadsCount,
+        pendingFollowUps: pendingFollowUpsCount,
+        todayVisits,
+        completedVisits: completedVisitsCount,
+        closedDeals,
+        lostLeads,
+        conversionRate: totalLeads > 0 ? Number(((closedDeals / totalLeads) * 100).toFixed(1)) : 0,
+      }
+    }),
+  )
+
+  return {
+    todayLeads,
+    newAssignedLeads,
+    pendingFollowUps,
+    missedFollowUps,
+    overdueLeads,
+    todaySiteVisits,
+    tomorrowMeetings,
+    upcomingSiteVisits,
+    completedVisits,
+    agentWorkload,
+  }
 }

@@ -155,6 +155,7 @@ export default async function LeadsPage({ searchParams }: PageProps) {
           ) : (
             <LeadTable
               leads={leads}
+              agents={agents}
               isAdmin={isAdmin}
               currentUserId={session.user.id}
             />

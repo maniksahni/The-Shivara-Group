@@ -22,10 +22,14 @@ enum Role {
 
 enum LeadStatus {
   NEW
+  ASSIGNED
   CONTACTED
   FOLLOW_UP
+  MEETING_SCHEDULED
   SITE_VISIT_SCHEDULED
+  SITE_VISIT
   NEGOTIATION
+  BOOKING
   CLOSED
   LOST
 }
@@ -176,14 +180,20 @@ model Property {
 
 /// A physical or virtual site visit booked for a lead.
 model SiteVisit {
-  id          String          @id @default(cuid())
-  leadId      String          @unique
-  lead        Lead            @relation(fields: [leadId], references: [id], onDelete: Cascade)
-  scheduledAt DateTime
-  location    String
-  notes       String? @db.Text
-  status      SiteVisitStatus @default(SCHEDULED)
+  id               String          @id @default(cuid())
+  leadId           String          @unique
+  lead             Lead            @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  scheduledAt      DateTime
+  location         String
+  notes            String? @db.Text
+  customerFeedback String? @db.Text
+  visitImages      Json    @default("[]")
+  completedAt      DateTime?
+  status           SiteVisitStatus @default(SCHEDULED)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([scheduledAt])
+  @@index([status])
 }

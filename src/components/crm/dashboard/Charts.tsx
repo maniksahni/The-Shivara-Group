@@ -42,20 +42,28 @@ const SOURCE_COLORS: { [key: string]: string } = {
 
 const STATUS_NAMES: { [key: string]: string } = {
   NEW: "New",
+  ASSIGNED: "Assigned",
   CONTACTED: "Contacted",
   FOLLOW_UP: "Follow Up",
-  SITE_VISIT_SCHEDULED: "Site Visit",
+  MEETING_SCHEDULED: "Meeting",
+  SITE_VISIT_SCHEDULED: "Visit Scheduled",
+  SITE_VISIT: "Site Visit",
   NEGOTIATION: "Negotiating",
+  BOOKING: "Booking",
   CLOSED: "Closed (Won)",
   LOST: "Lost",
 };
 
 const STATUS_COLORS: { [key: string]: string } = {
   NEW: "#3B82F6",
+  ASSIGNED: "#6366F1",
   CONTACTED: "#8B5CF6",
   FOLLOW_UP: "#F59E0B",
+  MEETING_SCHEDULED: "#EAB308",
   SITE_VISIT_SCHEDULED: "#06B6D4",
+  SITE_VISIT: "#14B8A6",
   NEGOTIATION: "#F97316",
+  BOOKING: "#22C55E",
   CLOSED: "#10B981",
   LOST: "#EF4444",
 };

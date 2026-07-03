@@ -20,10 +20,14 @@ import { z } from 'zod'
 
 const LeadStatusEnum = z.enum([
   'NEW',
+  'ASSIGNED',
   'CONTACTED',
   'FOLLOW_UP',
+  'MEETING_SCHEDULED',
   'SITE_VISIT_SCHEDULED',
+  'SITE_VISIT',
   'NEGOTIATION',
+  'BOOKING',
   'CLOSED',
   'LOST',
 ])

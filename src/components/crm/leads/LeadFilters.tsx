@@ -45,10 +45,14 @@ interface LeadFiltersProps {
 const STATUS_OPTIONS = [
   { value: '', label: 'All Statuses' },
   { value: 'NEW', label: 'New' },
+  { value: 'ASSIGNED', label: 'Assigned' },
   { value: 'CONTACTED', label: 'Contacted' },
   { value: 'FOLLOW_UP', label: 'Follow-Up' },
+  { value: 'MEETING_SCHEDULED', label: 'Meeting Scheduled' },
   { value: 'SITE_VISIT_SCHEDULED', label: 'Site Visit Scheduled' },
+  { value: 'SITE_VISIT', label: 'Site Visit' },
   { value: 'NEGOTIATION', label: 'Negotiation' },
+  { value: 'BOOKING', label: 'Booking' },
   { value: 'CLOSED', label: 'Closed' },
   { value: 'LOST', label: 'Lost' },
 ]

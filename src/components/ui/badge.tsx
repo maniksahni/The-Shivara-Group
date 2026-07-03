@@ -56,19 +56,27 @@ const variantStyles: Record<BadgeVariant, string> = {
 /** Shivara CRM lead status values */
 export type LeadStatus =
   | "NEW"
+  | "ASSIGNED"
   | "CONTACTED"
   | "FOLLOW_UP"
+  | "MEETING_SCHEDULED"
   | "SITE_VISIT_SCHEDULED"
+  | "SITE_VISIT"
   | "NEGOTIATION"
+  | "BOOKING"
   | "CLOSED"
   | "LOST";
 
 const statusColorMap: Record<LeadStatus, BadgeVariant> = {
   NEW: "blue",
+  ASSIGNED: "indigo",
   CONTACTED: "purple",
   FOLLOW_UP: "amber",
+  MEETING_SCHEDULED: "yellow",
   SITE_VISIT_SCHEDULED: "cyan",
+  SITE_VISIT: "teal",
   NEGOTIATION: "orange",
+  BOOKING: "green",
   CLOSED: "green",
   LOST: "gray",
 };
@@ -76,10 +84,14 @@ const statusColorMap: Record<LeadStatus, BadgeVariant> = {
 /** Human-friendly labels for status values */
 const statusLabelMap: Record<LeadStatus, string> = {
   NEW: "New",
+  ASSIGNED: "Assigned",
   CONTACTED: "Contacted",
   FOLLOW_UP: "Follow-Up",
-  SITE_VISIT_SCHEDULED: "Site Visit",
+  MEETING_SCHEDULED: "Meeting Scheduled",
+  SITE_VISIT_SCHEDULED: "Visit Scheduled",
+  SITE_VISIT: "Site Visit",
   NEGOTIATION: "Negotiation",
+  BOOKING: "Booking",
   CLOSED: "Closed",
   LOST: "Lost",
 };

@@ -268,10 +268,14 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                       className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
                     >
                       <option value={LeadStatus.NEW}>New</option>
+                      <option value={LeadStatus.ASSIGNED}>Assigned</option>
                       <option value={LeadStatus.CONTACTED}>Contacted</option>
                       <option value={LeadStatus.FOLLOW_UP}>Follow Up</option>
+                      <option value={LeadStatus.MEETING_SCHEDULED}>Meeting Scheduled</option>
                       <option value={LeadStatus.SITE_VISIT_SCHEDULED}>Site Visit Scheduled</option>
+                      <option value={LeadStatus.SITE_VISIT}>Site Visit</option>
                       <option value={LeadStatus.NEGOTIATION}>Negotiation</option>
+                      <option value={LeadStatus.BOOKING}>Booking</option>
                       <option value={LeadStatus.CLOSED}>Closed</option>
                       <option value={LeadStatus.LOST}>Lost</option>
                     </select>

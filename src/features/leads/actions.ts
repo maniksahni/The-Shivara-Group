@@ -16,7 +16,8 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import prisma from '@/lib/prisma'
-import { LeadSource, LeadStatus, Priority, PropertyType, Prisma } from '@prisma/client'
+import { getServerSession } from '@/lib/auth'
+import { LeadSource, LeadStatus, Priority, PropertyType, Prisma, SiteVisitStatus } from '@prisma/client'
 
 // ---------------------------------------------------------------------------
 // Zod schemas for validation
@@ -38,6 +39,13 @@ const createLeadSchema = z.object({
 })
 
 const updateLeadSchema = createLeadSchema.partial()
+
+const updateSiteVisitSchema = z.object({
+  status: z.nativeEnum(SiteVisitStatus),
+  notes: z.string().optional(),
+  customerFeedback: z.string().optional(),
+  visitImages: z.array(z.string().url()).optional(),
+})
 
 // ---------------------------------------------------------------------------
 // TypeScript types
@@ -127,6 +135,25 @@ async function logActivity(
       newValue: opts.newValue ?? null,
     },
   })
+}
+
+function getDayRange(offsetDays = 0) {
+  const start = new Date()
+  start.setDate(start.getDate() + offsetDays)
+  start.setHours(0, 0, 0, 0)
+
+  const end = new Date(start)
+  end.setHours(23, 59, 59, 999)
+
+  return { start, end }
+}
+
+async function requireCrmUser() {
+  const session = await getServerSession()
+  if (!session?.user?.id) {
+    return { success: false as const, error: 'Unauthorized.' }
+  }
+  return { success: true as const, user: session.user }
 }
 
 // ---------------------------------------------------------------------------
@@ -312,16 +339,24 @@ export async function updateLeadStatus(
  */
 export async function assignLead(
   leadId: string,
-  agentId: string,
+  agentId: string | null,
   currentUserId?: string,
 ): Promise<ActionResult<{ id: string }>> {
   try {
-    // Verify the target agent exists
-    const agent = await prisma.user.findUnique({
-      where: { id: agentId },
-      select: { id: true, name: true },
-    })
-    if (!agent) {
+    const session = await requireCrmUser()
+    if (!session.success) return session
+    if (session.user.role !== 'ADMIN') {
+      return { success: false, error: 'Only admins can assign or reassign leads.' }
+    }
+
+    const agent = agentId
+      ? await prisma.user.findFirst({
+          where: { id: agentId, isActive: true },
+          select: { id: true, name: true },
+        })
+      : null
+
+    if (agentId && !agent) {
       return { success: false, error: 'Agent not found.' }
     }
 
@@ -336,19 +371,24 @@ export async function assignLead(
     const lead = await prisma.$transaction(async (tx) => {
       const updated = await tx.lead.update({
         where: { id: leadId },
-        data: { assignedToId: agentId, updatedAt: new Date() },
+        data: {
+          assignedToId: agentId,
+          status: agentId && existing.status === 'NEW' ? 'ASSIGNED' : existing.status,
+          updatedAt: new Date(),
+        },
         select: { id: true },
       })
 
       const previousAgent = existing.assignedTo?.name ?? 'Unassigned'
+      const nextAgent = agent?.name ?? 'Unassigned'
 
       await logActivity(tx, {
         leadId,
-        action: 'Lead assigned',
-        description: `Lead reassigned from ${previousAgent} to ${agent.name ?? agentId}`,
-        performedById: currentUserId,
+        action: agentId ? 'Lead assigned' : 'Lead unassigned',
+        description: `Lead reassigned from ${previousAgent} to ${nextAgent}`,
+        performedById: currentUserId ?? session.user.id,
         oldValue: existing.assignedToId ?? undefined,
-        newValue: agentId,
+        newValue: agentId ?? undefined,
       })
 
       return updated
@@ -356,11 +396,93 @@ export async function assignLead(
 
     revalidatePath('/crm/leads')
     revalidatePath(`/crm/leads/${leadId}`)
+    revalidatePath('/crm/dashboard')
 
     return { success: true, data: { id: lead.id } }
   } catch (error) {
     console.error('[assignLead]', error)
     return { success: false, error: 'Failed to assign lead.' }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// bulkAssignLeads
+// ---------------------------------------------------------------------------
+
+/**
+ * Assigns or reassigns multiple leads to one agent in a single admin action.
+ */
+export async function bulkAssignLeads(
+  leadIds: string[],
+  agentId: string,
+  currentUserId?: string,
+): Promise<ActionResult<{ count: number }>> {
+  try {
+    const session = await requireCrmUser()
+    if (!session.success) return session
+    if (session.user.role !== 'ADMIN') {
+      return { success: false, error: 'Only admins can bulk assign leads.' }
+    }
+
+    const uniqueLeadIds = Array.from(new Set(leadIds.filter(Boolean)))
+    if (uniqueLeadIds.length === 0) {
+      return { success: false, error: 'Select at least one lead.' }
+    }
+
+    const agent = await prisma.user.findFirst({
+      where: { id: agentId, isActive: true },
+      select: { id: true, name: true },
+    })
+    if (!agent) {
+      return { success: false, error: 'Agent not found.' }
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+      const leads = await tx.lead.findMany({
+        where: { id: { in: uniqueLeadIds } },
+        select: {
+          id: true,
+          status: true,
+          assignedToId: true,
+          assignedTo: { select: { name: true } },
+        },
+      })
+
+      if (leads.length === 0) {
+        return { count: 0 }
+      }
+
+      for (const lead of leads) {
+        await tx.lead.update({
+          where: { id: lead.id },
+          data: {
+            assignedToId: agent.id,
+            status: lead.status === 'NEW' ? 'ASSIGNED' : lead.status,
+          },
+        })
+
+        await logActivity(tx, {
+          leadId: lead.id,
+          action: 'Bulk lead assignment',
+          description: `Lead reassigned from ${lead.assignedTo?.name ?? 'Unassigned'} to ${agent.name}`,
+          performedById: currentUserId ?? session.user.id,
+          oldValue: lead.assignedToId ?? undefined,
+          newValue: agent.id,
+        })
+      }
+
+      return { count: leads.length }
+    })
+
+    revalidatePath('/crm/leads')
+    revalidatePath('/crm/dashboard')
+    revalidatePath('/crm/reports')
+    revalidatePath('/crm/agents')
+
+    return { success: true, data: result }
+  } catch (error) {
+    console.error('[bulkAssignLeads]', error)
+    return { success: false, error: 'Failed to bulk assign leads.' }
   }
 }
 
@@ -487,6 +609,9 @@ export async function scheduleSiteVisit(
           scheduledAt: visitDate,
           location: location.trim(),
           notes: notes?.trim() ?? null,
+          customerFeedback: null,
+          visitImages: [],
+          completedAt: null,
           status: 'SCHEDULED',
         },
         update: {
@@ -522,6 +647,80 @@ export async function scheduleSiteVisit(
   } catch (error) {
     console.error('[scheduleSiteVisit]', error)
     return { success: false, error: 'Failed to schedule site visit.' }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// updateSiteVisit
+// ---------------------------------------------------------------------------
+
+/**
+ * Updates site visit status, notes, customer feedback, and optional images.
+ * Marking a visit completed advances the lead to SITE_VISIT.
+ */
+export async function updateSiteVisit(
+  leadId: string,
+  data: z.infer<typeof updateSiteVisitSchema>,
+  userId?: string,
+): Promise<ActionResult<{ id: string }>> {
+  try {
+    const validated = updateSiteVisitSchema.parse(data)
+
+    const existing = await prisma.siteVisit.findUnique({
+      where: { leadId },
+      select: {
+        id: true,
+        status: true,
+        lead: { select: { id: true, status: true } },
+      },
+    })
+    if (!existing) {
+      return { success: false, error: 'No site visit found for this lead.' }
+    }
+
+    const visit = await prisma.$transaction(async (tx) => {
+      const updated = await tx.siteVisit.update({
+        where: { leadId },
+        data: {
+          status: validated.status,
+          notes: validated.notes?.trim() || undefined,
+          customerFeedback: validated.customerFeedback?.trim() || undefined,
+          visitImages: validated.visitImages ?? undefined,
+          completedAt: validated.status === 'COMPLETED' ? new Date() : null,
+        },
+        select: { id: true },
+      })
+
+      if (validated.status === 'COMPLETED') {
+        await tx.lead.update({
+          where: { id: leadId },
+          data: { status: 'SITE_VISIT' },
+        })
+      }
+
+      await logActivity(tx, {
+        leadId,
+        action: 'Site visit updated',
+        description: `Visit status changed from ${existing.status} to ${validated.status}`,
+        performedById: userId,
+        oldValue: existing.status,
+        newValue: validated.status,
+      })
+
+      return updated
+    })
+
+    revalidatePath(`/crm/leads/${leadId}`)
+    revalidatePath('/crm/dashboard')
+    revalidatePath('/crm/leads')
+
+    return { success: true, data: { id: visit.id } }
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.issues[0]?.message ?? 'Validation failed.' }
+    }
+    console.error('[updateSiteVisit]', error)
+    return { success: false, error: 'Failed to update site visit.' }
   }
 }
 

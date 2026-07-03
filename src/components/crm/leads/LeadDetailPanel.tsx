@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import { addNote, scheduleSiteVisit } from "@/features/leads/actions";
-import { cn, formatDate } from "@/lib/utils";
-import { MessageSquare, History, MapPin, Send, Plus, CheckCircle, Calendar, PlusCircle, AlertCircle } from "lucide-react";
+import { addNote, scheduleSiteVisit, updateSiteVisit } from "@/features/leads/actions";
+import { cn } from "@/lib/utils";
+import { MessageSquare, History, MapPin, Send, CheckCircle, Calendar, PlusCircle, XCircle, Save } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 
 interface LeadDetailPanelProps {
@@ -24,7 +24,10 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
   const [visitDate, setVisitDate] = useState("");
   const [visitLocation, setVisitLocation] = useState(lead.preferredLocation || "");
   const [visitNotes, setVisitNotes] = useState("");
+  const [visitFeedback, setVisitFeedback] = useState(lead.siteVisit?.customerFeedback || "");
+  const [visitOutcomeNotes, setVisitOutcomeNotes] = useState(lead.siteVisit?.notes || "");
   const [scheduling, setScheduling] = useState(false);
+  const [updatingVisit, setUpdatingVisit] = useState(false);
   const [siteVisit, setSiteVisit] = useState<any | null>(lead.siteVisit);
 
   const handleAddNote = async (e: React.FormEvent) => {
@@ -99,6 +102,44 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
       });
     } finally {
       setScheduling(false);
+    }
+  };
+
+  const handleVisitUpdate = async (status: "SCHEDULED" | "COMPLETED" | "CANCELLED") => {
+    if (!siteVisit) return;
+
+    setUpdatingVisit(true);
+    try {
+      const res = await updateSiteVisit(
+        lead.id,
+        {
+          status,
+          notes: visitOutcomeNotes,
+          customerFeedback: visitFeedback,
+        },
+        currentUserId
+      );
+
+      if (!res.success) throw new Error(res.error);
+
+      toast({
+        title: status === "COMPLETED" ? "Visit Completed" : "Visit Updated",
+        description:
+          status === "COMPLETED"
+            ? "Site visit marked completed and lead moved to Site Visit stage."
+            : `Site visit marked ${status.toLowerCase()}.`,
+        type: "success",
+      });
+
+      window.location.reload();
+    } catch (err: any) {
+      toast({
+        title: "Visit Update Failed",
+        description: err.message || "Failed to update site visit.",
+        type: "error",
+      });
+    } finally {
+      setUpdatingVisit(false);
     }
   };
 
@@ -288,10 +329,17 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
             <div className="space-y-6 flex-grow">
               {siteVisit ? (
                 // Booked site visit details
-                <div className="bg-slate-800/40 border border-slate-800 rounded-xl p-6 space-y-4 max-w-xl">
-                  <div className="flex items-center gap-2 text-cyan-400 font-semibold text-xs uppercase tracking-wider">
-                    <CheckCircle className="w-4.5 h-4.5" />
-                    Site Visit Scheduled
+                <div className="bg-slate-800/40 border border-slate-800 rounded-xl p-6 space-y-5 max-w-2xl">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 text-cyan-400 font-semibold text-xs uppercase tracking-wider">
+                      <CheckCircle className="w-4 h-4" />
+                      Site Visit {siteVisit.status?.replace(/_/g, " ") || "Scheduled"}
+                    </div>
+                    {siteVisit.completedAt && (
+                      <span className="rounded-full bg-emerald-500/10 px-2 py-1 text-[10px] font-bold text-emerald-300">
+                        Completed {new Date(siteVisit.completedAt).toLocaleString("en-IN")}
+                      </span>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
@@ -309,10 +357,75 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
 
                   {siteVisit.notes && (
                     <div className="text-xs">
-                      <span className="block text-slate-500 mb-0.5">Coordinator Notes</span>
+                      <span className="block text-slate-500 mb-0.5">Visit Notes</span>
                       <p className="text-slate-300 italic">{siteVisit.notes}</p>
                     </div>
                   )}
+
+                  {siteVisit.customerFeedback && (
+                    <div className="text-xs">
+                      <span className="block text-slate-500 mb-0.5">Customer Feedback</span>
+                      <p className="text-slate-300 italic">{siteVisit.customerFeedback}</p>
+                    </div>
+                  )}
+
+                  <div className="border-t border-slate-700/60 pt-5 space-y-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">
+                        Visit Notes / Meeting Outcome
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={visitOutcomeNotes}
+                        onChange={(e) => setVisitOutcomeNotes(e.target.value)}
+                        placeholder="Add visit outcome, next steps, objections, documents requested..."
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C] resize-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-400 mb-1">
+                        Customer Feedback
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={visitFeedback}
+                        onChange={(e) => setVisitFeedback(e.target.value)}
+                        placeholder="Customer liked/disliked, budget feedback, booking probability..."
+                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C] resize-none"
+                      />
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        disabled={updatingVisit}
+                        onClick={() => handleVisitUpdate("SCHEDULED")}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-slate-600 px-4 py-2 text-xs font-bold text-slate-200 hover:bg-slate-700 disabled:opacity-50"
+                      >
+                        <Save className="w-3.5 h-3.5" />
+                        Save Notes
+                      </button>
+                      <button
+                        type="button"
+                        disabled={updatingVisit}
+                        onClick={() => handleVisitUpdate("COMPLETED")}
+                        className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-emerald-400 disabled:opacity-50"
+                      >
+                        <CheckCircle className="w-3.5 h-3.5" />
+                        Mark Completed
+                      </button>
+                      <button
+                        type="button"
+                        disabled={updatingVisit}
+                        onClick={() => handleVisitUpdate("CANCELLED")}
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-red-500/40 px-4 py-2 text-xs font-bold text-red-300 hover:bg-red-500/10 disabled:opacity-50"
+                      >
+                        <XCircle className="w-3.5 h-3.5" />
+                        Cancel Visit
+                      </button>
+                    </div>
+                  </div>
                 </div>
               ) : (
                 // Booking Form

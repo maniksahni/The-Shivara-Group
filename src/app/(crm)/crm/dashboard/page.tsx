@@ -3,10 +3,11 @@ import { redirect } from "next/navigation";
 import { Users, UserCheck, Calendar, CheckSquare, Building2, TrendingUp } from "lucide-react";
 
 import { getServerSession } from "@/lib/auth";
-import { getDashboardStats } from "@/features/dashboard/actions";
+import { getDailyOperations, getDashboardStats } from "@/features/dashboard/actions";
 import StatsCard from "@/components/crm/dashboard/StatsCard";
 import Charts from "@/components/crm/dashboard/Charts";
 import ActivityFeed from "@/components/crm/dashboard/ActivityFeed";
+import DailyOperationsPanel from "@/components/crm/dashboard/DailyOperationsPanel";
 import prisma from "@/lib/prisma";
 import { getLeadStatusColor, getLeadSourceColor } from "@/lib/utils";
 import Link from "next/link";
@@ -29,6 +30,19 @@ export default async function DashboardPage() {
     leadsBySource: [],
     leadsByStatus: [],
     recentActivities: [],
+  }));
+
+  const dailyOperations = await getDailyOperations().catch(() => ({
+    todayLeads: [],
+    newAssignedLeads: [],
+    pendingFollowUps: [],
+    missedFollowUps: [],
+    overdueLeads: [],
+    todaySiteVisits: [],
+    tomorrowMeetings: [],
+    upcomingSiteVisits: [],
+    completedVisits: [],
+    agentWorkload: [],
   }));
 
   // Fetch number of active properties
@@ -133,6 +147,11 @@ export default async function DashboardPage() {
           color="blue"
         />
       </div>
+
+      <DailyOperationsPanel
+        data={dailyOperations}
+        isAdmin={session.user.role === "ADMIN"}
+      />
 
       {/* Charts & Activity Section */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

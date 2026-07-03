@@ -179,10 +179,14 @@ export function getRelativeTime(date: Date | string | null | undefined): string 
 export function getLeadStatusColor(status: string): string {
   const map: Record<string, string> = {
     NEW:                   'bg-blue-100 text-blue-800',
+    ASSIGNED:              'bg-indigo-100 text-indigo-800',
     CONTACTED:             'bg-yellow-100 text-yellow-800',
     FOLLOW_UP:             'bg-orange-100 text-orange-800',
+    MEETING_SCHEDULED:     'bg-amber-100 text-amber-800',
     SITE_VISIT_SCHEDULED:  'bg-purple-100 text-purple-800',
+    SITE_VISIT:            'bg-teal-100 text-teal-800',
     NEGOTIATION:           'bg-indigo-100 text-indigo-800',
+    BOOKING:               'bg-green-100 text-green-800',
     CLOSED:                'bg-green-100 text-green-800',
     LOST:                  'bg-red-100 text-red-800',
   }

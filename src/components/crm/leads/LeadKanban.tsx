@@ -41,10 +41,14 @@ interface KanbanProps {
 
 const COLUMNS: { key: LeadStatus; label: string; color: string }[] = [
   { key: LeadStatus.NEW, label: "New", color: "border-t-blue-500 bg-blue-500/5 text-blue-400" },
+  { key: LeadStatus.ASSIGNED, label: "Assigned", color: "border-t-indigo-500 bg-indigo-500/5 text-indigo-400" },
   { key: LeadStatus.CONTACTED, label: "Contacted", color: "border-t-purple-500 bg-purple-500/5 text-purple-400" },
   { key: LeadStatus.FOLLOW_UP, label: "Follow Up", color: "border-t-amber-500 bg-amber-500/5 text-amber-400" },
-  { key: LeadStatus.SITE_VISIT_SCHEDULED, label: "Site Visit", color: "border-t-cyan-500 bg-cyan-500/5 text-cyan-400" },
+  { key: LeadStatus.MEETING_SCHEDULED, label: "Meeting", color: "border-t-yellow-500 bg-yellow-500/5 text-yellow-400" },
+  { key: LeadStatus.SITE_VISIT_SCHEDULED, label: "Visit Scheduled", color: "border-t-cyan-500 bg-cyan-500/5 text-cyan-400" },
+  { key: LeadStatus.SITE_VISIT, label: "Site Visit", color: "border-t-teal-500 bg-teal-500/5 text-teal-400" },
   { key: LeadStatus.NEGOTIATION, label: "Negotiating", color: "border-t-orange-500 bg-orange-500/5 text-orange-400" },
+  { key: LeadStatus.BOOKING, label: "Booking", color: "border-t-emerald-500 bg-emerald-500/5 text-emerald-400" },
   { key: LeadStatus.CLOSED, label: "Closed", color: "border-t-emerald-500 bg-emerald-500/5 text-emerald-400" },
   { key: LeadStatus.LOST, label: "Lost", color: "border-t-slate-500 bg-slate-500/5 text-slate-400" },
 ];

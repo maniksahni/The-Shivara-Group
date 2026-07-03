@@ -326,10 +326,10 @@ function StatsBar() {
   }, []);
 
   const stats = [
-    { value: 500, suffix: "+", label: "Properties Listed" },
-    { value: 200, suffix: "+", label: "Deals Closed" },
-    { value: 10, suffix: "+", label: "Years Experience" },
-    { value: 50, suffix: "+", label: "Localities Covered" },
+    { value: 2, suffix: "", label: "Markets: Bareilly + Delhi NCR" },
+    { value: 1, suffix: "", label: "Verified Instagram Profile" },
+    { value: 6, suffix: "+", label: "Public Project Highlights" },
+    { value: 1, suffix: "", label: "Confirmed Contact Number" },
   ];
 
   return (
@@ -369,38 +369,38 @@ interface Property {
 const featuredProperties: Property[] = [
   {
     id: 1,
-    title: "3BHK Luxury Apartment",
-    location: "Civil Lines, Bareilly",
-    price: "₹45 Lakh",
-    type: "Apartment",
+    title: "Aurika The Residences",
+    location: "Bareilly",
+    price: "Contact for pricing",
+    type: "Luxury Residences",
     typeColor: "bg-blue-100 text-blue-700",
     beds: 3,
     baths: 2,
-    area: "1,450 sq ft",
+    area: "Floor plans on request",
     description:
-      "Premium 3BHK apartment in the heart of Civil Lines with modern amenities, 24/7 security, and stunning city views.",
+      "Public Instagram content highlights Aurika / The Residences as a premium Bareilly project with site visits available through The Shivara Group.",
   },
   {
     id: 2,
-    title: "Residential Plot",
-    location: "Pilibhit Road, Bareilly",
-    price: "₹18 Lakh",
-    type: "Plot",
+    title: "Amara Villas by Aurika",
+    location: "Bareilly",
+    price: "Contact for pricing",
+    type: "Villa Community",
     typeColor: "bg-green-100 text-green-700",
-    area: "1,800 sq ft",
+    area: "Details on request",
     description:
-      "Ready-to-build residential plot in a developing locality with excellent road connectivity and clear titles.",
+      "A premium villa project publicly referenced by The Shivara Group. Contact the team for pricing, floor plans, and site visit details.",
   },
   {
     id: 3,
-    title: "Commercial Space",
-    location: "Cantt Area, Bareilly",
-    price: "₹75 Lakh",
-    type: "Commercial",
+    title: "King’s Crest / Gated Villa Options",
+    location: "Dohra Road & Bareilly",
+    price: "Contact for pricing",
+    type: "Villas",
     typeColor: "bg-orange-100 text-orange-700",
-    area: "2,200 sq ft",
+    area: "Details on request",
     description:
-      "Prime commercial space in Bareilly Cantt with high footfall, ground floor access, and excellent visibility.",
+      "Instagram posts reference gated villa communities and 3BHK homes in Bareilly. Exact inventory and pricing should be confirmed manually.",
   },
 ];
 
@@ -875,15 +875,15 @@ const reasons = [
   },
   {
     icon: "🎁",
-    title: "Zero Brokerage on Select Properties",
+    title: "Site-Visit Led Discovery",
     description:
-      "We offer zero-brokerage deals on select properties, making homeownership more affordable for you.",
+      "Public captions repeatedly invite users to call for pricing, floor plans, and physical site visits.",
   },
   {
     icon: "🔍",
     title: "Transparent Deals",
     description:
-      "Full disclosure at every step — no hidden charges, no surprises. What you see is what you get.",
+      "Pricing, floor plans, inventory, and legal details should be verified directly before every booking decision.",
   },
   {
     icon: "📍",
@@ -950,25 +950,25 @@ function WhyChooseUs() {
 
 const testimonials = [
   {
-    name: "Rajesh Kumar Gupta",
-    role: "Homeowner — Civil Lines",
-    rating: 5,
-    text: "The Shivara Group made our home-buying journey incredibly smooth. They understood exactly what we needed and found us a beautiful apartment in Civil Lines within our budget. The team was transparent throughout and there were absolutely no hidden charges. Highly recommended!",
-    initials: "RG",
+    name: "Manual Completion Required",
+    role: "Customer Testimonials",
+    rating: 0,
+    text: "Public customer testimonials were not visible from the available Instagram profile snippets. Add verified client testimonials here after approval.",
+    initials: "MC",
   },
   {
-    name: "Priya Sharma",
-    role: "Plot Buyer — Pilibhit Road",
-    rating: 5,
-    text: "I was sceptical about buying land in Bareilly from Delhi, but the Shivara Group team handled everything remotely — site visits, documentation, registration. They kept me updated at every step. The plot I purchased has already appreciated 30% in two years!",
-    initials: "PS",
+    name: "Public Source Used",
+    role: "Instagram Profile",
+    rating: 0,
+    text: "Website copy is aligned with public Instagram messaging: bespoke real estate strategies, Bareilly + Delhi NCR, Aurika, villas, plots, pricing/floor plans/site visits.",
+    initials: "IG",
   },
   {
-    name: "Mohammad Tariq",
-    role: "Commercial Property — Cantt",
-    rating: 5,
-    text: "We were looking for a commercial space for our clinic expansion. Shivara Group showed us multiple options and helped us negotiate a great deal in Cantt area. Their knowledge of the local market is unmatched. Truly professional service.",
-    initials: "MT",
+    name: "Verification Needed",
+    role: "Before Publishing Testimonials",
+    rating: 0,
+    text: "Do not publish invented customer names or quotes. Replace this card only with real reviews supplied by the company or publicly visible testimonials.",
+    initials: "VN",
   },
 ];
 
@@ -1003,7 +1003,7 @@ function Testimonials() {
             >
               {/* Star rating */}
               <div className="flex items-center gap-1 mb-4">
-                {Array.from({ length: t.rating }).map((_, i) => (
+                {Array.from({ length: Math.max(t.rating, 1) }).map((_, i) => (
                   <svg
                     key={i}
                     xmlns="http://www.w3.org/2000/svg"

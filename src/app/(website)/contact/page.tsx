@@ -185,15 +185,12 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Embedded Maps Mockup */}
-            <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm relative h-48 bg-[#0F1B2D]/5">
-              <iframe
-                title="Office Location Map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d28073.4913222379!2d79.40058869805903!3d28.361546765057037!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390a16086b97db57%3A0xe5a3c9b0e27f00d8!2sCivil%20Lines%2C%20Bareilly%2C%20Uttar%20Pradesh!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
-                className="w-full h-full border-0 grayscale opacity-80"
-                allowFullScreen
-                loading="lazy"
-              />
+            {/* Maps placeholder */}
+            <div className="rounded-xl overflow-hidden border border-gray-200 shadow-sm relative h-48 bg-[#0F1B2D]/5 flex items-center justify-center px-6 text-center">
+              <p className="text-sm text-gray-500 leading-relaxed">
+                Google Maps location was not publicly available from Instagram.
+                Add the verified office map embed here after manual confirmation.
+              </p>
             </div>
           </div>
 

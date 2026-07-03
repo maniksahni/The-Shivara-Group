@@ -8,76 +8,76 @@ export const revalidate = 0; // Fetch fresh properties on every request
 
 const defaultProperties = [
   {
-    id: "civil-lines-3bhk",
-    title: "3BHK Luxury Apartment in Civil Lines",
-    description: "Premium 3BHK flat located in Bareilly's most elite neighborhood. Offers modular kitchen, marble flooring, and 24x7 elevator and security.",
-    price: "₹45 Lakh",
-    location: "Civil Lines, Bareilly",
+    id: "aurika-the-residences",
+    title: "Aurika The Residences",
+    description: "Public Instagram content highlights The Residences by Aurika as a premium Bareilly opportunity. Call The Shivara Group for verified pricing, floor plans, and site visits.",
+    price: "Contact for pricing",
+    location: "Bareilly",
     type: PropertyType.APARTMENT,
-    bedrooms: 3,
-    bathrooms: 2,
-    area: "1,450 sqft",
-    amenities: ["Modular Kitchen", "Marble Flooring", "Lift", "Security Guard", "Parking"],
+    bedrooms: null,
+    bathrooms: null,
+    area: "Floor plans on request",
+    amenities: ["Premium Residences", "Bareilly", "Site Visit Available", "Floor Plans on Request"],
     images: [],
     isActive: true,
     isFeatured: true,
   },
   {
-    id: "pilibhit-road-villa",
-    title: "4BHK Independent Villa",
-    description: "Beautiful independent duplex villa with a small garden, spacious balcony, modular fixtures, and separate servant quarter.",
-    price: "₹85 Lakh",
-    location: "Pilibhit Road, Bareilly",
+    id: "amara-villas-bareilly",
+    title: "Amara Villas by Aurika",
+    description: "A premium villa project publicly referenced by The Shivara Group. Exact availability and pricing should be confirmed directly with the team.",
+    price: "Contact for pricing",
+    location: "Bareilly",
     type: PropertyType.VILLA,
-    bedrooms: 4,
-    bathrooms: 4,
-    area: "2,400 sqft",
-    amenities: ["Duplex", "Private Lawn", "Balcony", "Security Systems", "Servant Room"],
+    bedrooms: null,
+    bathrooms: null,
+    area: "Details on request",
+    amenities: ["Villa Community", "Premium Living", "Pricing on Request", "Site Visit Available"],
     images: [],
     isActive: true,
     isFeatured: true,
   },
   {
-    id: "cantt-plot",
-    title: "Residential Plot near Cantt Area",
-    description: "East-facing residential plot in a gated colony. Highly secure locality, close to schools and shopping centers. Clear titles and registry ready.",
-    price: "₹18 Lakh",
-    location: "Cantt Area, Bareilly",
+    id: "the-residences-plots",
+    title: "The Residences by Aurika — Plots",
+    description: "Public posts describe plot ownership at The Residences by Aurika. Contact The Shivara Group for official inventory and site visit scheduling.",
+    price: "Contact for pricing",
+    location: "Bareilly",
     type: PropertyType.PLOT,
     bedrooms: null,
     bathrooms: null,
-    area: "1,800 sqft",
-    amenities: ["Gated Colony", "24/7 Water Supply", "East Facing", "Registry Ready"],
+    area: "Details on request",
+    amenities: ["Residential Plots", "Aurika", "Bareilly", "Site Visit Available"],
     images: [],
     isActive: true,
     isFeatured: false,
   },
   {
-    id: "kutchery-shop",
-    title: "Commercial Retail Space",
-    description: "Prime ground floor retail showroom location near Kutchery Road. High visibility and high footfall. Ideal for banks, retail outlets, or offices.",
-    price: "₹75 Lakh",
-    location: "Kutchery Road, Bareilly",
-    type: PropertyType.COMMERCIAL,
+    id: "rajendar-nagar-3bhk",
+    title: "Rajendar Nagar 3BHK Homes",
+    description: "Instagram snippets reference 3BHK homes in Rajendar Nagar, Bareilly. Exact unit details and price should be confirmed manually.",
+    price: "Contact for pricing",
+    location: "Rajendar Nagar, Bareilly",
+    type: PropertyType.APARTMENT,
     bedrooms: null,
-    bathrooms: 1,
-    area: "2,200 sqft",
-    amenities: ["Prime Location", "Ground Floor", "High Footfall", "Glass Front"],
+    bathrooms: null,
+    area: "Details on request",
+    amenities: ["3BHK Homes", "Rajendar Nagar", "Bareilly", "Call for Details"],
     images: [],
     isActive: true,
     isFeatured: true,
   },
   {
-    id: "nawabganj-farmhouse",
-    title: "Premium Weekend Farmhouse",
-    description: "Lush green weekend getaway farmhouse on Nawabganj Road. Features a small plunge pool, organic vegetable garden, and 2-room cottage.",
-    price: "₹1.2 Cr",
-    location: "Nawabganj Road, Bareilly",
-    type: PropertyType.FARMHOUSE,
-    bedrooms: 2,
-    bathrooms: 2,
-    area: "5,000 sqft",
-    amenities: ["Plunge Pool", "Organic Garden", "Boundary Wall", "Cottage", "Fruit Trees"],
+    id: "flower-city-bareilly",
+    title: "Flower City, Bareilly",
+    description: "Flower City appears in public Instagram snippets as an investment/property highlight. Confirm official pricing and inventory before publishing final details.",
+    price: "Contact for pricing",
+    location: "Bareilly",
+    type: PropertyType.PLOT,
+    bedrooms: null,
+    bathrooms: null,
+    area: "Details on request",
+    amenities: ["Investment Highlight", "Bareilly", "Inventory on Request", "Site Visit Available"],
     images: [],
     isActive: true,
     isFeatured: false,
@@ -91,6 +91,15 @@ type PublicProperty = Omit<
   amenities: string[];
   images: string[];
 };
+
+const sampleSeedTitles = new Set([
+  "3 BHK Premium Apartment — Civil Lines",
+  "Luxury 4 BHK Villa — Pilibhit Road",
+  "Residential Plot — Cantt Area",
+  "Commercial Shop — Kutchery Road",
+  "2 BHK Ready-to-Move Apartment — Subhash Nagar",
+  "Farmhouse with Agricultural Land — Nawabganj Road",
+]);
 
 export default async function PropertiesPage() {
   let properties: PublicProperty[] = [];
@@ -122,8 +131,13 @@ export default async function PropertiesPage() {
     }
   }
 
-  // Fallback to default properties if DB is empty or fails
-  if (properties.length === 0) {
+  const onlySampleSeedData =
+    properties.length > 0 &&
+    properties.every((property) => sampleSeedTitles.has(property.title));
+
+  // Fallback to Instagram-aligned public catalog if DB is empty, fails, or only
+  // contains starter seed records.
+  if (properties.length === 0 || onlySampleSeedData) {
     properties = defaultProperties;
   }
 
@@ -141,7 +155,7 @@ export default async function PropertiesPage() {
             Our Property Listings
           </h1>
           <p className="mt-2 max-w-xl text-white/70 text-sm sm:text-base">
-            Explore premium houses, commercial spaces, and residential plots in Bareilly with complete transparency and zero brokerage on select deals.
+            Explore publicly highlighted opportunities from The Shivara Group, including Aurika, villa communities, plots, and 3BHK homes. Pricing and inventory should be confirmed directly.
           </p>
         </div>
       </section>

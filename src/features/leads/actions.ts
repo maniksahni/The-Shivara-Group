@@ -35,7 +35,7 @@ const createLeadSchema = z.object({
   status: z.nativeEnum(LeadStatus).optional(),
   priority: z.nativeEnum(Priority).optional(),
   assignedToId: z.string().optional(),
-  followUpDate: z.string().datetime().optional(),
+  followUpDate: z.union([z.string().refine((value) => !Number.isNaN(new Date(value).getTime()), 'Valid follow-up date required'), z.null()]).optional(),
 })
 
 const updateLeadSchema = createLeadSchema.partial()
@@ -148,6 +148,12 @@ function getDayRange(offsetDays = 0) {
   return { start, end }
 }
 
+function parseOptionalDateTime(value: string | null | undefined) {
+  if (!value) return null
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? null : date
+}
+
 async function requireCrmUser() {
   const session = await getServerSession()
   if (!session?.user?.id) {
@@ -183,7 +189,7 @@ export async function createLead(
           priority: validated.priority ?? 'MEDIUM',
           assignedToId: validated.assignedToId ?? null,
           status: validated.status ?? 'NEW',
-          followUpDate: validated.followUpDate ? new Date(validated.followUpDate) : null,
+          followUpDate: parseOptionalDateTime(validated.followUpDate),
         },
         select: { id: true },
       })
@@ -245,7 +251,10 @@ export async function updateLead(
           priority: validated.priority,
           assignedToId: validated.assignedToId,
           status: validated.status,
-          followUpDate: validated.followUpDate ? new Date(validated.followUpDate) : undefined,
+          followUpDate:
+            validated.followUpDate === undefined
+              ? undefined
+              : parseOptionalDateTime(validated.followUpDate),
           updatedAt: new Date(),
         },
         select: { id: true },

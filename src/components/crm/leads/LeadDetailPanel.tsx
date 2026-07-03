@@ -74,9 +74,10 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
 
     setScheduling(true);
     try {
+      const scheduledAtIso = new Date(visitDate).toISOString();
       const res = await scheduleSiteVisit(
         lead.id,
-        new Date(visitDate),
+        scheduledAtIso,
         visitLocation.trim(),
         visitNotes.trim() || undefined
       );

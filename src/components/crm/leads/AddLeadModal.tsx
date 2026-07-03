@@ -37,6 +37,27 @@ interface AddLeadModalProps {
   };
 }
 
+function toDateTimeLocalValue(value: Date | string | null | undefined) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const pad = (part: number) => String(part).padStart(2, "0");
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+function toIsoOrNull(value: string | null | undefined) {
+  if (!value) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
+
 export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState("");
@@ -73,9 +94,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
       status: lead?.status || LeadStatus.NEW,
       priority: lead?.priority || Priority.MEDIUM,
       assignedToId: lead?.assignedToId || "",
-      followUpDate: lead?.followUpDate
-        ? new Date(lead.followUpDate).toISOString().slice(0, 16)
-        : "",
+      followUpDate: toDateTimeLocalValue(lead?.followUpDate),
     },
   });
 
@@ -89,7 +108,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
       preferredLocation: data.preferredLocation || undefined,
       propertyType: data.propertyType || undefined,
       assignedToId: data.assignedToId || undefined,
-      followUpDate: data.followUpDate ? new Date(data.followUpDate).toISOString() : undefined,
+      followUpDate: toIsoOrNull(data.followUpDate),
     };
 
     try {

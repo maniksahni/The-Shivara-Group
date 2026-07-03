@@ -54,6 +54,21 @@ const PropertyTypeEnum = z.enum([
 
 const RoleEnum = z.enum(['ADMIN', 'AGENT'])
 
+const optionalDateTimeInput = (message: string) =>
+  z
+    .union([
+      z.literal(''),
+      z
+        .string()
+        .trim()
+        .refine((value) => !Number.isNaN(new Date(value).getTime()), message),
+      z.null(),
+    ])
+    .optional()
+
+const optionalFormString = (schema: z.ZodString) =>
+  z.union([z.literal(''), schema, z.null()]).optional()
+
 // ─────────────────────────────────────────────────────────────────────────────
 // 1. Login schema
 // ─────────────────────────────────────────────────────────────────────────────
@@ -101,22 +116,22 @@ export const leadSchema = z.object({
     .trim(),
 
   /** Optional WhatsApp number (may differ from primary phone). */
-  whatsappNumber: z
-    .string()
-    .min(10, 'WhatsApp number must be at least 10 digits')
-    .max(15, 'WhatsApp number must be at most 15 digits')
-    .trim()
-    .optional()
-    .nullable(),
+  whatsappNumber: optionalFormString(
+    z
+      .string()
+      .min(10, 'WhatsApp number must be at least 10 digits')
+      .max(15, 'WhatsApp number must be at most 15 digits')
+      .trim(),
+  ),
 
   /** Optional e-mail address. */
-  email: z
-    .string()
-    .email('Please enter a valid email address')
-    .toLowerCase()
-    .trim()
-    .optional()
-    .nullable(),
+  email: optionalFormString(
+    z
+      .string()
+      .email('Please enter a valid email address')
+      .toLowerCase()
+      .trim(),
+  ),
 
   /**
    * Budget expressed as a string so that it can hold values like
@@ -138,7 +153,7 @@ export const leadSchema = z.object({
     .nullable(),
 
   /** Type of property the prospect is looking for. */
-  propertyType: PropertyTypeEnum.optional().nullable(),
+  propertyType: z.union([z.literal(''), PropertyTypeEnum, z.null()]).optional(),
 
   /** Channel through which the lead was acquired. */
   source: LeadSourceEnum,
@@ -151,17 +166,11 @@ export const leadSchema = z.object({
 
   /** ID of the agent this lead is assigned to. */
   assignedToId: z
-    .string()
-    .cuid('Invalid agent ID')
-    .optional()
-    .nullable(),
+    .union([z.literal(''), z.string().cuid('Invalid agent ID'), z.null()])
+    .optional(),
 
   /** Scheduled date-time for the next follow-up action. */
-  followUpDate: z
-    .string()
-    .datetime({ message: 'Follow-up date must be a valid ISO datetime string' })
-    .optional()
-    .nullable(),
+  followUpDate: optionalDateTimeInput('Follow-up date must be a valid date and time'),
 })
 
 export type LeadInput = z.infer<typeof leadSchema>
@@ -380,11 +389,7 @@ export const enquirySchema = z.object({
 
   status: z.enum(['NEW', 'SITE_VISIT_SCHEDULED']).default('NEW'),
 
-  followUpDate: z
-    .string()
-    .datetime('Site visit date must be a valid ISO datetime')
-    .optional()
-    .nullable(),
+  followUpDate: optionalDateTimeInput('Site visit date must be a valid date and time'),
 
   /** Optional free-text message from the enquirer. */
   message: z

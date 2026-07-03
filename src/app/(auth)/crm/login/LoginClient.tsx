@@ -8,21 +8,20 @@
  * Layout:
  *  • Left half  — dark navy panel with brand logo, tagline, and a purely
  *                 CSS luxury art graphic (animated gold circles / lines).
- *  • Right half — white/slate card containing the login form.
+ *  • Right half — white/slate card containing Google login.
  *
  * Behaviour:
- *  - Uses `signIn` from next-auth/react with the 'credentials' provider.
- *  - On success: redirects to /crm/dashboard.
+ *  - Uses `signIn` from next-auth/react with the 'google' provider.
+ *  - On success: redirects to /crm/dashboard via NextAuth callbackUrl.
  *  - On failure: displays the error message from NextAuth.
- *  - Password field has show/hide toggle.
  *  - Google sign-in is available for the configured authorised CRM email.
  *  - Fully responsive: panels stack vertically on mobile.
  */
 
 import React, { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
-import { Eye, EyeOff, Loader2, AlertCircle, Lock, Mail } from 'lucide-react'
+import { Loader2, AlertCircle, ShieldCheck } from 'lucide-react'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CSS luxury art graphic — pure CSS gold circles and lines
@@ -108,10 +107,6 @@ function LuxuryGraphic() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface FormState {
-  email: string
-  password: string
-  showPassword: boolean
-  loading: boolean
   googleLoading: boolean
   error: string | null
 }
@@ -136,71 +131,15 @@ function getAuthErrorMessage(error: string | null) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function CRMLoginClient() {
-  const router = useRouter()
   const searchParams = useSearchParams()
 
   // Restore any server-side auth error surfaced via the URL
   const urlError = searchParams.get('error')
 
   const [form, setForm] = useState<FormState>({
-    email: '',
-    password: '',
-    showPassword: false,
-    loading: false,
     googleLoading: false,
     error: getAuthErrorMessage(urlError),
   })
-
-  // ── Field update helper ────────────────────────────────────────────────
-  function update<K extends keyof FormState>(key: K, value: FormState[K]) {
-    setForm((prev) => ({ ...prev, [key]: value, error: null }))
-  }
-
-  // ── Form submission ────────────────────────────────────────────────────
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-
-    if (!form.email.trim() || !form.password) {
-      setForm((prev) => ({
-        ...prev,
-        error: 'Please enter your email and password.',
-      }))
-      return
-    }
-
-    setForm((prev) => ({ ...prev, loading: true, error: null }))
-
-    try {
-      const result = await signIn('credentials', {
-        email: form.email.trim().toLowerCase(),
-        password: form.password,
-        redirect: false,
-      })
-
-      if (result?.error) {
-        setForm((prev) => ({
-          ...prev,
-          loading: false,
-          error:
-            result.error === 'CredentialsSignin'
-              ? 'Invalid email or password.'
-              : result.error ?? 'Sign in failed. Please try again.',
-        }))
-        return
-      }
-
-      // Success — navigate to dashboard (or callbackUrl if present)
-      const callbackUrl = searchParams.get('callbackUrl') ?? '/crm/dashboard'
-      router.push(callbackUrl)
-      router.refresh()
-    } catch {
-      setForm((prev) => ({
-        ...prev,
-        loading: false,
-        error: 'An unexpected error occurred. Please try again.',
-      }))
-    }
-  }
 
   async function handleGoogleSignIn() {
     setForm((prev) => ({ ...prev, googleLoading: true, error: null }))
@@ -293,7 +232,7 @@ export default function CRMLoginClient() {
           <div className="mb-8 text-center">
             <h1 className="text-2xl font-bold text-white">Sign In to CRM</h1>
             <p className="mt-1.5 text-sm text-slate-400">
-              Use your authorised Shivara account to access the CRM
+              Continue with your authorised Google account
             </p>
           </div>
 
@@ -312,8 +251,8 @@ export default function CRMLoginClient() {
           <button
             type="button"
             onClick={handleGoogleSignIn}
-            disabled={form.loading || form.googleLoading}
-            className="mb-5 flex w-full items-center justify-center gap-3 rounded-lg border border-slate-700 bg-white px-4 py-2.5 text-sm font-bold text-slate-900 transition-all duration-150 hover:bg-slate-100 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+            disabled={form.googleLoading}
+            className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-700 bg-white px-4 py-3.5 text-sm font-bold text-slate-900 shadow-2xl shadow-black/20 transition-all duration-150 hover:bg-slate-100 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {form.googleLoading ? (
               <>
@@ -330,129 +269,10 @@ export default function CRMLoginClient() {
             )}
           </button>
 
-          <div className="mb-5 flex items-center gap-3">
-            <div className="h-px flex-1 bg-slate-800" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600">
-              or use password
-            </span>
-            <div className="h-px flex-1 bg-slate-800" />
-          </div>
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} noValidate className="space-y-5">
-            {/* Email field */}
-            <div>
-              <label
-                htmlFor="email"
-                className="mb-1.5 block text-sm font-medium text-slate-300"
-              >
-                Email Address
-              </label>
-              <div className="relative">
-                <Mail
-                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500"
-                  aria-hidden="true"
-                />
-                <input
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  placeholder="you@shivaragroup.com"
-                  value={form.email}
-                  onChange={(e) => update('email', e.target.value)}
-                  disabled={form.loading}
-                  required
-                  className={`
-                    w-full rounded-lg border border-slate-700 bg-slate-800
-                    pl-10 pr-4 py-2.5 text-sm text-white placeholder:text-slate-500
-                    focus:outline-none focus:ring-2 focus:border-transparent
-                    disabled:opacity-50 disabled:cursor-not-allowed
-                    transition-all
-                  `}
-                  style={
-                    form.email
-                      ? { boxShadow: '0 0 0 2px #C9A84C40' }
-                      : undefined
-                  }
-                  aria-required="true"
-                />
-              </div>
-            </div>
-
-            {/* Password field */}
-            <div>
-              <label
-                htmlFor="password"
-                className="mb-1.5 block text-sm font-medium text-slate-300"
-              >
-                Password
-              </label>
-              <div className="relative">
-                <Lock
-                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500"
-                  aria-hidden="true"
-                />
-                <input
-                  id="password"
-                  type={form.showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
-                  placeholder="••••••••"
-                  value={form.password}
-                  onChange={(e) => update('password', e.target.value)}
-                  disabled={form.loading}
-                  required
-                  className={`
-                    w-full rounded-lg border border-slate-700 bg-slate-800
-                    pl-10 pr-11 py-2.5 text-sm text-white placeholder:text-slate-500
-                    focus:outline-none focus:ring-2 focus:border-transparent
-                    disabled:opacity-50 disabled:cursor-not-allowed
-                    transition-all
-                  `}
-                  style={
-                    form.password
-                      ? { boxShadow: '0 0 0 2px #C9A84C40' }
-                      : undefined
-                  }
-                  aria-required="true"
-                />
-                {/* Show / hide toggle */}
-                <button
-                  type="button"
-                  onClick={() => update('showPassword', !form.showPassword)}
-                  disabled={form.loading}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors disabled:opacity-50"
-                  aria-label={form.showPassword ? 'Hide password' : 'Show password'}
-                >
-                  {form.showPassword ? (
-                    <EyeOff className="h-4 w-4" aria-hidden="true" />
-                  ) : (
-                    <Eye className="h-4 w-4" aria-hidden="true" />
-                  )}
-                </button>
-              </div>
-            </div>
-
-            {/* Submit button */}
-            <button
-              type="submit"
-              disabled={form.loading || !form.email || !form.password}
-              className="flex w-full items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-bold text-slate-900 transition-all duration-150 hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ backgroundColor: '#C9A84C' }}
-            >
-              {form.loading ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                  Signing In…
-                </>
-              ) : (
-                'Sign In to CRM'
-              )}
-            </button>
-          </form>
-
           {/* Authorised account note */}
           <div className="mt-8 rounded-lg border border-slate-700/60 bg-slate-900/50 px-4 py-4">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-slate-500">
+            <p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-slate-500">
+              <ShieldCheck className="h-3.5 w-3.5 text-[#C9A84C]" />
               Secure CRM Access
             </p>
 

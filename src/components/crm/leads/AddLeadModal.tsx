@@ -71,7 +71,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
     "min-h-12 w-full rounded-2xl border border-white/10 bg-[#111827]/80 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-[#F4B400]/70 focus:bg-[#111827] focus:ring-4 focus:ring-[#F4B400]/10";
   const labelClass = "mb-1.5 block text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400";
   const sectionClass =
-    "rounded-[24px] border border-white/10 bg-white/[0.035] p-4 shadow-xl shadow-black/10 sm:p-5";
+    "rounded-[22px] border border-white/10 bg-white/[0.035] p-4 shadow-xl shadow-black/10";
   const sectionTitleClass =
     "mb-4 flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-[#F4B400]";
 
@@ -178,27 +178,27 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-[#081120]/75 backdrop-blur-md"
+            className="absolute inset-0 bg-[#081120]/55 backdrop-blur-[2px] md:bg-[#081120]/35"
             onClick={handleClose}
           />
 
           {/* Slide-over Container */}
           <motion.div
-            initial={{ y: typeof window !== "undefined" && window.innerWidth < 768 ? 720 : 0, x: typeof window !== "undefined" && window.innerWidth >= 768 ? 520 : 0, opacity: 0 }}
+            initial={{ y: typeof window !== "undefined" && window.innerWidth < 768 ? 720 : 0, x: typeof window !== "undefined" && window.innerWidth >= 768 ? 440 : 0, opacity: 0 }}
             animate={{ x: 0, y: 0, opacity: 1 }}
-            exit={{ y: typeof window !== "undefined" && window.innerWidth < 768 ? 720 : 0, x: typeof window !== "undefined" && window.innerWidth >= 768 ? 520 : 0, opacity: 0 }}
+            exit={{ y: typeof window !== "undefined" && window.innerWidth < 768 ? 720 : 0, x: typeof window !== "undefined" && window.innerWidth >= 768 ? 440 : 0, opacity: 0 }}
             transition={{ type: "spring", damping: 28, stiffness: 260 }}
-            className="relative z-10 flex max-h-[96dvh] w-full flex-col overflow-hidden rounded-t-[30px] border border-white/10 bg-[#0E1726]/98 text-white shadow-2xl shadow-black/50 backdrop-blur-2xl md:h-full md:max-h-none md:max-w-2xl md:rounded-l-[30px] md:rounded-tr-none md:border-y-0 md:border-r-0"
+            className="relative z-10 flex max-h-[96dvh] w-full flex-col overflow-hidden rounded-t-[30px] border border-white/10 bg-[#0E1726]/98 text-white shadow-2xl shadow-black/50 backdrop-blur-2xl md:h-full md:max-h-none md:w-[440px] md:max-w-[440px] md:rounded-l-[26px] md:rounded-tr-none md:border-y-0 md:border-r-0 xl:w-[480px] xl:max-w-[480px]"
           >
             {/* Header */}
-            <div className="flex flex-shrink-0 items-start justify-between gap-4 border-b border-white/10 bg-gradient-to-r from-white/[0.07] to-transparent px-4 py-5 md:px-6">
+            <div className="flex flex-shrink-0 items-start justify-between gap-4 border-b border-white/10 bg-gradient-to-r from-white/[0.07] to-transparent px-4 py-4 md:px-5">
               <div className="min-w-0">
                 <div className="mb-3 h-1 w-12 rounded-full bg-white/20 md:hidden" />
                 <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#F4B400]">Lead workspace</p>
-                <h3 className="mt-1 truncate text-xl font-black text-white md:text-2xl">
+                <h3 className="mt-1 truncate text-xl font-black text-white">
                   {isEditMode ? "Edit Lead Information" : "Create New Lead"}
                 </h3>
-                <p className="mt-1 text-xs text-slate-400">
+                <p className="mt-1 text-xs leading-5 text-slate-400">
                   Capture enquiry details, assignment, and the next follow-up in one clean flow.
                 </p>
               </div>
@@ -213,7 +213,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
             </div>
 
             {/* Scrollable Form Body */}
-            <form onSubmit={handleSubmit(onSubmit)} className="flex-grow space-y-4 overflow-y-auto px-4 py-5 pb-28 md:space-y-5 md:p-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex-grow space-y-4 overflow-y-auto px-4 py-5 pb-28 md:px-5 md:py-4">
               {error && (
                 <div className="flex items-start gap-3 rounded-2xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-red-200">
                   <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
@@ -227,7 +227,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                   <UserRound className="h-4 w-4" />
                   Contact Details
                 </h4>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="grid grid-cols-1 gap-4">
                   <div>
                     <label className={labelClass}>Full Name *</label>
                     <input
@@ -251,7 +251,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                   </div>
                 </div>
 
-                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="mt-4 grid grid-cols-1 gap-4">
                   <div>
                     <label className={labelClass}>WhatsApp Number</label>
                     <input
@@ -281,7 +281,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                   <Home className="h-4 w-4" />
                   Requirements
                 </h4>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4">
                   <div>
                     <label className={labelClass}>Budget</label>
                     <input
@@ -323,7 +323,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                   <Settings2 className="h-4 w-4" />
                   CRM Settings
                 </h4>
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <div className="grid grid-cols-1 gap-4">
                   <div>
                     <label className={labelClass}>Lead Source *</label>
                     <select
@@ -371,7 +371,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                   </div>
                 </div>
 
-                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                <div className="mt-4 grid grid-cols-1 gap-4">
                   <div>
                     <label className={labelClass}>Assign Sales Agent</label>
                     <select
@@ -401,7 +401,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
               </div>
 
               {/* Bottom Footer Actions inside Modal Form */}
-              <div className="sticky bottom-0 -mx-4 flex flex-shrink-0 justify-end gap-3 border-t border-white/10 bg-[#0E1726]/95 px-4 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur md:static md:mx-0 md:bg-transparent md:px-0 md:pt-6">
+              <div className="sticky bottom-0 -mx-4 flex flex-shrink-0 justify-end gap-3 border-t border-white/10 bg-[#0E1726]/95 px-4 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur md:-mx-5 md:px-5">
                 <button
                   type="button"
                   onClick={handleClose}

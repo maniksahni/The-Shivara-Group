@@ -117,6 +117,22 @@ async function main() {
   })
   console.log(`   ✅  Agent 3: ${agent3.name} <${agent3.email}>`)
 
+  // Avoid duplicate demo inventory/leads when the seed is run more than once.
+  // Users are safely upserted above; sample properties/leads are intentionally
+  // skipped if any existing CRM data is present.
+  const [existingProperties, existingLeads] = await Promise.all([
+    prisma.property.count(),
+    prisma.lead.count(),
+  ])
+
+  if (existingProperties > 0 || existingLeads > 0) {
+    console.log('\n🛡️  Existing CRM data found — skipping sample properties and leads.')
+    console.log(`   Properties: ${existingProperties}`)
+    console.log(`   Leads: ${existingLeads}`)
+    console.log('   Users were still upserted safely.\n')
+    return
+  }
+
   // ───────────────────────────────────────────────────────────────────────────
   // Step 2 — Properties
   // ───────────────────────────────────────────────────────────────────────────

@@ -16,11 +16,14 @@
  */
 
 import { redirect } from 'next/navigation'
+import { Plus } from 'lucide-react'
 
 import { getServerSession } from '@/lib/auth'
+import prisma, { isDatabaseConfigured } from '@/lib/prisma'
 import CRMSidebar from '@/components/crm/Sidebar'
 import CRMTopbar from '@/components/crm/Topbar'
 import CRMProviders from '@/components/crm/CRMProviders'
+import AddLeadModal from '@/components/crm/leads/AddLeadModal'
 
 // ---------------------------------------------------------------------------
 // Props
@@ -46,6 +49,14 @@ export default async function CRMLayout({ children }: CRMLayoutProps) {
   if (!session) {
     redirect('/crm/login')
   }
+
+  const agents = isDatabaseConfigured
+    ? await prisma.user.findMany({
+        where: { isActive: true },
+        select: { id: true, name: true, email: true },
+        orderBy: { name: 'asc' },
+      }).catch(() => [])
+    : []
 
   // ── Shell ────────────────────────────────────────────────────────────────
   // We pass the raw session to SessionProvider so that the initial client-side
@@ -80,6 +91,18 @@ export default async function CRMLayout({ children }: CRMLayoutProps) {
           <main className="relative z-0 flex-1 overflow-y-auto px-3 pb-24 pt-4 sm:px-5 lg:px-8 lg:pb-8">
             {children}
           </main>
+
+          <AddLeadModal
+            agents={agents}
+            trigger={
+              <button
+                className="fixed bottom-[92px] right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#F4B400] text-[#081120] shadow-2xl shadow-[#F4B400]/30 ring-1 ring-white/20 transition active:scale-95 md:hidden"
+                aria-label="Add lead"
+              >
+                <Plus className="h-6 w-6" />
+              </button>
+            }
+          />
         </div>
       </div>
     </CRMProviders>

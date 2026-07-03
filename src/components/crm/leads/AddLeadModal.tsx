@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { leadSchema, LeadInput } from "@/lib/validations";
@@ -40,8 +41,17 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState("");
   const { toast } = useToast();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const isEditMode = !!lead;
+
+  useEffect(() => {
+    if (!isEditMode && searchParams.get("addLead") === "1") {
+      setIsOpen(true);
+    }
+  }, [isEditMode, searchParams]);
 
   // Initialize Form
   const {
@@ -69,7 +79,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
     },
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: LeadInput) => {
     setError("");
     const formattedData = {
       ...data,
@@ -102,10 +112,15 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
 
       setIsOpen(false);
       if (!isEditMode) reset();
-      // Reload page to reflect changes
-      window.location.reload();
-    } catch (err: any) {
-      setError(err.message || "Failed to process lead. Please check inputs.");
+      if (searchParams.get("addLead") === "1") {
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete("addLead");
+        const next = params.toString();
+        router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
+      }
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to process lead. Please check inputs.");
     }
   };
 
@@ -117,11 +132,17 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
     setIsOpen(false);
     setError("");
     if (!isEditMode) reset();
+    if (searchParams.get("addLead") === "1") {
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("addLead");
+      const next = params.toString();
+      router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
+    }
   };
 
   return (
     <>
-      <span onClick={handleOpen} style={{ display: 'contents' }}>{trigger}</span>
+      <span onClickCapture={handleOpen}>{trigger}</span>
 
       <AnimatePresence>
       {isOpen && (
@@ -137,14 +158,14 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
 
           {/* Slide-over Container */}
           <motion.div
-            initial={{ x: 520, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: 520, opacity: 0 }}
+            initial={{ y: typeof window !== "undefined" && window.innerWidth < 768 ? 720 : 0, x: typeof window !== "undefined" && window.innerWidth >= 768 ? 520 : 0, opacity: 0 }}
+            animate={{ x: 0, y: 0, opacity: 1 }}
+            exit={{ y: typeof window !== "undefined" && window.innerWidth < 768 ? 720 : 0, x: typeof window !== "undefined" && window.innerWidth >= 768 ? 520 : 0, opacity: 0 }}
             transition={{ type: "spring", damping: 28, stiffness: 260 }}
-            className="relative z-10 flex h-full w-full max-w-2xl flex-col overflow-hidden border-l border-white/10 bg-[#0E1726]/95 text-white shadow-2xl shadow-black/40 backdrop-blur-2xl sm:rounded-l-[28px]"
+            className="relative z-10 flex h-full w-full flex-col overflow-hidden bg-[#0E1726]/98 text-white shadow-2xl shadow-black/40 backdrop-blur-2xl md:max-w-2xl md:rounded-l-[28px] md:border-l md:border-white/10"
           >
             {/* Header */}
-            <div className="flex flex-shrink-0 items-center justify-between border-b border-white/10 bg-white/[0.03] px-6 py-5">
+            <div className="flex flex-shrink-0 items-center justify-between border-b border-white/10 bg-white/[0.03] px-4 py-4 md:px-6 md:py-5">
               <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#F4B400]">Lead workspace</p>
               <h3 className="mt-1 text-xl font-black text-white">
@@ -160,7 +181,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
             </div>
 
             {/* Scrollable Form Body */}
-            <form onSubmit={handleSubmit(onSubmit)} className="flex-grow space-y-6 overflow-y-auto p-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex-grow space-y-6 overflow-y-auto px-4 py-5 pb-28 md:p-6">
               {error && (
                 <div className="flex items-center gap-2 rounded-2xl border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-300">
                   <AlertCircle className="w-4 h-4" />
@@ -337,18 +358,18 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
               </div>
 
               {/* Bottom Footer Actions inside Modal Form */}
-              <div className="flex flex-shrink-0 justify-end gap-3 border-t border-white/10 pt-6">
+              <div className="sticky bottom-0 -mx-4 flex flex-shrink-0 justify-end gap-3 border-t border-white/10 bg-[#0E1726]/95 px-4 py-4 backdrop-blur md:static md:mx-0 md:bg-transparent md:px-0 md:pt-6">
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="rounded-2xl border border-white/10 px-4 py-3 text-xs font-bold text-gray-300 transition hover:bg-white/10 hover:text-white"
+                  className="min-h-11 flex-1 rounded-2xl border border-white/10 px-4 py-3 text-sm font-bold text-gray-300 transition hover:bg-white/10 hover:text-white md:flex-none"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex items-center gap-1.5 rounded-2xl bg-[#F4B400] px-5 py-3 text-xs font-black text-[#081120] transition hover:bg-[#f59e0b] disabled:opacity-50"
+                  className="flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-2xl bg-[#F4B400] px-5 py-3 text-sm font-black text-[#081120] transition hover:bg-[#f59e0b] disabled:opacity-50 md:flex-none"
                 >
                   <Save className="w-4 h-4" />
                   {isSubmitting ? "Saving..." : isEditMode ? "Save Changes" : "Create Lead"}

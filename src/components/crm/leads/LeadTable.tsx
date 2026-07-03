@@ -17,7 +17,7 @@
 
 'use client'
 
-import React, { Fragment, useCallback, useMemo, useState, useTransition } from 'react'
+import React, { useCallback, useMemo, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Eye,
@@ -510,8 +510,101 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
         </div>
       )}
 
+      <div className="space-y-3 md:hidden">
+        {paginated.map((lead) => {
+          const fupClass = followUpClass(lead.followUpDate)
+          return (
+            <article
+              key={lead.id}
+              onClick={() => router.push(`/crm/leads/${lead.id}`)}
+              className="rounded-[22px] border border-white/10 bg-[#162032]/90 p-4 shadow-xl shadow-black/15 backdrop-blur-xl active:scale-[0.99]"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="truncate text-base font-black text-white">{lead.name}</h3>
+                  <p className="mt-1 flex items-center gap-1.5 text-sm text-gray-400">
+                    <Phone className="h-3.5 w-3.5 text-[#F4B400]" />
+                    {lead.phone}
+                  </p>
+                </div>
+                {lead.priority ? (
+                  <PriorityBadge
+                    priority={lead.priority as Parameters<typeof PriorityBadge>[0]['priority']}
+                  />
+                ) : null}
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                <StatusBadge status={lead.status as Parameters<typeof StatusBadge>[0]['status']} />
+                <SourceBadge source={lead.source as Parameters<typeof SourceBadge>[0]['source']} />
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 gap-3 text-xs">
+                <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+                  <p className="font-bold uppercase tracking-[0.16em] text-gray-500">Follow-up</p>
+                  <p className={`mt-1 font-semibold ${fupClass}`}>
+                    {lead.followUpDate ? formatDate(lead.followUpDate) : 'Not set'}
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+                  <p className="font-bold uppercase tracking-[0.16em] text-gray-500">Agent</p>
+                  <p className="mt-1 truncate font-semibold text-gray-200">
+                    {lead.assignedTo?.name ?? 'Unassigned'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 gap-3" onClick={(event) => event.stopPropagation()}>
+                <a
+                  href={`tel:${lead.phone}`}
+                  className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-blue-500/12 text-sm font-black text-blue-300 ring-1 ring-blue-400/20"
+                >
+                  <Phone className="h-4 w-4" />
+                  Call
+                </a>
+                <a
+                  href={`https://wa.me/${lead.whatsappNumber || lead.phone}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-emerald-500/12 text-sm font-black text-emerald-300 ring-1 ring-emerald-400/20"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  WhatsApp
+                </a>
+              </div>
+            </article>
+          )
+        })}
+      </div>
+
+      {totalPages > 1 && (
+        <div className="mt-4 flex items-center justify-between rounded-[22px] border border-white/10 bg-[#162032]/80 p-3 md:hidden">
+          <button
+            type="button"
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page === 1}
+            className="flex min-h-11 items-center gap-2 rounded-2xl border border-white/10 px-4 text-sm font-black text-gray-300 disabled:opacity-40"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Prev
+          </button>
+          <p className="text-xs font-bold text-gray-400">
+            Page <span className="text-white">{page}</span> / {totalPages}
+          </p>
+          <button
+            type="button"
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page === totalPages}
+            className="flex min-h-11 items-center gap-2 rounded-2xl border border-white/10 px-4 text-sm font-black text-gray-300 disabled:opacity-40"
+          >
+            Next
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+
       {/* ── Table wrapper ── */}
-      <div className="overflow-hidden rounded-[24px] border border-white/10 bg-[#162032]/80 shadow-2xl shadow-black/20 backdrop-blur-xl">
+      <div className="hidden overflow-hidden rounded-[24px] border border-white/10 bg-[#162032]/80 shadow-2xl shadow-black/20 backdrop-blur-xl md:block">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-800">
             {/* ── Head ── */}

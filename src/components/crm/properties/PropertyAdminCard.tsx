@@ -255,7 +255,7 @@ export default function PropertyAdminCard({ property }: PropertyAdminCardProps) 
         className="group flex flex-col overflow-hidden rounded-[26px] border border-white/10 bg-[#162032]/85 shadow-2xl shadow-black/20 backdrop-blur-xl transition hover:border-[#F4B400]/30 hover:shadow-[#F4B400]/10"
       >
         {/* ── Image / Placeholder area ─────────────────────────────────── */}
-        <div className="relative h-56 flex-shrink-0 overflow-hidden bg-slate-800">
+        <div className="relative h-48 flex-shrink-0 overflow-hidden bg-slate-800 sm:h-56">
           {primaryImage ? (
             /* Real image */
             // eslint-disable-next-line @next/next/no-img-element
@@ -310,7 +310,7 @@ export default function PropertyAdminCard({ property }: PropertyAdminCardProps) 
         </div>
 
         {/* ── Card body ────────────────────────────────────────────────── */}
-        <div className="flex flex-1 flex-col gap-4 p-5">
+        <div className="flex flex-1 flex-col gap-4 p-4 sm:p-5">
           {/* Type badge + Title */}
           <div className="space-y-1.5">
             <span
@@ -412,7 +412,7 @@ export default function PropertyAdminCard({ property }: PropertyAdminCardProps) 
               trigger={
                 <button
                   type="button"
-                  className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:border-[#C9A84C]/50 hover:text-[#C9A84C]"
+              className="flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-xl border border-slate-700 bg-slate-800 px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:border-[#C9A84C]/50 hover:text-[#C9A84C]"
                 >
                   <Pencil className="h-3.5 w-3.5" />
                   Edit
@@ -424,7 +424,7 @@ export default function PropertyAdminCard({ property }: PropertyAdminCardProps) 
             <button
               type="button"
               onClick={() => setShowDelete(true)}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-red-900/50 bg-red-900/20 px-3 py-2 text-sm font-medium text-red-400 transition-colors hover:border-red-700 hover:bg-red-900/40"
+              className="flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-xl border border-red-900/50 bg-red-900/20 px-3 py-2 text-sm font-medium text-red-400 transition-colors hover:border-red-700 hover:bg-red-900/40"
             >
               <Trash2 className="h-3.5 w-3.5" />
               Delete

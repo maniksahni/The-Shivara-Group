@@ -62,7 +62,7 @@ function LeadList({
   alert?: boolean
 }) {
   return (
-    <section className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
+    <section className="rounded-2xl border border-slate-800 bg-slate-900 p-4 md:p-5">
       <div className="mb-4 flex items-center justify-between gap-3">
         <h3 className="text-sm font-bold text-white">{title}</h3>
         <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${alert ? 'bg-red-500/10 text-red-300' : 'bg-slate-800 text-slate-300'}`}>
@@ -174,7 +174,40 @@ function AgentWorkload({ agents }: { agents: AgentWorkloadItem[] }) {
           Full reports →
         </Link>
       </div>
-      <div className="overflow-x-auto">
+      <div className="space-y-3 md:hidden">
+        {agents.map((agent) => (
+          <article key={agent.id} className="rounded-2xl border border-white/10 bg-slate-950/60 p-4">
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="truncate text-sm font-black text-white">{agent.name}</p>
+                <p className="mt-1 truncate text-xs text-slate-500">{agent.email}</p>
+              </div>
+              <span className="rounded-full bg-[#C9A84C]/10 px-2.5 py-1 text-xs font-black text-[#C9A84C]">
+                {agent.conversionRate}%
+              </span>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
+              <div className="rounded-xl bg-white/[0.04] p-3 ring-1 ring-white/10">
+                <p className="text-slate-500">Workload</p>
+                <p className="mt-1 font-bold text-white">{agent.totalLeads} leads</p>
+              </div>
+              <div className="rounded-xl bg-white/[0.04] p-3 ring-1 ring-white/10">
+                <p className="text-slate-500">Follow-ups</p>
+                <p className="mt-1 font-bold text-amber-300">{agent.pendingFollowUps}</p>
+              </div>
+              <div className="rounded-xl bg-white/[0.04] p-3 ring-1 ring-white/10">
+                <p className="text-slate-500">Today Visits</p>
+                <p className="mt-1 font-bold text-cyan-300">{agent.todayVisits}</p>
+              </div>
+              <div className="rounded-xl bg-white/[0.04] p-3 ring-1 ring-white/10">
+                <p className="text-slate-500">Closed</p>
+                <p className="mt-1 font-bold text-emerald-300">{agent.closedDeals}</p>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+      <div className="hidden md:block">
         <table className="min-w-full text-left text-xs">
           <thead>
             <tr className="border-b border-slate-800 text-slate-400">
@@ -213,7 +246,7 @@ function AgentWorkload({ agents }: { agents: AgentWorkloadItem[] }) {
 
 export default function DailyOperationsPanel({ data, isAdmin }: { data: DailyOperationsData; isAdmin: boolean }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="text-xs font-bold uppercase tracking-[0.25em] text-[#C9A84C]">Daily command center</p>
@@ -230,7 +263,7 @@ export default function DailyOperationsPanel({ data, isAdmin }: { data: DailyOpe
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <MiniMetric label="Today's Leads" value={data.todayLeads.length} icon={ClipboardList} tone="gold" />
         <MiniMetric label="Today's Visits" value={data.todaySiteVisits.length} icon={CalendarClock} tone="cyan" />
         <MiniMetric label="Pending Follow-ups" value={data.pendingFollowUps.length} icon={UserCheck} tone="slate" />

@@ -15,7 +15,7 @@ import { Plus, LayoutList, Kanban } from 'lucide-react'
 
 import { getServerSession } from '@/lib/auth'
 import { getLeads } from '@/features/leads/actions'
-import prisma from '@/lib/prisma'
+import prisma, { isDatabaseConfigured } from '@/lib/prisma'
 
 import LeadFilters from '@/components/crm/leads/LeadFilters'
 import LeadTable from '@/components/crm/leads/LeadTable'
@@ -76,12 +76,12 @@ export default async function LeadsPage({ searchParams }: PageProps) {
   const leads = leadsResult.success ? (leadsResult.data ?? []) : []
 
   // ---- Fetch agents (for filter dropdown, admin only) ----
-  const agents = isAdmin
+  const agents = isAdmin && isDatabaseConfigured
     ? await prisma.user.findMany({
         where: { isActive: true },
         select: { id: true, name: true, email: true },
         orderBy: { name: 'asc' },
-      })
+      }).catch(() => [])
     : []
 
   return (
@@ -106,7 +106,7 @@ export default async function LeadsPage({ searchParams }: PageProps) {
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
               {/* Export button */}
               <ExportButton filters={filters} />
 
@@ -118,7 +118,7 @@ export default async function LeadsPage({ searchParams }: PageProps) {
                 agents={agents}
                 trigger={
                   <button
-                    className="inline-flex items-center gap-2 rounded-2xl bg-[#F4B400] px-4 py-3 text-sm font-black text-[#081120] shadow-lg shadow-[#F4B400]/20 transition hover:-translate-y-0.5 hover:bg-[#f59e0b]"
+                    className="hidden items-center gap-2 rounded-2xl bg-[#F4B400] px-4 py-3 text-sm font-black text-[#081120] shadow-lg shadow-[#F4B400]/20 transition hover:-translate-y-0.5 hover:bg-[#f59e0b] md:inline-flex"
                   >
                     <Plus className="h-4 w-4" />
                     Add Lead
@@ -169,14 +169,6 @@ export default async function LeadsPage({ searchParams }: PageProps) {
           </div>
         )}
       </div>
-      <AddLeadModal
-        agents={agents}
-        trigger={
-          <button className="fixed bottom-24 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-[#F4B400] text-[#081120] shadow-2xl shadow-[#F4B400]/30 transition hover:scale-105 lg:hidden">
-            <Plus className="h-6 w-6" />
-          </button>
-        }
-      />
     </div>
   )
 }

@@ -86,8 +86,8 @@ export default function ReportCharts({ sourceBreakdown, statusBreakdown }: Repor
   };
 
   return (
-    <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-      <div className="flex h-[320px] flex-col rounded-[22px] border border-white/10 bg-[#0E1726]/70 p-5">
+    <div className="grid grid-cols-1 gap-4 md:gap-6 xl:grid-cols-2">
+      <div className="flex h-[260px] flex-col rounded-[22px] border border-white/10 bg-[#0E1726]/70 p-4 md:h-[320px] md:p-5">
         <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-gray-400">Revenue / Lead Flow</h3>
         <div className="min-h-0 flex-grow">
           <ResponsiveContainer width="100%" height="100%">
@@ -108,7 +108,7 @@ export default function ReportCharts({ sourceBreakdown, statusBreakdown }: Repor
         </div>
       </div>
 
-      <div className="flex h-[320px] flex-col rounded-[22px] border border-white/10 bg-[#0E1726]/70 p-5">
+      <div className="flex h-[260px] flex-col rounded-[22px] border border-white/10 bg-[#0E1726]/70 p-4 md:h-[320px] md:p-5">
         <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-gray-400">Conversion Trend</h3>
         <div className="min-h-0 flex-grow">
           <ResponsiveContainer width="100%" height="100%">
@@ -124,7 +124,7 @@ export default function ReportCharts({ sourceBreakdown, statusBreakdown }: Repor
       </div>
 
       {/* Lead Pipeline Bar Chart */}
-      <div className="flex h-[320px] flex-col rounded-[22px] border border-white/10 bg-[#0E1726]/70 p-5">
+      <div className="flex h-[280px] flex-col rounded-[22px] border border-white/10 bg-[#0E1726]/70 p-4 md:h-[320px] md:p-5">
         <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-gray-400">Pipeline Distribution</h3>
         <div className="flex-grow">
           <ResponsiveContainer width="100%" height="100%">
@@ -144,7 +144,7 @@ export default function ReportCharts({ sourceBreakdown, statusBreakdown }: Repor
       </div>
 
       {/* Leads by Source Pie Chart */}
-      <div className="flex h-[320px] flex-col rounded-[22px] border border-white/10 bg-[#0E1726]/70 p-5">
+      <div className="flex h-[280px] flex-col rounded-[22px] border border-white/10 bg-[#0E1726]/70 p-4 md:h-[320px] md:p-5">
         <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-gray-400">Leads by Channel</h3>
         {formattedSource.length === 0 ? (
           <div className="flex-grow flex items-center justify-center text-slate-500 text-xs">

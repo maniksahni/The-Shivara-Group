@@ -18,7 +18,6 @@ import { usePathname, useRouter } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import { motion } from 'framer-motion'
 import {
-  Menu,
   Search,
   Bell,
   ChevronDown,
@@ -28,7 +27,6 @@ import {
   Moon,
 } from 'lucide-react'
 
-import { useSidebar } from './Sidebar'
 import { cn } from '@/lib/utils'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -172,7 +170,6 @@ function UserDropdown({ name, email, onClose }: UserDropdownProps) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function CRMTopbar() {
-  const { toggle: toggleSidebar } = useSidebar()
   const pathname = usePathname()
   const router = useRouter()
   const { data: session } = useSession()
@@ -236,24 +233,20 @@ export default function CRMTopbar() {
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.32, ease: 'easeOut' }}
-      className="sticky top-0 z-10 flex min-h-20 flex-shrink-0 items-center gap-3 border-b border-white/10 bg-[#081120]/70 px-3 shadow-lg shadow-black/10 backdrop-blur-2xl sm:px-5 lg:px-8"
+      className="sticky top-0 z-20 flex min-h-16 flex-shrink-0 items-center gap-3 border-b border-white/10 bg-[#081120]/88 px-3 shadow-lg shadow-black/10 backdrop-blur-2xl sm:px-5 md:min-h-20 lg:px-8"
     >
-      {/* ── Hamburger (mobile only) ────────────────────────────────────── */}
-      <button
-        className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-gray-300 transition hover:bg-white/10 hover:text-white lg:hidden"
-        onClick={toggleSidebar}
-        aria-label="Toggle navigation sidebar"
-      >
-        <Menu className="h-5 w-5" aria-hidden="true" />
-      </button>
+      <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F4B400] to-[#f59e0b] text-base font-black text-[#081120] shadow-lg shadow-[#F4B400]/20 md:hidden">
+        S
+      </div>
 
       {/* ── Page title ─────────────────────────────────────────────────── */}
       <div className="min-w-0 flex-shrink-0">
         <p className="hidden text-[10px] font-bold uppercase tracking-[0.25em] text-[#F4B400] sm:block">
           The Shivara Group
         </p>
-        <h1 className="truncate text-lg font-black tracking-tight text-white sm:text-xl">
-          {pageTitle}
+        <h1 className="truncate text-base font-black tracking-tight text-white sm:text-xl">
+          <span className="md:hidden">Shivara CRM</span>
+          <span className="hidden md:inline">{pageTitle}</span>
         </h1>
       </div>
 
@@ -305,10 +298,18 @@ export default function CRMTopbar() {
 
       {/* ── Right-side actions ─────────────────────────────────────────── */}
       <div className="flex flex-shrink-0 items-center gap-2">
-        {/* Notification bell */}
         <button
           type="button"
-          className="hidden h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-gray-300 transition hover:bg-white/10 hover:text-[#F4B400] sm:flex"
+          onClick={() => router.push('/crm/leads')}
+          className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-gray-300 transition hover:bg-white/10 hover:text-[#F4B400] md:hidden"
+          aria-label="Search leads"
+        >
+          <Search className="h-5 w-5" />
+        </button>
+
+        <button
+          type="button"
+          className="hidden h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-gray-300 transition hover:bg-white/10 hover:text-[#F4B400] md:flex"
           aria-label="Theme toggle"
           title="Theme toggle"
         >

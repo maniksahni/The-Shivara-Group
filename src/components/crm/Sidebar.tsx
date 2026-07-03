@@ -25,7 +25,7 @@ import {
   Users,
   Building2,
   BarChart3,
-  UserCheck,
+  UserCircle,
   LogOut,
   X,
   ChevronRight,
@@ -84,8 +84,6 @@ interface NavItem {
   icon: React.ElementType
   /** If truthy, render a badge with this number next to the label. */
   badge?: number
-  /** If provided, only render this item when the user's role matches. */
-  requiredRole?: string
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -161,10 +159,8 @@ export default function CRMSidebar() {
   const { data: session } = useSession()
   const pathname = usePathname()
   const router = useRouter()
-  const { isOpen, close } = useSidebar()
+  const { close } = useSidebar()
   const pendingFollowUps = usePendingFollowUps()
-
-  const userRole = session?.user?.role ?? ''
 
   // ── Navigation items ─────────────────────────────────────────────────────
   const navItems: NavItem[] = [
@@ -189,12 +185,7 @@ export default function CRMSidebar() {
       href: '/crm/reports',
       icon: BarChart3,
     },
-    {
-      label: 'Agents',
-      href: '/crm/agents',
-      icon: UserCheck,
-      requiredRole: 'ADMIN',
-    },
+    { label: 'Profile', href: '/crm/profile', icon: UserCircle },
   ]
 
   // ── Sign out handler ──────────────────────────────────────────────────────
@@ -219,14 +210,6 @@ export default function CRMSidebar() {
        * Mobile overlay — tapping outside the sidebar closes it.
        * Only rendered when the sidebar is open on small screens.
        */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-20 bg-black/60 lg:hidden"
-          onClick={close}
-          aria-hidden="true"
-        />
-      )}
-
       {/*
        * The sidebar panel itself.
        *
@@ -240,15 +223,15 @@ export default function CRMSidebar() {
         transition={{ duration: 0.35, ease: 'easeOut' }}
         className={cn(
           // Base layout
-          'fixed top-0 left-0 z-30 flex h-full w-[280px] flex-col',
+          'fixed top-0 left-0 z-30 hidden h-full w-[280px] flex-col md:flex',
           // Background and border
           'border-r border-white/10 bg-[#0E1726]/85 shadow-2xl shadow-black/40 backdrop-blur-2xl',
           // On desktop: always visible, not fixed (use relative positioning
           // within the flex row — achieved by overriding fixed with static).
-          'lg:static lg:z-auto',
+          'md:static md:z-auto',
           // Mobile slide animation
           'transition-transform duration-300 ease-in-out',
-          isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+          'translate-x-0',
         )}
         aria-label="CRM navigation sidebar"
       >
@@ -280,7 +263,7 @@ export default function CRMSidebar() {
 
           {/* Mobile close button */}
           <button
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-gray-300 transition hover:bg-white/10 hover:text-white lg:hidden"
+            className="hidden h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-gray-300 transition hover:bg-white/10 hover:text-white"
             onClick={close}
             aria-label="Close sidebar"
           >
@@ -292,10 +275,6 @@ export default function CRMSidebar() {
         <nav className="flex-1 overflow-y-auto px-4 py-5" aria-label="Primary navigation">
           <ul className="space-y-2" role="list">
             {navItems
-              .filter(
-                (item) =>
-                  !item.requiredRole || item.requiredRole === userRole
-              )
               .map((item) => {
                 const active = isActive(item.href)
                 const Icon = item.icon
@@ -392,10 +371,9 @@ export default function CRMSidebar() {
         </div>
       </motion.aside>
 
-      <nav className="fixed bottom-3 left-3 right-3 z-40 rounded-[24px] border border-white/10 bg-[#0E1726]/90 p-2 shadow-2xl shadow-black/40 backdrop-blur-2xl lg:hidden" aria-label="Mobile CRM navigation">
+      <nav className="fixed bottom-3 left-3 right-3 z-40 rounded-[24px] border border-white/10 bg-[#0E1726]/95 p-2 shadow-2xl shadow-black/40 backdrop-blur-2xl md:hidden" aria-label="Mobile CRM navigation">
         <ul className="grid grid-cols-5 gap-1">
           {navItems
-            .filter((item) => !item.requiredRole || item.requiredRole === userRole)
             .slice(0, 5)
             .map((item) => {
               const active = isActive(item.href)

@@ -138,13 +138,13 @@ export default async function PropertiesPage() {
 
   // ── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="space-y-8">
+    <div className="space-y-5 md:space-y-8">
       {/* ── Page header ──────────────────────────────────────────────────── */}
-      <div className="rounded-[28px] border border-white/10 bg-[#162032]/80 p-6 shadow-2xl shadow-black/20 backdrop-blur-xl sm:p-8">
+      <div className="rounded-[24px] border border-white/10 bg-[#162032]/80 p-4 shadow-2xl shadow-black/20 backdrop-blur-xl sm:p-8 md:rounded-[28px]">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#F4B400]">Inventory studio</p>
-          <h1 className="mt-1 text-3xl font-black tracking-tight text-white">
+          <h1 className="mt-1 text-2xl font-black tracking-tight text-white sm:text-3xl">
             Properties
           </h1>
           <p className="mt-2 text-sm text-gray-400">
@@ -155,7 +155,7 @@ export default async function PropertiesPage() {
         {/* Add Property button — opens the modal (client component) */}
         <AddPropertyModal
           trigger={
-            <button className="inline-flex items-center gap-2 rounded-2xl bg-[#F4B400] px-4 py-3 text-sm font-black text-[#081120] shadow-lg shadow-[#F4B400]/20 transition hover:-translate-y-0.5 hover:bg-[#f59e0b] focus:outline-none focus:ring-2 focus:ring-[#F4B400]/60">
+            <button className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#F4B400] px-4 py-3 text-sm font-black text-[#081120] shadow-lg shadow-[#F4B400]/20 transition hover:-translate-y-0.5 hover:bg-[#f59e0b] focus:outline-none focus:ring-2 focus:ring-[#F4B400]/60">
               <Plus className="h-4 w-4" />
               Add Property
             </button>
@@ -165,7 +165,7 @@ export default async function PropertiesPage() {
       </div>
 
       {/* ── Stats row ─────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 lg:grid-cols-4">
         <StatCard
           label="Total Properties"
           value={totalCount}
@@ -233,7 +233,7 @@ export default async function PropertiesPage() {
         </div>
       ) : (
         /* ── Properties grid ──────────────────────────────────────────────── */
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3">
           {properties.map((property) => (
             <PropertyAdminCard key={property.id} property={property} />
           ))}

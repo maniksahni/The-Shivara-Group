@@ -81,7 +81,7 @@ const PRIORITY_OPTIONS = [
 
 /** Shared style for filter select dropdowns */
 const selectClass = [
-  'h-9 rounded-lg bg-slate-800 text-white text-sm',
+  'h-11 w-full rounded-xl bg-slate-800 text-white text-sm md:h-9 md:rounded-lg',
   'border border-slate-700',
   'pl-3 pr-8 appearance-none cursor-pointer',
   'focus:outline-none focus:border-[#C9A84C] focus:ring-1 focus:ring-[#C9A84C]/40',
@@ -259,12 +259,12 @@ export default function LeadFilters({
   // ---------------------------------------------------------------------------
 
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900 p-4">
+    <div className="rounded-[22px] border border-white/10 bg-[#162032]/80 p-4 shadow-xl shadow-black/10 backdrop-blur-xl">
       <div className="flex flex-col gap-3">
         {/* ── Row 1: Search + Status + Source + Priority ── */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="grid grid-cols-1 gap-3 md:flex md:flex-wrap md:items-center">
           {/* Search */}
-          <div className="relative min-w-0 flex-1" style={{ minWidth: '200px' }}>
+          <div className="relative min-w-0 md:min-w-[240px] md:flex-1">
             <Search
               className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400"
               aria-hidden="true"
@@ -275,7 +275,7 @@ export default function LeadFilters({
               onChange={handleSearchChange}
               placeholder="Search by name, phone, email…"
               className={[
-                'h-9 w-full rounded-lg bg-slate-800 pl-9 pr-4 text-sm text-white',
+                'h-11 w-full rounded-xl bg-slate-800 pl-9 pr-4 text-sm text-white md:h-9 md:rounded-lg',
                 'border border-slate-700 placeholder:text-slate-500',
                 'focus:outline-none focus:border-[#C9A84C] focus:ring-1 focus:ring-[#C9A84C]/40',
                 'transition-colors duration-150',
@@ -297,7 +297,7 @@ export default function LeadFilters({
           </div>
 
           {/* Status */}
-          <div className="relative">
+          <div className="relative md:w-auto">
             <select
               value={status}
               onChange={handleStatus}
@@ -314,7 +314,7 @@ export default function LeadFilters({
           </div>
 
           {/* Source */}
-          <div className="relative">
+          <div className="relative md:w-auto">
             <select
               value={source}
               onChange={handleSource}
@@ -331,7 +331,7 @@ export default function LeadFilters({
           </div>
 
           {/* Priority */}
-          <div className="relative">
+          <div className="relative md:w-auto">
             <select
               value={priority}
               onChange={handlePriority}
@@ -349,7 +349,7 @@ export default function LeadFilters({
 
           {/* Agent — admin only */}
           {isAdmin && (
-            <div className="relative">
+            <div className="relative md:w-auto">
               <select
                 value={assignedToId}
                 onChange={handleAgent}
@@ -374,9 +374,9 @@ export default function LeadFilters({
         </div>
 
         {/* ── Row 2: Date range + clear ── */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="grid grid-cols-1 gap-3 md:flex md:flex-wrap md:items-center">
           {/* Date From */}
-          <div className="relative flex items-center gap-2">
+          <div className="relative grid grid-cols-[auto_1fr] items-center gap-2 md:flex">
             <CalendarDays className="h-4 w-4 shrink-0 text-slate-400" aria-hidden="true" />
             <label className="text-xs text-slate-400 whitespace-nowrap">From</label>
             <input
@@ -384,7 +384,7 @@ export default function LeadFilters({
               value={dateFrom}
               onChange={handleDateFrom}
               className={[
-                'h-9 rounded-lg bg-slate-800 px-3 text-sm text-white',
+                'h-11 w-full rounded-xl bg-slate-800 px-3 text-sm text-white md:h-9 md:w-auto md:rounded-lg',
                 'border border-slate-700',
                 'focus:outline-none focus:border-[#C9A84C] focus:ring-1 focus:ring-[#C9A84C]/40',
                 'transition-colors duration-150',
@@ -395,14 +395,14 @@ export default function LeadFilters({
           </div>
 
           {/* Date To */}
-          <div className="relative flex items-center gap-2">
+          <div className="relative grid grid-cols-[auto_1fr] items-center gap-2 md:flex">
             <label className="text-xs text-slate-400 whitespace-nowrap">To</label>
             <input
               type="date"
               value={dateTo}
               onChange={handleDateTo}
               className={[
-                'h-9 rounded-lg bg-slate-800 px-3 text-sm text-white',
+                'h-11 w-full rounded-xl bg-slate-800 px-3 text-sm text-white md:h-9 md:w-auto md:rounded-lg',
                 'border border-slate-700',
                 'focus:outline-none focus:border-[#C9A84C] focus:ring-1 focus:ring-[#C9A84C]/40',
                 'transition-colors duration-150',
@@ -426,8 +426,8 @@ export default function LeadFilters({
               type="button"
               onClick={clearFilters}
               className={[
-                'flex items-center gap-1.5 rounded-lg border border-slate-700',
-                'bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-300',
+                'flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-slate-700 md:min-h-0 md:rounded-lg',
+                'bg-slate-800 px-3 py-2 text-xs font-medium text-slate-300 md:py-1.5',
                 'hover:border-slate-600 hover:text-white',
                 'transition-colors duration-150',
               ].join(' ')}

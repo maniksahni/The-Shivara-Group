@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { leadSchema, LeadInput } from "@/lib/validations";
 import { LeadStatus, Priority, LeadSource, PropertyType } from "@prisma/client";
 import { createLead, updateLead } from "@/features/leads/actions";
-import { X, Save, AlertCircle } from "lucide-react";
+import { X, Save, AlertCircle, UserRound, Home, Settings2 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 
 interface Agent {
@@ -67,6 +67,13 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
   const searchParams = useSearchParams();
 
   const isEditMode = !!lead;
+  const fieldClass =
+    "min-h-12 w-full rounded-2xl border border-white/10 bg-[#111827]/80 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-[#F4B400]/70 focus:bg-[#111827] focus:ring-4 focus:ring-[#F4B400]/10";
+  const labelClass = "mb-1.5 block text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400";
+  const sectionClass =
+    "rounded-[24px] border border-white/10 bg-white/[0.035] p-4 shadow-xl shadow-black/10 sm:p-5";
+  const sectionTitleClass =
+    "mb-4 flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-[#F4B400]";
 
   useEffect(() => {
     if (!isEditMode && searchParams.get("addLead") === "1") {
@@ -161,11 +168,11 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
 
   return (
     <>
-      <span onClickCapture={handleOpen}>{trigger}</span>
+      <span className="inline-flex" onClickCapture={handleOpen}>{trigger}</span>
 
       <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex justify-end">
+        <div className="fixed inset-0 z-50 flex items-end justify-center md:items-stretch md:justify-end">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -181,76 +188,87 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
             animate={{ x: 0, y: 0, opacity: 1 }}
             exit={{ y: typeof window !== "undefined" && window.innerWidth < 768 ? 720 : 0, x: typeof window !== "undefined" && window.innerWidth >= 768 ? 520 : 0, opacity: 0 }}
             transition={{ type: "spring", damping: 28, stiffness: 260 }}
-            className="relative z-10 flex h-full w-full flex-col overflow-hidden bg-[#0E1726]/98 text-white shadow-2xl shadow-black/40 backdrop-blur-2xl md:max-w-2xl md:rounded-l-[28px] md:border-l md:border-white/10"
+            className="relative z-10 flex max-h-[96dvh] w-full flex-col overflow-hidden rounded-t-[30px] border border-white/10 bg-[#0E1726]/98 text-white shadow-2xl shadow-black/50 backdrop-blur-2xl md:h-full md:max-h-none md:max-w-2xl md:rounded-l-[30px] md:rounded-tr-none md:border-y-0 md:border-r-0"
           >
             {/* Header */}
-            <div className="flex flex-shrink-0 items-center justify-between border-b border-white/10 bg-white/[0.03] px-4 py-4 md:px-6 md:py-5">
-              <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#F4B400]">Lead workspace</p>
-              <h3 className="mt-1 text-xl font-black text-white">
-                {isEditMode ? "Edit Lead Information" : "Create New Lead"}
-              </h3>
+            <div className="flex flex-shrink-0 items-start justify-between gap-4 border-b border-white/10 bg-gradient-to-r from-white/[0.07] to-transparent px-4 py-5 md:px-6">
+              <div className="min-w-0">
+                <div className="mb-3 h-1 w-12 rounded-full bg-white/20 md:hidden" />
+                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#F4B400]">Lead workspace</p>
+                <h3 className="mt-1 truncate text-xl font-black text-white md:text-2xl">
+                  {isEditMode ? "Edit Lead Information" : "Create New Lead"}
+                </h3>
+                <p className="mt-1 text-xs text-slate-400">
+                  Capture enquiry details, assignment, and the next follow-up in one clean flow.
+                </p>
               </div>
               <button
+                type="button"
                 onClick={handleClose}
-                className="rounded-2xl border border-white/10 bg-white/[0.05] p-2 text-gray-300 transition hover:bg-white/10 hover:text-white"
+                aria-label="Close lead drawer"
+                className="rounded-2xl border border-white/10 bg-white/[0.06] p-2.5 text-gray-300 transition hover:bg-white/10 hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Scrollable Form Body */}
-            <form onSubmit={handleSubmit(onSubmit)} className="flex-grow space-y-6 overflow-y-auto px-4 py-5 pb-28 md:p-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex-grow space-y-4 overflow-y-auto px-4 py-5 pb-28 md:space-y-5 md:p-6">
               {error && (
-                <div className="flex items-center gap-2 rounded-2xl border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-300">
-                  <AlertCircle className="w-4 h-4" />
+                <div className="flex items-start gap-3 rounded-2xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-red-200">
+                  <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
                   <span>{error}</span>
                 </div>
               )}
 
               {/* Basic Section */}
-              <div>
-                <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[#F4B400]">Contact Details</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className={sectionClass}>
+                <h4 className={sectionTitleClass}>
+                  <UserRound className="h-4 w-4" />
+                  Contact Details
+                </h4>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Full Name *</label>
+                    <label className={labelClass}>Full Name *</label>
                     <input
                       type="text"
                       {...register("name")}
                       placeholder="e.g. Manik Sahni"
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
+                      className={fieldClass}
                     />
                     {errors.name && <p className="text-red-400 text-[10px] mt-1">{errors.name.message}</p>}
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Phone Number *</label>
+                    <label className={labelClass}>Phone Number *</label>
                     <input
-                      type="text"
+                      type="tel"
+                      inputMode="tel"
                       {...register("phone")}
                       placeholder="10-digit mobile number"
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
+                      className={fieldClass}
                     />
                     {errors.phone && <p className="text-red-400 text-[10px] mt-1">{errors.phone.message}</p>}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">WhatsApp Number</label>
+                    <label className={labelClass}>WhatsApp Number</label>
                     <input
-                      type="text"
+                      type="tel"
+                      inputMode="tel"
                       {...register("whatsappNumber")}
                       placeholder="Same or alternate number"
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
+                      className={fieldClass}
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Email Address</label>
+                    <label className={labelClass}>Email Address</label>
                     <input
                       type="email"
                       {...register("email")}
                       placeholder="email@example.com"
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
+                      className={fieldClass}
                     />
                     {errors.email && <p className="text-red-400 text-[10px] mt-1">{errors.email.message}</p>}
                   </div>
@@ -258,23 +276,26 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
               </div>
 
               {/* Requirement Section */}
-              <div className="border-t border-white/10 pt-6">
-                <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[#F4B400]">Requirements</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className={sectionClass}>
+                <h4 className={sectionTitleClass}>
+                  <Home className="h-4 w-4" />
+                  Requirements
+                </h4>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Budget</label>
+                    <label className={labelClass}>Budget</label>
                     <input
                       type="text"
                       {...register("budget")}
                       placeholder="e.g. ₹45 Lakh"
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
+                      className={fieldClass}
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Property Type</label>
+                    <label className={labelClass}>Property Type</label>
                     <select
                       {...register("propertyType")}
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
+                      className={fieldClass}
                     >
                       <option value="">Select Property Type</option>
                       <option value={PropertyType.APARTMENT}>Apartment</option>
@@ -285,26 +306,29 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Preferred Location</label>
+                    <label className={labelClass}>Preferred Location</label>
                     <input
                       type="text"
                       {...register("preferredLocation")}
                       placeholder="e.g. Civil Lines, Bareilly"
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
+                      className={fieldClass}
                     />
                   </div>
                 </div>
               </div>
 
               {/* Metadata Section */}
-              <div className="border-t border-white/10 pt-6">
-                <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[#F4B400]">CRM Settings</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className={sectionClass}>
+                <h4 className={sectionTitleClass}>
+                  <Settings2 className="h-4 w-4" />
+                  CRM Settings
+                </h4>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Lead Source *</label>
+                    <label className={labelClass}>Lead Source *</label>
                     <select
                       {...register("source")}
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
+                      className={fieldClass}
                     >
                       <option value={LeadSource.WEBSITE}>Website</option>
                       <option value={LeadSource.INSTAGRAM}>Instagram</option>
@@ -316,10 +340,10 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Pipeline Status *</label>
+                    <label className={labelClass}>Pipeline Status *</label>
                     <select
                       {...register("status")}
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
+                      className={fieldClass}
                     >
                       <option value={LeadStatus.NEW}>New</option>
                       <option value={LeadStatus.ASSIGNED}>Assigned</option>
@@ -335,10 +359,10 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Priority *</label>
+                    <label className={labelClass}>Priority *</label>
                     <select
                       {...register("priority")}
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
+                      className={fieldClass}
                     >
                       <option value={Priority.HIGH}>High</option>
                       <option value={Priority.MEDIUM}>Medium</option>
@@ -347,12 +371,12 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Assign Sales Agent</label>
+                    <label className={labelClass}>Assign Sales Agent</label>
                     <select
                       {...register("assignedToId")}
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
+                      className={fieldClass}
                     >
                       <option value="">Select Agent</option>
                       {agents.map((agent) => (
@@ -363,11 +387,11 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-400 mb-1">Follow-up Date & Time</label>
+                    <label className={labelClass}>Follow-up Date & Time</label>
                     <input
                       type="datetime-local"
                       {...register("followUpDate")}
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
+                      className={fieldClass}
                     />
                     {errors.followUpDate && (
                       <p className="text-red-400 text-[10px] mt-1">{errors.followUpDate.message}</p>
@@ -377,7 +401,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
               </div>
 
               {/* Bottom Footer Actions inside Modal Form */}
-              <div className="sticky bottom-0 -mx-4 flex flex-shrink-0 justify-end gap-3 border-t border-white/10 bg-[#0E1726]/95 px-4 py-4 backdrop-blur md:static md:mx-0 md:bg-transparent md:px-0 md:pt-6">
+              <div className="sticky bottom-0 -mx-4 flex flex-shrink-0 justify-end gap-3 border-t border-white/10 bg-[#0E1726]/95 px-4 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur md:static md:mx-0 md:bg-transparent md:px-0 md:pt-6">
                 <button
                   type="button"
                   onClick={handleClose}

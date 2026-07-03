@@ -34,6 +34,9 @@ import {
   UserCircle,
   Plus,
   UserPlus,
+  CalendarClock,
+  ArrowRight,
+  SearchX,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -439,24 +442,29 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
 
   if (leads.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-xl border border-slate-800 bg-slate-900 py-24 text-center">
-        <UserCircle className="mb-4 h-16 w-16 text-slate-700" />
-        <h3 className="text-lg font-semibold text-white">No leads found</h3>
-        <p className="mt-1 text-sm text-slate-400">
-          Try adjusting your filters or add a new lead.
+      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#162032]/80 px-6 py-20 text-center shadow-2xl shadow-black/20 backdrop-blur-xl">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(244,180,0,0.16),transparent_38%)]" />
+        <div className="relative mx-auto flex max-w-sm flex-col items-center">
+          <div className="mb-5 flex h-16 w-16 items-center justify-center rounded-3xl border border-[#F4B400]/20 bg-[#F4B400]/10 text-[#F4B400] shadow-lg shadow-[#F4B400]/10">
+            <SearchX className="h-8 w-8" />
+          </div>
+          <h3 className="text-xl font-black text-white">No leads found</h3>
+          <p className="mt-2 text-sm leading-6 text-slate-400">
+            Your pipeline is clean for this filter. Add a fresh enquiry or adjust filters to view more leads.
         </p>
         <button
           type="button"
           onClick={() => router.push('/crm/leads?addLead=1')}
           className={[
-            'mt-6 inline-flex items-center gap-2 rounded-lg px-4 py-2',
-            'bg-[#C9A84C] text-slate-900 font-semibold text-sm',
-            'hover:bg-[#b8963e] transition-colors duration-150',
+            'mt-7 inline-flex min-h-11 items-center gap-2 rounded-2xl px-5 py-3',
+            'bg-[#F4B400] text-[#081120] font-black text-sm shadow-lg shadow-[#F4B400]/20',
+            'hover:bg-[#f59e0b] transition-colors duration-150',
           ].join(' ')}
         >
           <Plus className="h-4 w-4" />
           Add First Lead
         </button>
+        </div>
       </div>
     )
   }
@@ -471,8 +479,8 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
       {selected.size > 0 && (
         <div
           className={[
-            'mb-3 flex items-center justify-between rounded-lg',
-            'border border-[#F4B400]/30 bg-[#F4B400]/10 px-4 py-3 backdrop-blur-xl',
+            'mb-4 flex flex-col gap-3 rounded-[22px] sm:flex-row sm:items-center sm:justify-between',
+            'border border-[#F4B400]/30 bg-[#F4B400]/10 px-4 py-3 backdrop-blur-xl shadow-lg shadow-black/10',
           ].join(' ')}
         >
           <span className="text-sm font-bold text-[#F4B400]">
@@ -532,15 +540,20 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
             <article
               key={lead.id}
               onClick={() => router.push(`/crm/leads/${lead.id}`)}
-              className="rounded-[22px] border border-white/10 bg-[#162032]/90 p-4 shadow-xl shadow-black/15 backdrop-blur-xl active:scale-[0.99]"
+              className="group rounded-[26px] border border-white/10 bg-gradient-to-br from-[#162032] to-[#101827] p-4 shadow-xl shadow-black/20 backdrop-blur-xl transition active:scale-[0.99]"
             >
               <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
+                <div className="flex min-w-0 items-start gap-3">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#F4B400]/15 text-sm font-black text-[#F4B400] ring-1 ring-[#F4B400]/20">
+                    {getInitials(lead.name)}
+                  </div>
+                  <div className="min-w-0">
                   <h3 className="truncate text-base font-black text-white">{lead.name}</h3>
-                  <p className="mt-1 flex items-center gap-1.5 text-sm text-gray-400">
+                  <p className="mt-1 flex items-center gap-1.5 text-sm font-medium text-gray-400">
                     <Phone className="h-3.5 w-3.5 text-[#F4B400]" />
                     {lead.phone}
                   </p>
+                  </div>
                 </div>
                 {lead.priority ? (
                   <PriorityBadge
@@ -552,12 +565,19 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
               <div className="mt-4 flex flex-wrap gap-2">
                 <StatusBadge status={lead.status as Parameters<typeof StatusBadge>[0]['status']} />
                 <SourceBadge source={lead.source as Parameters<typeof SourceBadge>[0]['source']} />
+                <span className="ml-auto inline-flex items-center gap-1 rounded-full bg-white/[0.04] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 ring-1 ring-white/10">
+                  Open
+                  <ArrowRight className="h-3 w-3" />
+                </span>
               </div>
 
               <div className="mt-4 grid grid-cols-2 gap-3 text-xs">
                 <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-3">
-                  <p className="font-bold uppercase tracking-[0.16em] text-gray-500">Follow-up</p>
-                  <p className={`mt-1 font-semibold ${fupClass}`}>
+                  <p className="flex items-center gap-1.5 font-bold uppercase tracking-[0.16em] text-gray-500">
+                    <CalendarClock className="h-3.5 w-3.5" />
+                    Follow-up
+                  </p>
+                  <p className={`mt-1 truncate font-semibold ${fupClass}`}>
                     {lead.followUpDate ? formatDate(lead.followUpDate) : 'Not set'}
                   </p>
                 </div>
@@ -569,10 +589,17 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
                 </div>
               </div>
 
+              {lead.budget && (
+                <div className="mt-3 rounded-2xl border border-[#F4B400]/15 bg-[#F4B400]/5 px-3 py-2 text-xs">
+                  <span className="font-bold uppercase tracking-[0.16em] text-[#F4B400]/80">Budget</span>
+                  <span className="ml-2 font-semibold text-white">{lead.budget}</span>
+                </div>
+              )}
+
               <div className="mt-4 grid grid-cols-2 gap-3" onClick={(event) => event.stopPropagation()}>
                 <a
                   href={telHref(lead.phone)}
-                  className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-blue-500/12 text-sm font-black text-blue-300 ring-1 ring-blue-400/20"
+                  className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-blue-500/12 text-sm font-black text-blue-300 ring-1 ring-blue-400/20 transition active:scale-[0.98]"
                 >
                   <Phone className="h-4 w-4" />
                   Call
@@ -581,7 +608,7 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
                   href={whatsappHref(lead.whatsappNumber || lead.phone)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-emerald-500/12 text-sm font-black text-emerald-300 ring-1 ring-emerald-400/20"
+                  className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-emerald-500/12 text-sm font-black text-emerald-300 ring-1 ring-emerald-400/20 transition active:scale-[0.98]"
                 >
                   <MessageCircle className="h-4 w-4" />
                   WhatsApp
@@ -619,7 +646,7 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
       )}
 
       {/* ── Table wrapper ── */}
-      <div className="hidden overflow-hidden rounded-[24px] border border-white/10 bg-[#162032]/80 shadow-2xl shadow-black/20 backdrop-blur-xl md:block">
+      <div className="hidden overflow-hidden rounded-[26px] border border-white/10 bg-[#162032]/80 shadow-2xl shadow-black/20 backdrop-blur-xl md:block">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-800">
             {/* ── Head ── */}

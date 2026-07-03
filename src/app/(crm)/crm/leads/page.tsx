@@ -11,7 +11,7 @@
 import React from 'react'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { Plus, LayoutList, Kanban } from 'lucide-react'
+import { Plus, LayoutList, Kanban, AlertTriangle } from 'lucide-react'
 
 import { getServerSession } from '@/lib/auth'
 import { getLeads } from '@/features/leads/actions'
@@ -159,13 +159,25 @@ export default async function LeadsPage({ searchParams }: PageProps) {
           )
         ) : (
           /* Error state */
-          <div className="flex flex-col items-center justify-center rounded-xl border border-slate-800 bg-slate-900 py-24 text-center">
-            <p className="text-lg font-semibold text-red-400">
+          <div className="relative overflow-hidden rounded-[28px] border border-red-500/20 bg-[#162032]/80 px-6 py-20 text-center shadow-2xl shadow-black/20 backdrop-blur-xl">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(239,68,68,0.16),transparent_38%)]" />
+            <div className="relative mx-auto max-w-md">
+              <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-3xl border border-red-500/20 bg-red-500/10 text-red-300">
+                <AlertTriangle className="h-8 w-8" />
+              </div>
+            <p className="text-xl font-black text-white">
               Failed to load leads
             </p>
-            <p className="mt-1 text-sm text-slate-500">
+            <p className="mt-2 text-sm leading-6 text-slate-400">
               {(leadsResult as { success: false; error: string }).error}
             </p>
+            <Link
+              href="/crm/leads"
+              className="mt-7 inline-flex min-h-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] px-5 text-sm font-black text-white transition hover:bg-white/10"
+            >
+              Retry lead pipeline
+            </Link>
+            </div>
           </div>
         )}
       </div>

@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { addNote, scheduleSiteVisit, updateSiteVisit } from "@/features/leads/actions";
 import { cn } from "@/lib/utils";
-import { MessageSquare, History, MapPin, Send, CheckCircle, Calendar, PlusCircle, XCircle, Save } from "lucide-react";
+import { MessageSquare, History, MapPin, Send, CheckCircle, Calendar, PlusCircle, XCircle, Save, Phone, MessageCircle, Clock3 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 
 interface LeadDetailPanelProps {
@@ -21,8 +22,14 @@ function whatsappHref(phone: string | null | undefined): string {
   return `https://wa.me/${digits.length === 10 ? `91${digits}` : digits}`;
 }
 
+function telHref(phone: string | null | undefined): string {
+  const digits = cleanPhoneNumber(phone);
+  return digits ? `tel:${digits}` : "#";
+}
+
 export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanelProps) {
   const { toast } = useToast();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<"notes" | "activity" | "visit">("notes");
 
   // Notes Form State
@@ -113,8 +120,7 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
       if (res.data) {
         setSiteVisit(res.data);
       }
-      // Reload page to reflect new pipeline status on the header
-      window.location.reload();
+      router.refresh();
     } catch (err: any) {
       toast({
         title: "Booking Failed",
@@ -152,7 +158,7 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
         type: "success",
       });
 
-      window.location.reload();
+      router.refresh();
     } catch (err: any) {
       toast({
         title: "Visit Update Failed",
@@ -165,29 +171,32 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <div className="grid grid-cols-1 items-start gap-4 lg:grid-cols-12 lg:gap-6">
       {/* ── Left Column: Detailed Parameters (5 cols) ── */}
-      <div className="lg:col-span-4 bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
-        <h2 className="text-sm font-bold text-[#C9A84C] uppercase tracking-wider border-b border-slate-800 pb-3">
-          Lead Properties
-        </h2>
-
-        <div className="grid grid-cols-2 gap-x-4 gap-y-5 text-xs">
+      <div className="rounded-[26px] border border-white/10 bg-[#162032]/80 p-4 shadow-2xl shadow-black/15 backdrop-blur-xl sm:p-6 lg:col-span-4">
+        <div className="mb-5 flex items-center justify-between border-b border-white/10 pb-4">
           <div>
+            <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#F4B400]">Lead profile</p>
+            <h2 className="mt-1 text-lg font-black text-white">Client Requirements</h2>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-3 text-xs sm:grid-cols-2">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
             <span className="block text-slate-500 font-semibold mb-1">Price / Budget</span>
             <span className="font-semibold text-white">{lead.budget || "Not Specified"}</span>
           </div>
-          <div>
+          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
             <span className="block text-slate-500 font-semibold mb-1">Property Interest</span>
             <span className="font-semibold text-white uppercase tracking-wider text-[10px]">
               {lead.propertyType || "Any"}
             </span>
           </div>
-          <div className="col-span-2">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 sm:col-span-2">
             <span className="block text-slate-500 font-semibold mb-1">Preferred Location</span>
             <span className="font-semibold text-white">{lead.preferredLocation || "Any Location"}</span>
           </div>
-          <div>
+          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
             <span className="block text-slate-500 font-semibold mb-1">WhatsApp Number</span>
             {lead.whatsappNumber ? (
               <a
@@ -202,7 +211,7 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
               <span className="text-slate-500 italic">None Provided</span>
             )}
           </div>
-          <div>
+          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
             <span className="block text-slate-500 font-semibold mb-1">Email ID</span>
             {lead.email ? (
               <span className="font-semibold text-white truncate block">{lead.email}</span>
@@ -210,7 +219,7 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
               <span className="text-slate-500 italic">None Provided</span>
             )}
           </div>
-          <div className="col-span-2">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 sm:col-span-2">
             <span className="block text-slate-500 font-semibold mb-1">Follow-up Scheduled</span>
             <span className="font-semibold text-white flex items-center gap-1.5">
               <Calendar className="w-3.5 h-3.5 text-[#C9A84C]" />
@@ -218,19 +227,38 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
             </span>
           </div>
         </div>
+
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          <a
+            href={telHref(lead.phone)}
+            className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-blue-500/12 text-sm font-black text-blue-300 ring-1 ring-blue-400/20 transition hover:bg-blue-500/20"
+          >
+            <Phone className="h-4 w-4" />
+            Call
+          </a>
+          <a
+            href={whatsappHref(lead.whatsappNumber || lead.phone)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-emerald-500/12 text-sm font-black text-emerald-300 ring-1 ring-emerald-400/20 transition hover:bg-emerald-500/20"
+          >
+            <MessageCircle className="h-4 w-4" />
+            WhatsApp
+          </a>
+        </div>
       </div>
 
       {/* ── Right Column: Interactive Tabs Panel (8 cols) ── */}
-      <div className="lg:col-span-8 bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col min-h-[480px]">
+      <div className="flex min-h-[480px] flex-col overflow-hidden rounded-[26px] border border-white/10 bg-[#162032]/80 shadow-2xl shadow-black/15 backdrop-blur-xl lg:col-span-8">
         {/* Navigation Tabs */}
-        <div className="bg-slate-950 px-6 py-1 flex border-b border-slate-800">
+        <div className="flex overflow-x-auto border-b border-white/10 bg-[#081120]/70 px-2 py-2 sm:px-4">
           <button
             onClick={() => setActiveTab("notes")}
             className={cn(
-              "py-3.5 px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 border-b-2 transition-all",
+              "min-h-11 whitespace-nowrap rounded-2xl px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all",
               activeTab === "notes"
-                ? "border-[#C9A84C] text-[#C9A84C]"
-                : "border-transparent text-slate-400 hover:text-slate-200"
+                ? "bg-[#F4B400]/10 text-[#F4B400] ring-1 ring-[#F4B400]/20"
+                : "text-slate-400 hover:bg-white/[0.04] hover:text-slate-200"
             )}
           >
             <MessageSquare className="w-3.5 h-3.5" />
@@ -240,10 +268,10 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
           <button
             onClick={() => setActiveTab("activity")}
             className={cn(
-              "py-3.5 px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 border-b-2 transition-all",
+              "min-h-11 whitespace-nowrap rounded-2xl px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all",
               activeTab === "activity"
-                ? "border-[#C9A84C] text-[#C9A84C]"
-                : "border-transparent text-slate-400 hover:text-slate-200"
+                ? "bg-[#F4B400]/10 text-[#F4B400] ring-1 ring-[#F4B400]/20"
+                : "text-slate-400 hover:bg-white/[0.04] hover:text-slate-200"
             )}
           >
             <History className="w-3.5 h-3.5" />
@@ -253,10 +281,10 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
           <button
             onClick={() => setActiveTab("visit")}
             className={cn(
-              "py-3.5 px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 border-b-2 transition-all",
+              "min-h-11 whitespace-nowrap rounded-2xl px-4 text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 transition-all",
               activeTab === "visit"
-                ? "border-[#C9A84C] text-[#C9A84C]"
-                : "border-transparent text-slate-400 hover:text-slate-200"
+                ? "bg-[#F4B400]/10 text-[#F4B400] ring-1 ring-[#F4B400]/20"
+                : "text-slate-400 hover:bg-white/[0.04] hover:text-slate-200"
             )}
           >
             <MapPin className="w-3.5 h-3.5" />
@@ -265,23 +293,23 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
         </div>
 
         {/* Tab Contents */}
-        <div className="p-6 flex-grow flex flex-col">
+        <div className="flex flex-grow flex-col p-4 sm:p-6">
           {/* TABS 1: Notes Section */}
           {activeTab === "notes" && (
             <div className="space-y-6 flex-grow flex flex-col">
               {/* Add Note Form */}
-              <form onSubmit={handleAddNote} className="flex gap-2">
+              <form onSubmit={handleAddNote} className="flex flex-col gap-3 sm:flex-row">
                 <input
                   type="text"
                   value={noteContent}
                   onChange={(e) => setNoteContent(e.target.value)}
                   placeholder="Type a new update note (e.g. Spoke to client, requested price list)..."
-                  className="flex-grow bg-slate-800 border border-slate-700 rounded-lg px-4 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
+                  className="min-h-12 flex-grow rounded-2xl border border-white/10 bg-[#111827]/80 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-[#F4B400]/70 focus:ring-4 focus:ring-[#F4B400]/10"
                 />
                 <button
                   type="submit"
                   disabled={addingNote || !noteContent.trim()}
-                  className="px-4 py-2.5 bg-[#C9A84C] hover:bg-[#b8963e] disabled:opacity-50 text-slate-900 rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
+                  className="flex min-h-12 items-center justify-center gap-1.5 rounded-2xl bg-[#F4B400] px-5 py-3 text-sm font-black text-[#081120] transition-colors hover:bg-[#f59e0b] disabled:opacity-50"
                 >
                   <Send className="w-3.5 h-3.5" />
                   Post
@@ -291,12 +319,13 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
               {/* Notes List */}
               <div className="space-y-4 overflow-y-auto max-h-[300px] flex-grow pr-1">
                 {notes.length === 0 ? (
-                  <div className="text-center py-12 text-slate-500 text-xs">
-                    No notes added yet. Use form above to log calls or conversations.
+                  <div className="rounded-3xl border border-dashed border-white/10 bg-white/[0.03] px-6 py-12 text-center text-sm text-slate-400">
+                    <MessageSquare className="mx-auto mb-3 h-8 w-8 text-slate-600" />
+                    No notes yet. Log the first call, objection, or follow-up detail above.
                   </div>
                 ) : (
                   notes.map((note) => (
-                    <div key={note.id} className="bg-slate-800/40 border border-slate-800 rounded-xl p-4 space-y-2">
+                    <div key={note.id} className="space-y-2 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
                       <div className="flex items-center justify-between text-[10px] text-slate-500">
                         <span className="font-semibold text-white">{note.author?.name || "Team Member"}</span>
                         <span>{new Date(note.createdAt).toLocaleString("en-IN")}</span>
@@ -313,8 +342,9 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
           {activeTab === "activity" && (
             <div className="space-y-4 overflow-y-auto max-h-[360px] flex-grow pr-1">
               {(lead.activities || []).length === 0 ? (
-                <div className="text-center py-12 text-slate-500 text-xs">
-                  No activity trails found for this lead.
+                  <div className="rounded-3xl border border-dashed border-white/10 bg-white/[0.03] px-6 py-12 text-center text-sm text-slate-400">
+                  <History className="mx-auto mb-3 h-8 w-8 text-slate-600" />
+                  No activity trail yet. Updates will appear here as the lead moves through the pipeline.
                 </div>
               ) : (
                 lead.activities.map((act: any) => (
@@ -350,9 +380,9 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
             <div className="space-y-6 flex-grow">
               {siteVisit ? (
                 // Booked site visit details
-                <div className="bg-slate-800/40 border border-slate-800 rounded-xl p-6 space-y-5 max-w-2xl">
+                <div className="max-w-2xl space-y-5 rounded-[24px] border border-white/10 bg-white/[0.04] p-4 sm:p-6">
                   <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center gap-2 text-cyan-400 font-semibold text-xs uppercase tracking-wider">
+                    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-cyan-300">
                       <CheckCircle className="w-4 h-4" />
                       Site Visit {siteVisit.status?.replace(/_/g, " ") || "Scheduled"}
                     </div>
@@ -364,13 +394,14 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                    <div>
+                    <div className="rounded-2xl border border-white/10 bg-[#081120]/40 p-4">
                       <span className="block text-slate-500 mb-0.5">Scheduled Date & Time</span>
-                      <span className="font-semibold text-white">
+                      <span className="flex items-center gap-1.5 font-semibold text-white">
+                        <Clock3 className="h-3.5 w-3.5 text-[#F4B400]" />
                         {new Date(siteVisit.scheduledAt).toLocaleString("en-IN")}
                       </span>
                     </div>
-                    <div>
+                    <div className="rounded-2xl border border-white/10 bg-[#081120]/40 p-4">
                       <span className="block text-slate-500 mb-0.5">Site Location</span>
                       <span className="font-semibold text-white">{siteVisit.location}</span>
                     </div>
@@ -400,7 +431,7 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
                         value={visitOutcomeNotes}
                         onChange={(e) => setVisitOutcomeNotes(e.target.value)}
                         placeholder="Add visit outcome, next steps, objections, documents requested..."
-                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C] resize-none"
+                        className="w-full resize-none rounded-2xl border border-white/10 bg-[#111827]/80 px-4 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/70"
                       />
                     </div>
 
@@ -413,16 +444,16 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
                         value={visitFeedback}
                         onChange={(e) => setVisitFeedback(e.target.value)}
                         placeholder="Customer liked/disliked, budget feedback, booking probability..."
-                        className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C] resize-none"
+                        className="w-full resize-none rounded-2xl border border-white/10 bg-[#111827]/80 px-4 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/70"
                       />
                     </div>
 
-                    <div className="flex flex-wrap gap-2">
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
                       <button
                         type="button"
                         disabled={updatingVisit}
                         onClick={() => handleVisitUpdate("SCHEDULED")}
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-slate-600 px-4 py-2 text-xs font-bold text-slate-200 hover:bg-slate-700 disabled:opacity-50"
+                        className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border border-white/10 px-4 py-2 text-xs font-bold text-slate-200 hover:bg-white/10 disabled:opacity-50"
                       >
                         <Save className="w-3.5 h-3.5" />
                         Save Notes
@@ -431,7 +462,7 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
                         type="button"
                         disabled={updatingVisit}
                         onClick={() => handleVisitUpdate("COMPLETED")}
-                        className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-emerald-400 disabled:opacity-50"
+                        className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-emerald-500 px-4 py-2 text-xs font-black text-slate-950 hover:bg-emerald-400 disabled:opacity-50"
                       >
                         <CheckCircle className="w-3.5 h-3.5" />
                         Mark Completed
@@ -440,7 +471,7 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
                         type="button"
                         disabled={updatingVisit}
                         onClick={() => handleVisitUpdate("CANCELLED")}
-                        className="inline-flex items-center gap-1.5 rounded-lg border border-red-500/40 px-4 py-2 text-xs font-bold text-red-300 hover:bg-red-500/10 disabled:opacity-50"
+                        className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border border-red-500/40 px-4 py-2 text-xs font-bold text-red-300 hover:bg-red-500/10 disabled:opacity-50"
                       >
                         <XCircle className="w-3.5 h-3.5" />
                         Cancel Visit
@@ -450,8 +481,8 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
                 </div>
               ) : (
                 // Booking Form
-                <form onSubmit={handleScheduleVisit} className="space-y-4 max-w-xl">
-                  <div className="bg-cyan-500/5 border border-cyan-500/10 p-3.5 rounded-xl text-[11px] text-cyan-400 flex items-start gap-2">
+                <form onSubmit={handleScheduleVisit} className="max-w-xl space-y-4">
+                  <div className="flex items-start gap-2 rounded-2xl border border-cyan-500/10 bg-cyan-500/5 p-4 text-xs leading-5 text-cyan-300">
                     <PlusCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                     <span>
                       Booking a site visit will automatically advance this lead to <strong>SITE_VISIT_SCHEDULED</strong> status on the pipeline board.
@@ -468,7 +499,7 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
                         required
                         value={visitDate}
                         onChange={(e) => setVisitDate(e.target.value)}
-                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
+                        className="min-h-12 w-full rounded-2xl border border-white/10 bg-[#111827]/80 px-4 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/70"
                       />
                     </div>
                     <div>
@@ -481,7 +512,7 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
                         value={visitLocation}
                         onChange={(e) => setVisitLocation(e.target.value)}
                         placeholder="e.g. Green Park Colony, Civil Lines"
-                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
+                        className="min-h-12 w-full rounded-2xl border border-white/10 bg-[#111827]/80 px-4 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/70"
                       />
                     </div>
                   </div>
@@ -495,14 +526,14 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
                       value={visitNotes}
                       onChange={(e) => setVisitNotes(e.target.value)}
                       placeholder="e.g. Agent Amit Kumar to pick client from Civil Lines office..."
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C] resize-none"
+                      className="w-full resize-none rounded-2xl border border-white/10 bg-[#111827]/80 px-4 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/70"
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={scheduling}
-                    className="px-5 py-2.5 bg-[#C9A84C] text-slate-900 rounded-lg text-xs font-bold hover:bg-[#b8963e] flex items-center gap-1.5 transition-colors"
+                    className="flex min-h-12 w-full items-center justify-center gap-1.5 rounded-2xl bg-[#F4B400] px-5 py-3 text-sm font-black text-[#081120] transition-colors hover:bg-[#f59e0b] disabled:opacity-50 sm:w-auto"
                   >
                     <Calendar className="w-4 h-4" />
                     {scheduling ? "Booking..." : "Schedule Site Visit"}

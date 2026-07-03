@@ -8,7 +8,9 @@
 
 import { NextAuthOptions, getServerSession as _getServerSession } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import GoogleProvider from 'next-auth/providers/google'
 import bcrypt from 'bcryptjs'
+import { randomBytes } from 'crypto'
 import type { GetServerSidePropsContext, NextApiRequest, NextApiResponse } from 'next'
 
 import prisma, { isDatabaseConfigured } from './prisma'
@@ -18,6 +20,92 @@ const authSecret =
   (process.env.NODE_ENV === 'development'
     ? 'shivara-development-only-secret-change-in-production'
     : undefined)
+
+const googleClientId = process.env.GOOGLE_CLIENT_ID
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET
+const configuredAdminEmail = process.env.CRM_ADMIN_EMAIL?.toLowerCase().trim()
+const allowedGoogleEmails = (
+  process.env.CRM_GOOGLE_ALLOWED_EMAILS ||
+  process.env.CRM_ADMIN_EMAIL ||
+  ''
+)
+  .split(',')
+  .map((email) => email.toLowerCase().trim())
+  .filter(Boolean)
+
+function isAllowedGoogleEmail(email: string | null | undefined) {
+  if (!email) return false
+  return allowedGoogleEmails.includes(email.toLowerCase().trim())
+}
+
+async function findActiveCrmUserByEmail(email: string | null | undefined) {
+  if (!email || !isDatabaseConfigured) return null
+
+  return prisma.user.findUnique({
+    where: { email: email.toLowerCase().trim() },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      isActive: true,
+    },
+  })
+}
+
+async function ensureGoogleCrmUser(email: string, name: string | null | undefined) {
+  if (!isDatabaseConfigured || !isAllowedGoogleEmail(email)) return null
+
+  const normalizedEmail = email.toLowerCase().trim()
+  const existing = await findActiveCrmUserByEmail(normalizedEmail)
+  if (existing?.isActive) return existing
+
+  const passwordHash = await bcrypt.hash(randomBytes(24).toString('hex'), 12)
+
+  return prisma.$transaction(async (tx) => {
+    const existingShivam = await tx.user.findFirst({
+      where: { name: 'Shivam Sahani' },
+      select: { id: true },
+    })
+
+    if (existingShivam) {
+      return tx.user.update({
+        where: { id: existingShivam.id },
+        data: {
+          name: name || 'Shivam Sahani',
+          email: normalizedEmail,
+          passwordHash,
+          role: 'ADMIN',
+          isActive: true,
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          isActive: true,
+        },
+      })
+    }
+
+    return tx.user.create({
+      data: {
+        name: name || 'Shivam Sahani',
+        email: normalizedEmail,
+        passwordHash,
+        role: 'ADMIN',
+        isActive: true,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        isActive: true,
+      },
+    })
+  })
+}
 
 // ---------------------------------------------------------------------------
 // TypeScript module augmentation
@@ -71,6 +159,15 @@ export const authOptions: NextAuthOptions = {
   },
 
   providers: [
+    ...(googleClientId && googleClientSecret
+      ? [
+          GoogleProvider({
+            clientId: googleClientId,
+            clientSecret: googleClientSecret,
+            allowDangerousEmailAccountLinking: false,
+          }),
+        ]
+      : []),
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
@@ -99,7 +196,6 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        // Look up the user in the database
         const user = await prisma.user.findUnique({
           where: { email: credentials.email.toLowerCase().trim() },
           select: {
@@ -140,6 +236,19 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
+    async signIn({ account, user }) {
+      if (account?.provider !== 'google') return true
+
+      const crmUser = user.email
+        ? await ensureGoogleCrmUser(user.email, user.name)
+        : null
+      if (!crmUser?.isActive) {
+        return false
+      }
+
+      return true
+    },
+
     /**
      * jwt callback — called whenever a JWT is created or updated.
      * On first sign-in, `user` is populated; on subsequent calls only `token`.
@@ -148,9 +257,15 @@ export const authOptions: NextAuthOptions = {
      */
     async jwt({ token, user }) {
       if (user) {
-        // `user` is only present on the initial sign-in
-        token.id = user.id
-        token.role = user.role
+        const crmUser =
+          user.email && isAllowedGoogleEmail(user.email)
+            ? await ensureGoogleCrmUser(user.email, user.name)
+            : await findActiveCrmUserByEmail(user.email)
+
+        token.id = crmUser?.id ?? user.id
+        token.role = crmUser?.role ?? user.role
+        token.name = crmUser?.name ?? user.name
+        token.email = crmUser?.email ?? user.email
       }
       return token
     },
@@ -173,6 +288,10 @@ export const authOptions: NextAuthOptions = {
 
   // Enable debug logging in development
   debug: process.env.NODE_ENV === 'development',
+}
+
+if (process.env.NODE_ENV === 'development' && !configuredAdminEmail) {
+  console.warn('CRM_ADMIN_EMAIL is not set. Google CRM sign-in will be denied until an authorised email is configured.')
 }
 
 // ---------------------------------------------------------------------------

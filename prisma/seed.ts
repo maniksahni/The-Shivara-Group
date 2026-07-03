@@ -17,7 +17,7 @@ import { prisma } from '../src/lib/prisma'
 
 const SHIVAM_USER = {
   name: 'Shivam Sahani',
-  email: 'shivam@shivaragroup.com',
+  email: process.env.CRM_ADMIN_EMAIL || process.env.CRM_GOOGLE_ALLOWED_EMAILS?.split(',')[0]?.trim() || 'admin@shivara.local',
   phone: null as string | null,
   role: 'ADMIN' as const,
   password: process.env.SEED_ADMIN_PASSWORD || 'admin123',
@@ -25,6 +25,10 @@ const SHIVAM_USER = {
 
 async function main() {
   console.log('🌱  Starting production-safe Shivara CRM seed …')
+
+  if (!process.env.CRM_ADMIN_EMAIL && !process.env.CRM_GOOGLE_ALLOWED_EMAILS) {
+    console.warn('⚠️  CRM_ADMIN_EMAIL is not set. Using a placeholder local email for seed.')
+  }
 
   const passwordHash = await bcryptjs.hash(SHIVAM_USER.password, 12)
 

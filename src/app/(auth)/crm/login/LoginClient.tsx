@@ -15,7 +15,7 @@
  *  - On success: redirects to /crm/dashboard.
  *  - On failure: displays the error message from NextAuth.
  *  - Password field has show/hide toggle.
- *  - Demo credentials are shown below the form for convenience.
+ *  - Google sign-in is available for the configured authorised CRM email.
  *  - Fully responsive: panels stack vertically on mobile.
  */
 
@@ -112,7 +112,23 @@ interface FormState {
   password: string
   showPassword: boolean
   loading: boolean
+  googleLoading: boolean
   error: string | null
+}
+
+function getAuthErrorMessage(error: string | null) {
+  if (!error) return null
+
+  const messages: Record<string, string> = {
+    CredentialsSignin: 'Invalid email or password.',
+    OAuthSignin: 'Google sign-in could not start. Please try again.',
+    OAuthCallback: 'Google sign-in could not be completed. Please try again.',
+    OAuthAccountNotLinked: 'This Google account is not linked to an active CRM user.',
+    AccessDenied: 'This Google account is not authorised for CRM access.',
+    Configuration: 'Google sign-in is not configured yet.',
+  }
+
+  return messages[error] ?? 'Sign in failed. Please try again.'
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -131,7 +147,8 @@ export default function CRMLoginClient() {
     password: '',
     showPassword: false,
     loading: false,
-    error: urlError ? 'Invalid credentials. Please try again.' : null,
+    googleLoading: false,
+    error: getAuthErrorMessage(urlError),
   })
 
   // ── Field update helper ────────────────────────────────────────────────
@@ -183,6 +200,13 @@ export default function CRMLoginClient() {
         error: 'An unexpected error occurred. Please try again.',
       }))
     }
+  }
+
+  async function handleGoogleSignIn() {
+    setForm((prev) => ({ ...prev, googleLoading: true, error: null }))
+
+    const callbackUrl = searchParams.get('callbackUrl') ?? '/crm/dashboard'
+    await signIn('google', { callbackUrl })
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -269,7 +293,7 @@ export default function CRMLoginClient() {
           <div className="mb-8 text-center">
             <h1 className="text-2xl font-bold text-white">Sign In to CRM</h1>
             <p className="mt-1.5 text-sm text-slate-400">
-              Enter your credentials to access your account
+              Use your authorised Shivara account to access the CRM
             </p>
           </div>
 
@@ -284,6 +308,35 @@ export default function CRMLoginClient() {
               <p className="text-sm text-rose-300">{form.error}</p>
             </div>
           )}
+
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={form.loading || form.googleLoading}
+            className="mb-5 flex w-full items-center justify-center gap-3 rounded-lg border border-slate-700 bg-white px-4 py-2.5 text-sm font-bold text-slate-900 transition-all duration-150 hover:bg-slate-100 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {form.googleLoading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                Connecting Google…
+              </>
+            ) : (
+              <>
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-base font-black text-blue-600">
+                  G
+                </span>
+                Continue with Google
+              </>
+            )}
+          </button>
+
+          <div className="mb-5 flex items-center gap-3">
+            <div className="h-px flex-1 bg-slate-800" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600">
+              or use password
+            </span>
+            <div className="h-px flex-1 bg-slate-800" />
+          </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} noValidate className="space-y-5">
@@ -397,60 +450,16 @@ export default function CRMLoginClient() {
             </button>
           </form>
 
-          {/* Demo credentials */}
+          {/* Authorised account note */}
           <div className="mt-8 rounded-lg border border-slate-700/60 bg-slate-900/50 px-4 py-4">
             <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-slate-500">
-              Demo Credentials
+              Secure CRM Access
             </p>
 
-            <div className="space-y-2">
-              {/* Admin */}
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium text-slate-300">Admin</p>
-                  <p className="text-xs text-slate-500">admin@shivaragroup.com</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setForm((prev) => ({
-                      ...prev,
-                      email: 'admin@shivaragroup.com',
-                      password: 'admin123',
-                      error: null,
-                    }))
-                  }
-                  className="text-xs rounded-md px-2.5 py-1 font-medium text-slate-900 hover:brightness-110 transition-all"
-                  style={{ backgroundColor: '#C9A84C' }}
-                >
-                  Use
-                </button>
-              </div>
-
-              <div className="h-px bg-slate-800" />
-
-              {/* Agent */}
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium text-slate-300">Agent</p>
-                  <p className="text-xs text-slate-500">agent1@shivaragroup.com</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setForm((prev) => ({
-                      ...prev,
-                      email: 'agent1@shivaragroup.com',
-                      password: 'agent123',
-                      error: null,
-                    }))
-                  }
-                  className="text-xs rounded-md px-2.5 py-1 font-medium text-slate-500 border border-slate-600 hover:border-slate-400 hover:text-slate-300 transition-all"
-                >
-                  Use
-                </button>
-              </div>
-            </div>
+            <p className="text-[11px] leading-relaxed text-slate-500">
+              Google sign-in is restricted to the authorised admin email configured in Railway.
+              No demo users are available on production.
+            </p>
           </div>
         </div>
       </div>

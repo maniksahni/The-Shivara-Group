@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { propertySchema, PropertyInput } from "@/lib/validations";
 import { PropertyType } from "@prisma/client";
 import { createProperty, updateProperty } from "@/features/properties/actions";
@@ -18,6 +19,7 @@ export default function AddPropertyModal({ trigger, property }: AddPropertyModal
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState("");
   const { toast } = useToast();
+  const router = useRouter();
 
   const isEditMode = !!property;
 
@@ -61,9 +63,9 @@ export default function AddPropertyModal({ trigger, property }: AddPropertyModal
 
     const formattedData = {
       ...data,
-      bedrooms: data.bedrooms ? Number(data.bedrooms) : undefined,
-      bathrooms: data.bathrooms ? Number(data.bathrooms) : undefined,
-      area: data.area || undefined,
+      bedrooms: data.bedrooms === "" || data.bedrooms == null ? null : Number(data.bedrooms),
+      bathrooms: data.bathrooms === "" || data.bathrooms == null ? null : Number(data.bathrooms),
+      area: data.area || null,
       amenities: amenitiesArr,
       images: data.images && data.images.length > 0 ? data.images : [],
     };
@@ -91,9 +93,9 @@ export default function AddPropertyModal({ trigger, property }: AddPropertyModal
         reset();
         setAmenityText("");
       }
-      window.location.reload(); // Reload to refresh Server Component
-    } catch (err: any) {
-      setError(err.message || "Failed to save property detail. Please review inputs.");
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save property detail. Please review inputs.");
     }
   };
 
@@ -112,10 +114,10 @@ export default function AddPropertyModal({ trigger, property }: AddPropertyModal
 
   return (
     <>
-      <span onClick={handleOpen} style={{ display: 'contents' }}>{trigger}</span>
+      <span onClickCapture={handleOpen}>{trigger}</span>
 
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4">
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-[#0F1B2D]/75 backdrop-blur-sm transition-opacity"
@@ -123,7 +125,7 @@ export default function AddPropertyModal({ trigger, property }: AddPropertyModal
           />
 
           {/* Modal Container */}
-          <div className="relative bg-slate-900 border border-slate-800 text-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden z-10 max-h-[90vh] flex flex-col animate-fade-in-scale">
+          <div className="relative z-10 flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[28px] border border-slate-800 bg-slate-900 text-white shadow-2xl animate-fade-in-scale sm:max-h-[90vh] sm:rounded-2xl">
             {/* Header */}
             <div className="px-6 py-4 border-b border-slate-800 bg-slate-950 flex items-center justify-between flex-shrink-0">
               <h3 className="font-bold text-base text-white">
@@ -138,7 +140,7 @@ export default function AddPropertyModal({ trigger, property }: AddPropertyModal
             </div>
 
             {/* Scrollable Form Body */}
-            <form onSubmit={handleSubmit(onSubmit)} className="flex-grow overflow-y-auto p-6 space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex-grow space-y-6 overflow-y-auto p-4 pb-24 sm:p-6">
               {error && (
                 <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs p-3 rounded-lg flex items-center gap-2">
                   <AlertCircle className="w-4 h-4" />
@@ -277,18 +279,18 @@ export default function AddPropertyModal({ trigger, property }: AddPropertyModal
               </div>
 
               {/* Bottom Footer Actions */}
-              <div className="border-t border-slate-800 pt-6 flex justify-end gap-3 flex-shrink-0">
+              <div className="sticky bottom-0 -mx-4 flex flex-shrink-0 justify-end gap-3 border-t border-slate-800 bg-slate-900/95 px-4 py-4 backdrop-blur sm:static sm:mx-0 sm:bg-transparent sm:p-0 sm:pt-6">
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="px-4 py-2 border border-slate-700 text-slate-300 text-xs font-bold rounded-lg hover:bg-slate-800 hover:text-white transition-colors"
+                  className="min-h-11 px-4 py-2 border border-slate-700 text-slate-300 text-xs font-bold rounded-lg hover:bg-slate-800 hover:text-white transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2.5 bg-[#C9A84C] text-slate-900 text-xs font-bold rounded-lg hover:bg-[#b8963e] disabled:opacity-50 flex items-center gap-1.5 transition-colors"
+                  className="flex min-h-11 items-center gap-1.5 rounded-lg bg-[#C9A84C] px-5 py-2.5 text-xs font-bold text-slate-900 transition-colors hover:bg-[#b8963e] disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" />
                   {isSubmitting ? "Saving..." : isEditMode ? "Save Changes" : "Create Listing"}

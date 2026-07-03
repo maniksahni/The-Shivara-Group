@@ -55,11 +55,11 @@ export async function POST(request: NextRequest) {
         data: {
           name: validatedData.name,
           phone: validatedData.phone,
-          whatsappNumber: validatedData.whatsappNumber ?? null,
-          email: validatedData.email ?? null,
-          budget: validatedData.budget ?? null,
-          preferredLocation: validatedData.preferredLocation ?? null,
-          propertyType: validatedData.propertyType ?? null,
+          whatsappNumber: validatedData.whatsappNumber || null,
+          email: validatedData.email || null,
+          budget: validatedData.budget || null,
+          preferredLocation: validatedData.preferredLocation || null,
+          propertyType: validatedData.propertyType || null,
           source: validatedData.source,
           status: validatedData.status,
         },
@@ -146,6 +146,26 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(100, Math.max(1, Number(searchParams.get('limit') ?? '20')))
     const skip = (page - 1) * limit
 
+    if (!isDatabaseConfigured) {
+      return NextResponse.json(
+        {
+          success: true,
+          data: {
+            leads: [],
+            pagination: {
+              page,
+              limit,
+              total: 0,
+              totalPages: 0,
+              hasNextPage: false,
+              hasPrevPage: false,
+            },
+          },
+        },
+        { status: 200 },
+      )
+    }
+
     const status = searchParams.get('status') ?? undefined
     const source = searchParams.get('source') ?? undefined
     const priority = searchParams.get('priority') ?? undefined
@@ -221,8 +241,14 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('[GET /api/leads] Unexpected error:', error)
     return NextResponse.json(
-      { success: false, error: 'Internal server error.' },
-      { status: 500 },
+      {
+        success: false,
+        error:
+          error instanceof Prisma.PrismaClientInitializationError
+            ? 'CRM data is temporarily unavailable. Please check database configuration.'
+            : 'Internal server error.',
+      },
+      { status: error instanceof Prisma.PrismaClientInitializationError ? 503 : 500 },
     )
   }
 }

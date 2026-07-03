@@ -26,15 +26,15 @@ import { LeadSource, LeadStatus, Priority, PropertyType, Prisma, SiteVisitStatus
 const createLeadSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   phone: z.string().min(10, 'Valid phone number required'),
-  whatsappNumber: z.string().optional(),
-  email: z.string().email().optional().or(z.literal('')),
-  budget: z.string().max(50).optional(),
-  preferredLocation: z.string().optional(),
-  propertyType: z.nativeEnum(PropertyType).optional(),
+  whatsappNumber: z.union([z.string(), z.null()]).optional(),
+  email: z.union([z.string().email(), z.literal(''), z.null()]).optional(),
+  budget: z.union([z.string().max(50), z.null()]).optional(),
+  preferredLocation: z.union([z.string(), z.null()]).optional(),
+  propertyType: z.union([z.nativeEnum(PropertyType), z.null()]).optional(),
   source: z.nativeEnum(LeadSource),
   status: z.nativeEnum(LeadStatus).optional(),
   priority: z.nativeEnum(Priority).optional(),
-  assignedToId: z.string().optional(),
+  assignedToId: z.union([z.string(), z.null()]).optional(),
   followUpDate: z.union([z.string().refine((value) => !Number.isNaN(new Date(value).getTime()), 'Valid follow-up date required'), z.null()]).optional(),
 })
 
@@ -180,10 +180,10 @@ export async function createLead(
         data: {
           name: validated.name,
           phone: validated.phone,
-          whatsappNumber: validated.whatsappNumber ?? null,
+          whatsappNumber: validated.whatsappNumber || null,
           email: validated.email || null,
-          budget: validated.budget ?? null,
-          preferredLocation: validated.preferredLocation ?? null,
+          budget: validated.budget || null,
+          preferredLocation: validated.preferredLocation || null,
           propertyType: validated.propertyType ?? null,
           source: validated.source,
           priority: validated.priority ?? 'MEDIUM',
@@ -198,7 +198,7 @@ export async function createLead(
         leadId: newLead.id,
         action: 'Lead created',
         description: `Lead created via CRM. Source: ${validated.source}`,
-        performedById: validated.assignedToId,
+        performedById: validated.assignedToId || undefined,
       })
 
       return newLead
@@ -242,14 +242,14 @@ export async function updateLead(
         data: {
           name: validated.name,
           phone: validated.phone,
-          whatsappNumber: validated.whatsappNumber,
-          email: validated.email || undefined,
-          budget: validated.budget,
-          preferredLocation: validated.preferredLocation,
+          whatsappNumber: validated.whatsappNumber === undefined ? undefined : validated.whatsappNumber || null,
+          email: validated.email === undefined ? undefined : validated.email || null,
+          budget: validated.budget === undefined ? undefined : validated.budget || null,
+          preferredLocation: validated.preferredLocation === undefined ? undefined : validated.preferredLocation || null,
           propertyType: validated.propertyType,
           source: validated.source,
           priority: validated.priority,
-          assignedToId: validated.assignedToId,
+          assignedToId: validated.assignedToId === undefined ? undefined : validated.assignedToId || null,
           status: validated.status,
           followUpDate:
             validated.followUpDate === undefined

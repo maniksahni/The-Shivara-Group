@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { getServerSession } from "@/lib/auth";
 import { getLeadById } from "@/features/leads/actions";
-import prisma from "@/lib/prisma";
+import prisma, { isDatabaseConfigured } from "@/lib/prisma";
 import LeadHeader from "@/components/crm/leads/LeadHeader";
 import LeadDetailPanel from "@/components/crm/leads/LeadDetailPanel";
 
@@ -35,14 +35,16 @@ export default async function LeadDetailPage({ params }: PageProps) {
 
   // Fetch list of agents for assigning/reassigning leads
   let agents: Array<{ id: string; name: string; email: string }> = [];
-  try {
-    agents = await prisma.user.findMany({
-      where: { isActive: true },
-      select: { id: true, name: true, email: true },
-      orderBy: { name: "asc" },
-    });
-  } catch (err) {
-    console.error("Failed to fetch agents for detail view", err);
+  if (isDatabaseConfigured) {
+    try {
+      agents = await prisma.user.findMany({
+        where: { isActive: true },
+        select: { id: true, name: true, email: true },
+        orderBy: { name: "asc" },
+      });
+    } catch (err) {
+      console.error("Failed to fetch agents for detail view", err);
+    }
   }
 
   return (

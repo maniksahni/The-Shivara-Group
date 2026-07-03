@@ -11,6 +11,16 @@ interface LeadDetailPanelProps {
   currentUserId: string;
 }
 
+function cleanPhoneNumber(phone: string | null | undefined): string {
+  return (phone ?? "").replace(/\D/g, "");
+}
+
+function whatsappHref(phone: string | null | undefined): string {
+  const digits = cleanPhoneNumber(phone);
+  if (!digits) return "#";
+  return `https://wa.me/${digits.length === 10 ? `91${digits}` : digits}`;
+}
+
 export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanelProps) {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<"notes" | "activity" | "visit">("notes");
@@ -74,7 +84,17 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
 
     setScheduling(true);
     try {
-      const scheduledAtIso = new Date(visitDate).toISOString();
+      const scheduledDate = new Date(visitDate);
+      if (Number.isNaN(scheduledDate.getTime())) {
+        toast({
+          title: "Invalid Date",
+          description: "Please select a valid site visit date and time.",
+          type: "warning",
+        });
+        return;
+      }
+
+      const scheduledAtIso = scheduledDate.toISOString();
       const res = await scheduleSiteVisit(
         lead.id,
         scheduledAtIso,
@@ -171,7 +191,7 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
             <span className="block text-slate-500 font-semibold mb-1">WhatsApp Number</span>
             {lead.whatsappNumber ? (
               <a
-                href={`https://wa.me/${lead.whatsappNumber}`}
+                href={whatsappHref(lead.whatsappNumber)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-emerald-400 hover:underline font-semibold"

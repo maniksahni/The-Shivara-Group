@@ -102,12 +102,12 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
     setError("");
     const formattedData = {
       ...data,
-      whatsappNumber: data.whatsappNumber || undefined,
-      email: data.email || undefined,
-      budget: data.budget || undefined,
-      preferredLocation: data.preferredLocation || undefined,
-      propertyType: data.propertyType || undefined,
-      assignedToId: data.assignedToId || undefined,
+      whatsappNumber: data.whatsappNumber || null,
+      email: data.email || null,
+      budget: data.budget || null,
+      preferredLocation: data.preferredLocation || null,
+      propertyType: data.propertyType || null,
+      assignedToId: data.assignedToId || null,
       followUpDate: toIsoOrNull(data.followUpDate),
     };
 

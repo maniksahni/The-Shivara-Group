@@ -4,6 +4,11 @@ import React, { useState } from "react";
 import { MapPin, Phone, Mail, Clock, Send, CheckCircle2, Calendar } from "lucide-react";
 import { PropertyType } from "@prisma/client";
 
+function toDateTimeLocalValue(date: Date): string {
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 export default function ContactPage() {
   const [activeTab, setActiveTab] = useState<"enquiry" | "visit">("enquiry");
 
@@ -55,13 +60,24 @@ export default function ContactPage() {
     try {
       let finalMessage = message.trim();
       let status = "NEW";
-      let followUpDate: string | undefined = undefined;
+      let followUpDate: string | null = null;
 
       if (activeTab === "visit") {
         status = "SITE_VISIT_SCHEDULED";
-        if (visitDate) {
-          followUpDate = new Date(visitDate).toISOString();
+        if (!visitDate) {
+          setError("Please select a preferred site visit date and time.");
+          setSubmitting(false);
+          return;
         }
+
+        const selectedVisitDate = new Date(visitDate);
+        if (Number.isNaN(selectedVisitDate.getTime())) {
+          setError("Please select a valid site visit date and time.");
+          setSubmitting(false);
+          return;
+        }
+
+        followUpDate = selectedVisitDate.toISOString();
         finalMessage = `[REQUESTED SITE VISIT ON ${visitDate}] ${message}`.trim();
       }
 
@@ -71,11 +87,11 @@ export default function ContactPage() {
         body: JSON.stringify({
           name: name.trim(),
           phone: phone.trim(),
-          whatsappNumber: whatsapp.trim() || undefined,
-          email: email.trim() || undefined,
-          budget: budget || undefined,
-          propertyType: propertyType ? (propertyType as PropertyType) : undefined,
-          preferredLocation: location || undefined,
+          whatsappNumber: whatsapp.trim() || null,
+          email: email.trim() || null,
+          budget: budget || null,
+          propertyType: propertyType ? (propertyType as PropertyType) : null,
+          preferredLocation: location || null,
           source: "WEBSITE",
           status,
           followUpDate,
@@ -372,7 +388,7 @@ export default function ContactPage() {
                       required
                       value={visitDate}
                       onChange={(e) => setVisitDate(e.target.value)}
-                      min={new Date().toISOString().slice(0, 16)}
+                      min={toDateTimeLocalValue(new Date())}
                       className="w-full px-4 py-2.5 rounded-lg border border-gray-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30 focus:border-[#C9A84C] text-gray-800"
                     />
                     <span className="text-[10px] text-gray-400 mt-1 block">

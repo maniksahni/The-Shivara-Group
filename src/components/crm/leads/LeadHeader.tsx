@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { LeadStatus, Priority, LeadSource } from "@prisma/client";
+import { LeadStatus, Priority } from "@prisma/client";
 import { updateLeadStatus, assignLead } from "@/features/leads/actions";
 import { cn, getLeadSourceColor } from "@/lib/utils";
-import { User, Calendar, Shield, Trash2, Edit2, AlertCircle } from "lucide-react";
+import { Edit2 } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import AddLeadModal from "./AddLeadModal";
 
@@ -49,7 +49,7 @@ export default function LeadHeader({ lead, agents, currentUserId, isAdmin }: Lea
     const newAgentId = e.target.value;
     setAgentId(newAgentId);
     try {
-      const res = await assignLead(lead.id, newAgentId || null as any, currentUserId);
+      const res = await assignLead(lead.id, newAgentId || null, currentUserId);
       if (!res.success) throw new Error(res.error);
       toast({
         title: "Agent Reassigned",

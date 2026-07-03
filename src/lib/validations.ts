@@ -69,6 +69,12 @@ const optionalDateTimeInput = (message: string) =>
 const optionalFormString = (schema: z.ZodString) =>
   z.union([z.literal(''), schema, z.null()]).optional()
 
+const optionalFormNumber = (message: string) =>
+  z.preprocess(
+    (value) => (value === '' || value === null || value === undefined ? null : Number(value)),
+    z.number().int(message).min(0, message).optional().nullable(),
+  )
+
 // ─────────────────────────────────────────────────────────────────────────────
 // 1. Login schema
 // ─────────────────────────────────────────────────────────────────────────────
@@ -217,22 +223,10 @@ export const propertySchema = z.object({
   type: PropertyTypeEnum,
 
   /** Number of bedrooms (not applicable for plots / commercial). */
-  bedrooms: z
-    .number()
-    .int('Bedrooms must be a whole number')
-    .min(0, 'Bedrooms cannot be negative')
-    .max(50, 'Bedrooms value seems too high')
-    .optional()
-    .nullable(),
+  bedrooms: optionalFormNumber('Bedrooms must be a valid whole number'),
 
   /** Number of bathrooms. */
-  bathrooms: z
-    .number()
-    .int('Bathrooms must be a whole number')
-    .min(0, 'Bathrooms cannot be negative')
-    .max(50, 'Bathrooms value seems too high')
-    .optional()
-    .nullable(),
+  bathrooms: optionalFormNumber('Bathrooms must be a valid whole number'),
 
   /** Total built-up / plot area, e.g. "1,200 sq ft" or "500 sq yd". */
   area: z
@@ -344,23 +338,23 @@ export const enquirySchema = z.object({
     .trim(),
 
   /** Optional WhatsApp number if different from above. */
-  whatsappNumber: z
-    .string()
-    .min(10, 'WhatsApp number must be at least 10 digits')
-    .max(15, 'WhatsApp number must be at most 15 digits')
-    .trim()
-    .optional()
-    .nullable(),
+  whatsappNumber: optionalFormString(
+    z
+      .string()
+      .min(10, 'WhatsApp number must be at least 10 digits')
+      .max(15, 'WhatsApp number must be at most 15 digits')
+      .trim(),
+  ),
 
   /** Optional email address of the enquirer. */
-  email: z
-    .string()
-    .email('Please enter a valid email address')
-    .max(200, 'Email must be at most 200 characters')
-    .toLowerCase()
-    .trim()
-    .optional()
-    .nullable(),
+  email: optionalFormString(
+    z
+      .string()
+      .email('Please enter a valid email address')
+      .max(200, 'Email must be at most 200 characters')
+      .toLowerCase()
+      .trim(),
+  ),
 
   /**
    * Budget range the enquirer is comfortable with.
@@ -382,7 +376,7 @@ export const enquirySchema = z.object({
     .nullable(),
 
   /** Type of property the enquirer is interested in. */
-  propertyType: PropertyTypeEnum.optional().nullable(),
+  propertyType: z.union([z.literal(''), PropertyTypeEnum, z.null()]).optional(),
 
   /** Channel through which this enquiry arrived. */
   source: LeadSourceEnum.default('WEBSITE'),

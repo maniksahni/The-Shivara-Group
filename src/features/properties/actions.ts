@@ -24,9 +24,9 @@ const createPropertySchema = z.object({
   description: z.string().min(20, 'Description must be at least 20 characters'),
   type: z.nativeEnum(PropertyType),
   price: z.string().min(1, 'Price is required'),
-  area: z.string().optional(),
-  bedrooms: z.number().int().min(0).optional(),
-  bathrooms: z.number().int().min(0).optional(),
+  area: z.union([z.string(), z.null()]).optional(),
+  bedrooms: z.union([z.number().int().min(0), z.null()]).optional(),
+  bathrooms: z.union([z.number().int().min(0), z.null()]).optional(),
   location: z.string().min(1, 'Location is required'),
   amenities: z.array(z.string()).optional(),
   images: z.array(z.string().url()).optional(),
@@ -153,7 +153,7 @@ export async function createProperty(
         description: validated.description,
         type: validated.type,
         price: validated.price,
-        area: validated.area ?? null,
+        area: validated.area || null,
         bedrooms: validated.bedrooms ?? null,
         bathrooms: validated.bathrooms ?? null,
         location: validated.location,
@@ -198,7 +198,12 @@ export async function updateProperty(
 
     const property = await prisma.property.update({
       where: { id },
-      data: validated,
+      data: {
+        ...validated,
+        area: validated.area === undefined ? undefined : validated.area || null,
+        bedrooms: validated.bedrooms === undefined ? undefined : validated.bedrooms,
+        bathrooms: validated.bathrooms === undefined ? undefined : validated.bathrooms,
+      },
       select: { id: true },
     })
 

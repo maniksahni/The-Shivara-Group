@@ -113,6 +113,21 @@ function followUpClass(date: Date | null | string | undefined): string {
   return 'text-slate-300'
 }
 
+function cleanPhoneNumber(phone: string | null | undefined): string {
+  return (phone ?? '').replace(/\D/g, '')
+}
+
+function telHref(phone: string | null | undefined): string {
+  const digits = cleanPhoneNumber(phone)
+  return digits ? `tel:${digits}` : '#'
+}
+
+function whatsappHref(phone: string | null | undefined): string {
+  const digits = cleanPhoneNumber(phone)
+  if (!digits) return '#'
+  return `https://wa.me/${digits.length === 10 ? `91${digits}` : digits}`
+}
+
 // ---------------------------------------------------------------------------
 // ActionMenu — per-row dropdown
 // ---------------------------------------------------------------------------
@@ -556,14 +571,14 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
 
               <div className="mt-4 grid grid-cols-2 gap-3" onClick={(event) => event.stopPropagation()}>
                 <a
-                  href={`tel:${lead.phone}`}
+                  href={telHref(lead.phone)}
                   className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-blue-500/12 text-sm font-black text-blue-300 ring-1 ring-blue-400/20"
                 >
                   <Phone className="h-4 w-4" />
                   Call
                 </a>
                 <a
-                  href={`https://wa.me/${lead.whatsappNumber || lead.phone}`}
+                  href={whatsappHref(lead.whatsappNumber || lead.phone)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-emerald-500/12 text-sm font-black text-emerald-300 ring-1 ring-emerald-400/20"
@@ -767,14 +782,14 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
                     <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center gap-2">
                         <a
-                          href={`tel:${lead.phone}`}
+                          href={telHref(lead.phone)}
                           className="flex h-9 w-9 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-blue-300 transition hover:bg-blue-500/10"
                           aria-label={`Call ${lead.name}`}
                         >
                           <Phone className="h-4 w-4" />
                         </a>
                         <a
-                          href={`https://wa.me/${lead.whatsappNumber || lead.phone}`}
+                          href={whatsappHref(lead.whatsappNumber || lead.phone)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex h-9 w-9 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-emerald-300 transition hover:bg-emerald-500/10"

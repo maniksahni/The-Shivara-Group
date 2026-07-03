@@ -8,10 +8,25 @@ import StatsCard from "@/components/crm/dashboard/StatsCard";
 import Charts from "@/components/crm/dashboard/Charts";
 import ActivityFeed from "@/components/crm/dashboard/ActivityFeed";
 import DailyOperationsPanel from "@/components/crm/dashboard/DailyOperationsPanel";
-import prisma from "@/lib/prisma";
+import prisma, { isDatabaseConfigured } from "@/lib/prisma";
 import Link from "next/link";
 
 export const revalidate = 0; // Don't cache dashboard stats
+
+function cleanPhoneNumber(phone: string | null | undefined): string {
+  return (phone ?? "").replace(/\D/g, "");
+}
+
+function telHref(phone: string | null | undefined): string {
+  const digits = cleanPhoneNumber(phone);
+  return digits ? `tel:${digits}` : "#";
+}
+
+function whatsappHref(phone: string | null | undefined): string {
+  const digits = cleanPhoneNumber(phone);
+  if (!digits) return "#";
+  return `https://wa.me/${digits.length === 10 ? `91${digits}` : digits}`;
+}
 
 export default async function DashboardPage() {
   const session = await getServerSession();
@@ -46,43 +61,47 @@ export default async function DashboardPage() {
 
   // Fetch number of active properties
   let activePropertiesCount = 0;
-  try {
-    activePropertiesCount = await prisma.property.count({
-      where: { isActive: true },
-    });
-  } catch (err) {
-    console.error("Failed to count properties", err);
+  if (isDatabaseConfigured) {
+    try {
+      activePropertiesCount = await prisma.property.count({
+        where: { isActive: true },
+      });
+    } catch (err) {
+      console.error("Failed to count properties", err);
+    }
   }
 
   // Fetch today's follow-up leads
   let todaysFollowUps: Array<Awaited<ReturnType<typeof prisma.lead.findMany>>[number] & {
     assignedTo: { name: string } | null
   }> = [];
-  try {
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
-    const todayEnd = new Date();
-    todayEnd.setHours(23, 59, 59, 999);
+  if (isDatabaseConfigured) {
+    try {
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const todayEnd = new Date();
+      todayEnd.setHours(23, 59, 59, 999);
 
-    todaysFollowUps = await prisma.lead.findMany({
-      where: {
-        followUpDate: {
-          gte: todayStart,
-          lte: todayEnd,
+      todaysFollowUps = await prisma.lead.findMany({
+        where: {
+          followUpDate: {
+            gte: todayStart,
+            lte: todayEnd,
+          },
+          assignedToId: session.user.role === "ADMIN" ? undefined : session.user.id,
         },
-        assignedToId: session.user.role === "ADMIN" ? undefined : session.user.id,
-      },
-      include: {
-        assignedTo: {
-          select: { name: true },
+        include: {
+          assignedTo: {
+            select: { name: true },
+          },
         },
-      },
-      orderBy: {
-        priority: "desc",
-      },
-    });
-  } catch (err) {
-    console.error("Failed to fetch today's followups", err);
+        orderBy: {
+          priority: "desc",
+        },
+      });
+    } catch (err) {
+      console.error("Failed to fetch today's followups", err);
+    }
   }
 
   return (
@@ -244,14 +263,14 @@ export default async function DashboardPage() {
 
                 <div className="mt-4 grid grid-cols-3 gap-2">
                   <a
-                    href={`tel:${lead.phone}`}
+                    href={telHref(lead.phone)}
                     className="flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-blue-500/12 text-sm font-black text-blue-300 ring-1 ring-blue-400/20"
                   >
                     <Phone className="h-4 w-4" />
                     Call
                   </a>
                   <a
-                    href={`https://wa.me/${lead.whatsappNumber || lead.phone}`}
+                    href={whatsappHref(lead.whatsappNumber || lead.phone)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-emerald-500/12 text-sm font-black text-emerald-300 ring-1 ring-emerald-400/20"

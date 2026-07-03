@@ -85,15 +85,16 @@ export default async function LeadsPage({ searchParams }: PageProps) {
     : []
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen">
       {/* ── Page header ─────────────────────────────────────────────── */}
-      <div className="border-b border-slate-800 bg-slate-900/60 px-6 py-5">
+      <div className="rounded-[28px] border border-white/10 bg-[#162032]/80 px-5 py-6 shadow-2xl shadow-black/20 backdrop-blur-xl sm:px-7">
         <div className="mx-auto max-w-screen-2xl">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             {/* Title + count */}
             <div>
-              <h1 className="text-2xl font-bold text-white">Leads</h1>
-              <p className="mt-0.5 text-sm text-slate-400">
+              <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#F4B400]">Pipeline command center</p>
+              <h1 className="mt-1 text-3xl font-black text-white">Leads</h1>
+              <p className="mt-1 text-sm text-gray-400">
                 {leads.length}{' '}
                 {leads.length === 1 ? 'lead' : 'leads'} found
                 {Object.values(filters).some(Boolean) && (
@@ -117,11 +118,7 @@ export default async function LeadsPage({ searchParams }: PageProps) {
                 agents={agents}
                 trigger={
                   <button
-                    className={[
-                      'inline-flex items-center gap-2 rounded-lg px-4 py-2',
-                      'bg-[#C9A84C] text-slate-900 font-semibold text-sm',
-                      'hover:bg-[#b8963e] transition-colors duration-150',
-                    ].join(' ')}
+                    className="inline-flex items-center gap-2 rounded-2xl bg-[#F4B400] px-4 py-3 text-sm font-black text-[#081120] shadow-lg shadow-[#F4B400]/20 transition hover:-translate-y-0.5 hover:bg-[#f59e0b]"
                   >
                     <Plus className="h-4 w-4" />
                     Add Lead
@@ -134,7 +131,7 @@ export default async function LeadsPage({ searchParams }: PageProps) {
       </div>
 
       {/* ── Main content ─────────────────────────────────────────────── */}
-      <div className="mx-auto max-w-screen-2xl px-6 py-6">
+      <div className="mx-auto max-w-screen-2xl py-6">
         {/* Filters */}
         <div className="mb-6">
           <LeadFilters
@@ -172,6 +169,14 @@ export default async function LeadsPage({ searchParams }: PageProps) {
           </div>
         )}
       </div>
+      <AddLeadModal
+        agents={agents}
+        trigger={
+          <button className="fixed bottom-24 right-5 z-30 flex h-14 w-14 items-center justify-center rounded-full bg-[#F4B400] text-[#081120] shadow-2xl shadow-[#F4B400]/30 transition hover:scale-105 lg:hidden">
+            <Plus className="h-6 w-6" />
+          </button>
+        }
+      />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { BarChart3, TrendingUp, DollarSign, Calendar, Users, Award } from "lucide-react";
+import { TrendingUp, Calendar, Users, Award, Sparkles } from "lucide-react";
 
 import { getServerSession } from "@/lib/auth";
 import { getDashboardStats } from "@/features/leads/actions";
@@ -56,20 +56,25 @@ export default async function ReportsPage() {
   }).sort((a, b) => b.total - a.total);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-6 space-y-8 font-[family-name:var(--font-inter)]">
+    <div className="space-y-8 text-white font-[family-name:var(--font-inter)]">
       {/* ── Page Header ── */}
-      <div className="flex justify-between items-center pb-4 border-b border-slate-800">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Reports & Analytics</h1>
-          <p className="text-slate-400 text-xs mt-1">
-            Analyze leads flow, conversion rates, and sales agent leaderboards.
+      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#162032]/80 p-6 shadow-2xl shadow-black/20 backdrop-blur-xl sm:p-8">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(168,85,247,0.18),transparent_34%),radial-gradient(circle_at_80%_10%,rgba(244,180,0,0.16),transparent_30%)]" />
+        <div className="relative">
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#F4B400]/30 bg-[#F4B400]/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F4B400]">
+            <Sparkles className="h-3.5 w-3.5" />
+            Analytics suite
+          </div>
+          <h1 className="text-3xl font-black tracking-tight sm:text-4xl">Reports & Analytics</h1>
+          <p className="mt-2 max-w-2xl text-sm text-gray-400">
+            Analyze lead flow, conversion health, channel quality, and agent performance.
           </p>
         </div>
       </div>
 
       {/* ── Analytical Summary Cards ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="bg-slate-900 border border-slate-800 p-5 rounded-xl flex items-center gap-4">
+        <div className="flex items-center gap-4 rounded-[22px] border border-white/10 bg-[#162032]/80 p-5 shadow-xl shadow-black/20 backdrop-blur-xl">
           <div className="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center">
             <Users className="w-5 h-5" />
           </div>
@@ -79,17 +84,17 @@ export default async function ReportsPage() {
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 p-5 rounded-xl flex items-center gap-4">
+        <div className="flex items-center gap-4 rounded-[22px] border border-white/10 bg-[#162032]/80 p-5 shadow-xl shadow-black/20 backdrop-blur-xl">
           <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
             <TrendingUp className="w-5 h-5" />
           </div>
           <div>
             <span className="block text-[10px] text-slate-500 uppercase tracking-wider font-bold">Global Conversion</span>
-            <span className="text-2xl font-bold text-[#C9A84C]">{conversionRate}%</span>
+            <span className="text-2xl font-bold text-[#F4B400]">{conversionRate}%</span>
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 p-5 rounded-xl flex items-center gap-4">
+        <div className="flex items-center gap-4 rounded-[22px] border border-white/10 bg-[#162032]/80 p-5 shadow-xl shadow-black/20 backdrop-blur-xl">
           <div className="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
             <Calendar className="w-5 h-5" />
           </div>
@@ -99,7 +104,7 @@ export default async function ReportsPage() {
           </div>
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 p-5 rounded-xl flex items-center gap-4">
+        <div className="flex items-center gap-4 rounded-[22px] border border-white/10 bg-[#162032]/80 p-5 shadow-xl shadow-black/20 backdrop-blur-xl">
           <div className="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center">
             <Award className="w-5 h-5" />
           </div>
@@ -113,8 +118,8 @@ export default async function ReportsPage() {
       </div>
 
       {/* ── Charts Grid ── */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-        <h2 className="text-base font-semibold border-b border-slate-800 pb-3 mb-6">Visual Analytics</h2>
+      <div className="rounded-[26px] border border-white/10 bg-[#162032]/80 p-6 shadow-2xl shadow-black/20 backdrop-blur-xl">
+        <h2 className="mb-6 text-lg font-bold">Visual Analytics</h2>
         <Suspense fallback={<div className="h-80 w-full skeleton" />}>
           <ReportCharts
             sourceBreakdown={stats.leadsBySource}
@@ -126,8 +131,8 @@ export default async function ReportsPage() {
       {/* ── Leaders / Conversion Breakdowns ── */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left: Source Conversion table */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-          <h2 className="text-base font-semibold border-b border-slate-800 pb-3 mb-4">Leads by Channel Performance</h2>
+        <div className="rounded-[26px] border border-white/10 bg-[#162032]/80 p-6 shadow-2xl shadow-black/20 backdrop-blur-xl">
+          <h2 className="mb-4 text-lg font-bold">Leads by Channel Performance</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
@@ -149,7 +154,7 @@ export default async function ReportsPage() {
                       <td className="py-3 px-4 font-bold text-white uppercase tracking-wider">{row.source}</td>
                       <td className="py-3 px-4 text-slate-300">{row.total}</td>
                       <td className="py-3 px-4 text-slate-300">{row.closed}</td>
-                      <td className="py-3 px-4 text-right text-[#C9A84C] font-semibold">{row.rate}%</td>
+                      <td className="py-3 px-4 text-right text-[#F4B400] font-semibold">{row.rate}%</td>
                     </tr>
                   ))
                 )}
@@ -159,8 +164,8 @@ export default async function ReportsPage() {
         </div>
 
         {/* Right: Agent Leaderboard table */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-          <h2 className="text-base font-semibold border-b border-slate-800 pb-3 mb-4">Agent Performance Leaderboard</h2>
+        <div className="rounded-[26px] border border-white/10 bg-[#162032]/80 p-6 shadow-2xl shadow-black/20 backdrop-blur-xl">
+          <h2 className="mb-4 text-lg font-bold">Agent Performance Leaderboard</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>

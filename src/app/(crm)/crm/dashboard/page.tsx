@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { Users, UserCheck, Calendar, CheckSquare, Building2, TrendingUp } from "lucide-react";
+import { Users, UserCheck, Calendar, CheckSquare, Building2, TrendingUp, DollarSign, Sparkles } from "lucide-react";
 
 import { getServerSession } from "@/lib/auth";
 import { getDailyOperations, getDashboardStats } from "@/features/dashboard/actions";
@@ -87,22 +87,32 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-6 space-y-8 font-[family-name:var(--font-inter)]">
+    <div className="space-y-8 text-white font-[family-name:var(--font-inter)]">
       {/* Header */}
-      <div className="flex justify-between items-center pb-4 border-b border-slate-800">
+      <div className="relative overflow-hidden rounded-[28px] border border-white/10 bg-[#162032]/80 p-6 shadow-2xl shadow-black/20 backdrop-blur-xl sm:p-8">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(244,180,0,0.18),transparent_32%),radial-gradient(circle_at_82%_12%,rgba(59,130,246,0.16),transparent_30%)]" />
+        <div className="relative flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">CRM Dashboard</h1>
-          <p className="text-slate-400 text-xs mt-1">
-            Welcome back, <span className="text-[#C9A84C] font-semibold">{session.user.name}</span> ({session.user.role})
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#F4B400]/30 bg-[#F4B400]/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F4B400]">
+            <Sparkles className="h-3.5 w-3.5" />
+            Luxury CRM Workspace
+          </div>
+          <h1 className="text-3xl font-black tracking-tight sm:text-4xl">
+            Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 18 ? "afternoon" : "evening"}, {session.user.name}
+          </h1>
+          <p className="text-gray-400 text-sm mt-2 max-w-2xl">
+            Track premium enquiries, site visits, follow-ups, agent performance, and conversion momentum from one beautiful control room.
           </p>
         </div>
-        <div className="text-xs text-slate-400 bg-slate-900 border border-slate-800 px-4 py-2 rounded-lg">
-          Local Time: {new Date().toLocaleDateString("en-IN", { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' })}
+        <div className="rounded-2xl border border-white/10 bg-white/[0.06] px-5 py-4 text-sm text-gray-300 shadow-inner shadow-white/5">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">Today</p>
+          <p className="mt-1 font-semibold text-white">{new Date().toLocaleDateString("en-IN", { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' })}</p>
+        </div>
         </div>
       </div>
 
       {/* Stats Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
         <StatsCard
           title="Total Leads"
           value={stats.totalLeads}
@@ -140,6 +150,13 @@ export default async function DashboardPage() {
           color="emerald"
         />
         <StatsCard
+          title="Monthly Revenue"
+          value="₹—"
+          subtitle="Connect booking values to calculate revenue"
+          icon={DollarSign}
+          color="emerald"
+        />
+        <StatsCard
           title="Active Properties"
           value={activePropertiesCount}
           subtitle="Available on website"
@@ -154,10 +171,10 @@ export default async function DashboardPage() {
       />
 
       {/* Charts & Activity Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
         {/* Left: Charts (60% / 7 cols) */}
-        <div className="lg:col-span-8 bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-6">
-          <h2 className="text-lg font-semibold border-b border-slate-800 pb-3">Leads Overview & Pipeline</h2>
+        <div className="rounded-[24px] border border-white/10 bg-[#162032]/80 p-6 shadow-xl shadow-black/20 backdrop-blur-xl lg:col-span-8">
+          <h2 className="mb-6 text-lg font-bold">Premium Analytics</h2>
           <Suspense fallback={<div className="h-72 w-full skeleton" />}>
             <Charts
               sourceData={stats.leadsBySource}
@@ -167,8 +184,8 @@ export default async function DashboardPage() {
         </div>
 
         {/* Right: Activity Feed (40% / 5 cols) */}
-        <div className="lg:col-span-4 bg-slate-900 border border-slate-800 rounded-xl p-6 flex flex-col">
-          <h2 className="text-lg font-semibold border-b border-slate-800 pb-3 mb-4">Recent Activities</h2>
+        <div className="flex flex-col rounded-[24px] border border-white/10 bg-[#162032]/80 p-6 shadow-xl shadow-black/20 backdrop-blur-xl lg:col-span-4">
+          <h2 className="mb-4 text-lg font-bold">Recent Activities Timeline</h2>
           <div className="flex-grow overflow-y-auto max-h-[360px]">
             <Suspense fallback={<div className="space-y-4"><div className="h-10 skeleton w-full" /><div className="h-10 skeleton w-full" /></div>}>
               <ActivityFeed activities={stats.recentActivities} />
@@ -178,8 +195,8 @@ export default async function DashboardPage() {
       </div>
 
       {/* Today's Followups Section */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-        <div className="flex justify-between items-center border-b border-slate-800 pb-4 mb-4">
+      <div className="rounded-[24px] border border-white/10 bg-[#162032]/80 p-6 shadow-xl shadow-black/20 backdrop-blur-xl">
+        <div className="flex justify-between items-center border-b border-white/10 pb-4 mb-4">
           <h2 className="text-lg font-semibold">Today&apos;s Scheduled Follow-ups</h2>
           <Link href="/crm/leads?view=table" className="text-xs text-[#C9A84C] hover:underline font-semibold">
             View All Leads →

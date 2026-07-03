@@ -1,3 +1,5 @@
+'use client'
+
 /**
  * src/components/crm/dashboard/StatsCard.tsx
  *
@@ -20,6 +22,7 @@
 
 import React from 'react'
 import { TrendingUp, TrendingDown } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -67,7 +70,7 @@ const COLOR_CONFIG: Record<
   ColorVariant,
   { hex: string; bgClass: string; textClass: string }
 > = {
-  gold:    { hex: '#C9A84C', bgClass: 'bg-yellow-500/10',  textClass: 'text-yellow-400' },
+  gold:    { hex: '#F4B400', bgClass: 'bg-yellow-500/10',  textClass: 'text-yellow-400' },
   blue:    { hex: '#3B82F6', bgClass: 'bg-blue-500/10',    textClass: 'text-blue-400'   },
   emerald: { hex: '#10B981', bgClass: 'bg-emerald-500/10', textClass: 'text-emerald-400'},
   amber:   { hex: '#F59E0B', bgClass: 'bg-amber-500/10',   textClass: 'text-amber-400'  },
@@ -91,35 +94,39 @@ export default function StatsCard({
   const { hex, bgClass, textClass } = COLOR_CONFIG[color]
 
   return (
-    <article
+    <motion.article
+      initial={{ opacity: 0, y: 16, scale: 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      whileHover={{ y: -5, scale: 1.01 }}
+      transition={{ duration: 0.28, ease: 'easeOut' }}
       className={cn(
         // Shape & spacing
-        'relative flex flex-col gap-4 overflow-hidden rounded-xl p-5',
+        'relative flex min-h-[156px] flex-col gap-4 overflow-hidden rounded-[22px] p-5',
         // Background & border
-        'bg-slate-800 border border-slate-700',
+        'border border-white/10 bg-[#162032]/80 shadow-xl shadow-black/20 backdrop-blur-xl',
         // Subtle lift on hover
-        'transition-shadow duration-200 hover:shadow-lg hover:shadow-black/20',
+        'transition-shadow duration-200 hover:shadow-2xl hover:shadow-[#F4B400]/10',
         className
       )}
       aria-label={`${title}: ${value}`}
     >
       {/* ── Decorative background glow ─────────────────────────────────── */}
       <div
-        className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full opacity-5"
-        style={{ backgroundColor: hex, filter: 'blur(20px)' }}
+        className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full opacity-20"
+        style={{ backgroundColor: hex, filter: 'blur(34px)' }}
         aria-hidden="true"
       />
 
       {/* ── Top row: label + icon ──────────────────────────────────────── */}
       <div className="flex items-start justify-between gap-3">
-        <p className="text-sm font-medium text-slate-400 leading-tight">
+        <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-gray-400 leading-tight">
           {title}
         </p>
 
         {/* Icon circle */}
         <div
           className={cn(
-            'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg',
+            'flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl border border-white/10 shadow-lg shadow-black/20',
             bgClass
           )}
           aria-hidden="true"
@@ -133,12 +140,12 @@ export default function StatsCard({
 
       {/* ── Middle: value ─────────────────────────────────────────────── */}
       <div>
-        <p className="text-3xl font-black text-white tabular-nums leading-none">
+        <p className="text-4xl font-black text-white tabular-nums leading-none tracking-tight">
           {typeof value === 'number' ? value.toLocaleString('en-IN') : value}
         </p>
 
         {subtitle && (
-          <p className="mt-1 text-xs text-slate-500 leading-relaxed">
+          <p className="mt-2 text-xs text-gray-400 leading-relaxed">
             {subtitle}
           </p>
         )}
@@ -167,9 +174,9 @@ export default function StatsCard({
             {trend.isUp ? '+' : '-'}
             {Math.abs(trend.value).toFixed(1)}%
           </span>
-          <span className="text-xs text-slate-500">vs last week</span>
+          <span className="text-xs text-gray-500">vs last week</span>
         </div>
       )}
-    </article>
+    </motion.article>
   )
 }

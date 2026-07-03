@@ -18,6 +18,7 @@
 'use client'
 
 import { useState, useTransition } from 'react'
+import { motion } from 'framer-motion'
 import {
   Star,
   StarOff,
@@ -246,16 +247,22 @@ export default function PropertyAdminCard({ property }: PropertyAdminCardProps) 
         />
       )}
 
-      <article className="group flex flex-col overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 shadow-md transition-shadow hover:shadow-lg hover:shadow-[#C9A84C]/5">
+      <motion.article
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -6, scale: 1.01 }}
+        transition={{ duration: 0.28, ease: 'easeOut' }}
+        className="group flex flex-col overflow-hidden rounded-[26px] border border-white/10 bg-[#162032]/85 shadow-2xl shadow-black/20 backdrop-blur-xl transition hover:border-[#F4B400]/30 hover:shadow-[#F4B400]/10"
+      >
         {/* ── Image / Placeholder area ─────────────────────────────────── */}
-        <div className="relative h-44 flex-shrink-0 overflow-hidden bg-slate-800">
+        <div className="relative h-56 flex-shrink-0 overflow-hidden bg-slate-800">
           {primaryImage ? (
             /* Real image */
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={primaryImage}
               alt={property.title}
-              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
               onError={(e) => {
                 // Fall back to gradient if URL fails to load
                 ;(e.currentTarget as HTMLImageElement).style.display = 'none'
@@ -278,7 +285,7 @@ export default function PropertyAdminCard({ property }: PropertyAdminCardProps) 
 
           {/* ── Featured star badge ──────────────────────────────────── */}
           {isFeatured && (
-            <div className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-[#C9A84C] px-2 py-0.5 text-xs font-bold text-slate-950">
+            <div className="absolute left-3 top-3 flex items-center gap-1 rounded-full bg-[#F4B400] px-3 py-1 text-xs font-black text-[#081120] shadow-lg shadow-[#F4B400]/20">
               <Star className="h-3 w-3 fill-slate-950" />
               Featured
             </div>
@@ -317,7 +324,7 @@ export default function PropertyAdminCard({ property }: PropertyAdminCardProps) 
             </span>
 
             <h2
-              className="line-clamp-1 text-base font-semibold text-white"
+              className="line-clamp-1 text-lg font-black text-white"
               title={property.title}
             >
               {property.title}
@@ -424,7 +431,7 @@ export default function PropertyAdminCard({ property }: PropertyAdminCardProps) 
             </button>
           </div>
         </div>
-      </article>
+      </motion.article>
     </>
   )
 }

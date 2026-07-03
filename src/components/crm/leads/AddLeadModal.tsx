@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { leadSchema, LeadInput } from "@/lib/validations";
@@ -122,33 +123,46 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
     <>
       <span onClick={handleOpen} style={{ display: 'contents' }}>{trigger}</span>
 
+      <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex justify-end">
           {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-[#0F1B2D]/70 backdrop-blur-sm transition-opacity"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 bg-[#081120]/75 backdrop-blur-md"
             onClick={handleClose}
           />
 
-          {/* Modal Container */}
-          <div className="relative bg-slate-900 border border-slate-800 text-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden z-10 max-h-[90vh] flex flex-col animate-fade-in-scale">
+          {/* Slide-over Container */}
+          <motion.div
+            initial={{ x: 520, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 520, opacity: 0 }}
+            transition={{ type: "spring", damping: 28, stiffness: 260 }}
+            className="relative z-10 flex h-full w-full max-w-2xl flex-col overflow-hidden border-l border-white/10 bg-[#0E1726]/95 text-white shadow-2xl shadow-black/40 backdrop-blur-2xl sm:rounded-l-[28px]"
+          >
             {/* Header */}
-            <div className="px-6 py-4 border-b border-slate-800 bg-slate-950 flex items-center justify-between flex-shrink-0">
-              <h3 className="font-bold text-base text-white">
+            <div className="flex flex-shrink-0 items-center justify-between border-b border-white/10 bg-white/[0.03] px-6 py-5">
+              <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-[#F4B400]">Lead workspace</p>
+              <h3 className="mt-1 text-xl font-black text-white">
                 {isEditMode ? "Edit Lead Information" : "Create New Lead"}
               </h3>
+              </div>
               <button
                 onClick={handleClose}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
+                className="rounded-2xl border border-white/10 bg-white/[0.05] p-2 text-gray-300 transition hover:bg-white/10 hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Scrollable Form Body */}
-            <form onSubmit={handleSubmit(onSubmit)} className="flex-grow overflow-y-auto p-6 space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex-grow space-y-6 overflow-y-auto p-6">
               {error && (
-                <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs p-3 rounded-lg flex items-center gap-2">
+                <div className="flex items-center gap-2 rounded-2xl border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-300">
                   <AlertCircle className="w-4 h-4" />
                   <span>{error}</span>
                 </div>
@@ -156,7 +170,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
 
               {/* Basic Section */}
               <div>
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#C9A84C] mb-4">Contact Details</h4>
+                <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[#F4B400]">Contact Details</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-slate-400 mb-1">Full Name *</label>
@@ -164,7 +178,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                       type="text"
                       {...register("name")}
                       placeholder="e.g. Manik Sahni"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
                     />
                     {errors.name && <p className="text-red-400 text-[10px] mt-1">{errors.name.message}</p>}
                   </div>
@@ -174,7 +188,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                       type="text"
                       {...register("phone")}
                       placeholder="10-digit mobile number"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
                     />
                     {errors.phone && <p className="text-red-400 text-[10px] mt-1">{errors.phone.message}</p>}
                   </div>
@@ -187,7 +201,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                       type="text"
                       {...register("whatsappNumber")}
                       placeholder="Same or alternate number"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
                     />
                   </div>
                   <div>
@@ -196,7 +210,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                       type="email"
                       {...register("email")}
                       placeholder="email@example.com"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
                     />
                     {errors.email && <p className="text-red-400 text-[10px] mt-1">{errors.email.message}</p>}
                   </div>
@@ -204,8 +218,8 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
               </div>
 
               {/* Requirement Section */}
-              <div className="border-t border-slate-800 pt-6">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#C9A84C] mb-4">Requirements</h4>
+              <div className="border-t border-white/10 pt-6">
+                <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[#F4B400]">Requirements</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-slate-400 mb-1">Budget</label>
@@ -213,14 +227,14 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                       type="text"
                       {...register("budget")}
                       placeholder="e.g. ₹45 Lakh"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-slate-400 mb-1">Property Type</label>
                     <select
                       {...register("propertyType")}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
                     >
                       <option value="">Select Property Type</option>
                       <option value={PropertyType.APARTMENT}>Apartment</option>
@@ -236,21 +250,21 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                       type="text"
                       {...register("preferredLocation")}
                       placeholder="e.g. Civil Lines, Bareilly"
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
                     />
                   </div>
                 </div>
               </div>
 
               {/* Metadata Section */}
-              <div className="border-t border-slate-800 pt-6">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-[#C9A84C] mb-4">CRM Settings</h4>
+              <div className="border-t border-white/10 pt-6">
+                <h4 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[#F4B400]">CRM Settings</h4>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-xs font-semibold text-slate-400 mb-1">Lead Source *</label>
                     <select
                       {...register("source")}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
                     >
                       <option value={LeadSource.WEBSITE}>Website</option>
                       <option value={LeadSource.INSTAGRAM}>Instagram</option>
@@ -265,7 +279,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                     <label className="block text-xs font-semibold text-slate-400 mb-1">Pipeline Status *</label>
                     <select
                       {...register("status")}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
                     >
                       <option value={LeadStatus.NEW}>New</option>
                       <option value={LeadStatus.ASSIGNED}>Assigned</option>
@@ -284,7 +298,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                     <label className="block text-xs font-semibold text-slate-400 mb-1">Priority *</label>
                     <select
                       {...register("priority")}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
                     >
                       <option value={Priority.HIGH}>High</option>
                       <option value={Priority.MEDIUM}>Medium</option>
@@ -298,7 +312,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                     <label className="block text-xs font-semibold text-slate-400 mb-1">Assign Sales Agent</label>
                     <select
                       {...register("assignedToId")}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
                     >
                       <option value="">Select Agent</option>
                       {agents.map((agent) => (
@@ -313,7 +327,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                     <input
                       type="datetime-local"
                       {...register("followUpDate")}
-                      className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
+                      className="w-full rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 text-sm text-white outline-none transition focus:border-[#F4B400]/60"
                     />
                     {errors.followUpDate && (
                       <p className="text-red-400 text-[10px] mt-1">{errors.followUpDate.message}</p>
@@ -323,27 +337,28 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
               </div>
 
               {/* Bottom Footer Actions inside Modal Form */}
-              <div className="border-t border-slate-800 pt-6 flex justify-end gap-3 flex-shrink-0">
+              <div className="flex flex-shrink-0 justify-end gap-3 border-t border-white/10 pt-6">
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="px-4 py-2 border border-slate-700 text-slate-300 text-xs font-bold rounded-lg hover:bg-slate-800 hover:text-white transition-colors"
+                  className="rounded-2xl border border-white/10 px-4 py-3 text-xs font-bold text-gray-300 transition hover:bg-white/10 hover:text-white"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-5 py-2.5 bg-[#C9A84C] text-slate-900 text-xs font-bold rounded-lg hover:bg-[#b8963e] disabled:opacity-50 flex items-center gap-1.5 transition-colors"
+                  className="flex items-center gap-1.5 rounded-2xl bg-[#F4B400] px-5 py-3 text-xs font-black text-[#081120] transition hover:bg-[#f59e0b] disabled:opacity-50"
                 >
                   <Save className="w-4 h-4" />
                   {isSubmitting ? "Saving..." : isEditMode ? "Save Changes" : "Create Lead"}
                 </button>
               </div>
             </form>
-          </div>
+          </motion.div>
         </div>
       )}
+      </AnimatePresence>
     </>
   );
 }

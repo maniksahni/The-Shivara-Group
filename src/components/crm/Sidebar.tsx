@@ -19,6 +19,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
+import { motion } from 'framer-motion'
 import {
   LayoutDashboard,
   Users,
@@ -104,8 +105,7 @@ function UserAvatar({ name }: { name: string }) {
 
   return (
     <div
-      className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-slate-900"
-      style={{ backgroundColor: '#C9A84C' }}
+      className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F4B400] to-[#f59e0b] text-sm font-black text-[#081120] shadow-lg shadow-[#F4B400]/15"
       aria-label={`Avatar for ${name}`}
     >
       {initials}
@@ -234,12 +234,15 @@ export default function CRMSidebar() {
        * On smaller screens it slides in from the left using a CSS translate
        * transition, controlled by the `isOpen` state.
        */}
-      <aside
+      <motion.aside
+        initial={{ opacity: 0, x: -18 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.35, ease: 'easeOut' }}
         className={cn(
           // Base layout
-          'fixed top-0 left-0 z-30 flex h-full w-[260px] flex-col',
+          'fixed top-0 left-0 z-30 flex h-full w-[280px] flex-col',
           // Background and border
-          'bg-slate-900 border-r border-slate-700',
+          'border-r border-white/10 bg-[#0E1726]/85 shadow-2xl shadow-black/40 backdrop-blur-2xl',
           // On desktop: always visible, not fixed (use relative positioning
           // within the flex row — achieved by overriding fixed with static).
           'lg:static lg:z-auto',
@@ -250,37 +253,34 @@ export default function CRMSidebar() {
         aria-label="CRM navigation sidebar"
       >
         {/* ── Logo / brand ────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between border-b border-slate-700 px-5 py-5">
+        <div className="relative flex items-center justify-between border-b border-white/10 px-5 py-5">
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#F4B400]/10 via-transparent to-transparent" />
           <Link
             href="/crm/dashboard"
             className="flex items-center gap-3 group"
             onClick={close}
           >
             {/* Gold "S" icon */}
-            <div
-              className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-slate-900 text-lg font-black shadow-md"
-              style={{ backgroundColor: '#C9A84C' }}
-            >
+            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F4B400] to-[#f59e0b] text-lg font-black text-[#081120] shadow-lg shadow-[#F4B400]/20 ring-1 ring-white/20">
               S
             </div>
 
             {/* Brand text */}
             <div className="flex flex-col leading-tight">
               <span
-                className="text-[15px] font-bold tracking-wide"
-                style={{ color: '#C9A84C' }}
+                className="text-[15px] font-bold tracking-wide text-[#F4B400]"
               >
                 Shivara CRM
               </span>
-              <span className="text-[10px] text-slate-400 uppercase tracking-widest">
-                Real Estate
+              <span className="text-[10px] text-gray-400 uppercase tracking-[0.25em]">
+                Luxury Real Estate
               </span>
             </div>
           </Link>
 
           {/* Mobile close button */}
           <button
-            className="flex h-8 w-8 items-center justify-center rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition-colors lg:hidden"
+            className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-gray-300 transition hover:bg-white/10 hover:text-white lg:hidden"
             onClick={close}
             aria-label="Close sidebar"
           >
@@ -289,8 +289,8 @@ export default function CRMSidebar() {
         </div>
 
         {/* ── Navigation links ─────────────────────────────────────────── */}
-        <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Primary navigation">
-          <ul className="space-y-1" role="list">
+        <nav className="flex-1 overflow-y-auto px-4 py-5" aria-label="Primary navigation">
+          <ul className="space-y-2" role="list">
             {navItems
               .filter(
                 (item) =>
@@ -302,32 +302,31 @@ export default function CRMSidebar() {
 
                 return (
                   <li key={item.href}>
+                    <motion.div whileHover={{ x: 4 }} whileTap={{ scale: 0.98 }}>
                     <Link
                       href={item.href}
                       onClick={close}
                       className={cn(
                         // Base styles
-                        'group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150',
+                        'group relative flex items-center gap-3 rounded-2xl px-3.5 py-3 text-sm font-semibold transition-all duration-200',
                         // Active state: gold background, dark text
                         active
-                          ? 'text-slate-900 shadow-sm'
+                          ? 'bg-gradient-to-r from-[#F4B400] to-[#f59e0b] text-[#081120] shadow-lg shadow-[#F4B400]/20'
                           : // Inactive state: muted text, hover gold
-                            'text-slate-400 hover:text-white hover:bg-slate-800'
+                            'text-gray-400 hover:bg-white/[0.06] hover:text-white'
                       )}
-                      style={
-                        active
-                          ? { backgroundColor: '#C9A84C', color: '#0f172a' }
-                          : undefined
-                      }
                       aria-current={active ? 'page' : undefined}
                     >
+                      {active && (
+                        <span className="absolute inset-y-2 -left-1 w-1 rounded-full bg-white/80" />
+                      )}
                       {/* Icon */}
                       <Icon
                         className={cn(
                           'h-4.5 w-4.5 flex-shrink-0 transition-colors',
                           active
-                            ? 'text-slate-900'
-                            : 'text-slate-500 group-hover:text-slate-300'
+                            ? 'text-[#081120]'
+                            : 'text-gray-500 group-hover:text-[#F4B400]'
                         )}
                         aria-hidden="true"
                       />
@@ -341,8 +340,8 @@ export default function CRMSidebar() {
                           className={cn(
                             'inline-flex items-center justify-center rounded-full px-1.5 py-0.5 text-[11px] font-bold leading-none',
                             active
-                              ? 'bg-slate-900/20 text-slate-900'
-                              : 'bg-amber-500 text-white'
+                              ? 'bg-[#081120]/20 text-[#081120]'
+                              : 'bg-[#EF4444] text-white'
                           )}
                           aria-label={`${item.badge} pending follow-ups`}
                         >
@@ -353,11 +352,12 @@ export default function CRMSidebar() {
                       {/* Active chevron hint */}
                       {active && (
                         <ChevronRight
-                          className="h-3.5 w-3.5 flex-shrink-0 text-slate-900/60"
+                          className="h-3.5 w-3.5 flex-shrink-0 text-[#081120]/60"
                           aria-hidden="true"
                         />
                       )}
                     </Link>
+                    </motion.div>
                   </li>
                 )
               })}
@@ -365,9 +365,9 @@ export default function CRMSidebar() {
         </nav>
 
         {/* ── Bottom: user info + logout ───────────────────────────────── */}
-        <div className="border-t border-slate-700 p-4">
+        <div className="border-t border-white/10 p-4">
           {session?.user && (
-            <div className="mb-3 flex items-center gap-3 rounded-lg bg-slate-800 px-3 py-2.5">
+            <div className="mb-3 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] px-3 py-3 shadow-inner shadow-white/5">
               <UserAvatar name={session.user.name ?? 'U'} />
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-semibold text-white">
@@ -383,14 +383,42 @@ export default function CRMSidebar() {
           {/* Logout button */}
           <button
             onClick={handleSignOut}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-400 transition-all duration-150 hover:bg-rose-500/10 hover:text-rose-400"
+            className="flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-sm font-semibold text-gray-400 transition-all duration-150 hover:bg-rose-500/10 hover:text-rose-300"
             aria-label="Sign out of CRM"
           >
             <LogOut className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
             <span>Sign Out</span>
           </button>
         </div>
-      </aside>
+      </motion.aside>
+
+      <nav className="fixed bottom-3 left-3 right-3 z-40 rounded-[24px] border border-white/10 bg-[#0E1726]/90 p-2 shadow-2xl shadow-black/40 backdrop-blur-2xl lg:hidden" aria-label="Mobile CRM navigation">
+        <ul className="grid grid-cols-5 gap-1">
+          {navItems
+            .filter((item) => !item.requiredRole || item.requiredRole === userRole)
+            .slice(0, 5)
+            .map((item) => {
+              const active = isActive(item.href)
+              const Icon = item.icon
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={cn(
+                      'flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl text-[10px] font-bold transition',
+                      active
+                        ? 'bg-[#F4B400] text-[#081120] shadow-lg shadow-[#F4B400]/20'
+                        : 'text-gray-400 hover:bg-white/5 hover:text-white',
+                    )}
+                  >
+                    <Icon className="h-4 w-4" />
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                </li>
+              )
+            })}
+        </ul>
+      </nav>
     </>
   )
 }

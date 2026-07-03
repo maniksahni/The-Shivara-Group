@@ -30,6 +30,7 @@ import {
   Download,
   Phone,
   Mail,
+  MessageCircle,
   UserCircle,
   Plus,
   UserPlus,
@@ -54,6 +55,7 @@ interface Lead {
   id: string
   name: string
   phone: string
+  whatsappNumber?: string | null
   email: string | null
   budget: string | null
   source: string
@@ -455,10 +457,10 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
         <div
           className={[
             'mb-3 flex items-center justify-between rounded-lg',
-            'border border-[#C9A84C]/30 bg-[#C9A84C]/10 px-4 py-2.5',
+            'border border-[#F4B400]/30 bg-[#F4B400]/10 px-4 py-3 backdrop-blur-xl',
           ].join(' ')}
         >
-          <span className="text-sm font-medium text-[#C9A84C]">
+          <span className="text-sm font-bold text-[#F4B400]">
             {selected.size} lead{selected.size > 1 ? 's' : ''} selected
           </span>
           <div className="flex flex-wrap items-center justify-end gap-2">
@@ -483,7 +485,7 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
                   disabled={bulkAssigning || !bulkAgentId}
                   className={[
                     'flex items-center gap-2 rounded-lg border border-[#C9A84C]/50',
-                    'bg-[#C9A84C] px-3 py-1.5 text-xs font-bold text-slate-950',
+                    'bg-[#F4B400] px-3 py-1.5 text-xs font-bold text-slate-950',
                     'hover:bg-[#b8963e] disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-150',
                   ].join(' ')}
                 >
@@ -509,12 +511,12 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
       )}
 
       {/* ── Table wrapper ── */}
-      <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900">
+      <div className="overflow-hidden rounded-[24px] border border-white/10 bg-[#162032]/80 shadow-2xl shadow-black/20 backdrop-blur-xl">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-800">
             {/* ── Head ── */}
             <thead>
-              <tr className="bg-slate-900/80">
+              <tr className="bg-white/[0.03]">
                 {/* Checkbox */}
                 <th className="w-10 px-4 py-3">
                   <input
@@ -549,6 +551,9 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
                 <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-400">
                   Created
                 </th>
+                <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-400">
+                  Contact
+                </th>
                 <th className="w-12 px-4 py-3" />
               </tr>
             </thead>
@@ -566,8 +571,8 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
                     className={[
                       'group cursor-pointer transition-colors duration-100',
                       isChecked
-                        ? 'bg-[#C9A84C]/5'
-                        : 'hover:bg-slate-800/60',
+                        ? 'bg-[#F4B400]/5'
+                        : 'hover:bg-white/[0.04]',
                     ].join(' ')}
                   >
                     {/* Checkbox */}
@@ -590,7 +595,7 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
                         {lead.name}
                       </div>
                       <div className="mt-0.5 flex items-center gap-1 text-xs text-slate-400">
-                        <Phone className="h-3 w-3" />
+                        <Phone className="h-3 w-3 text-[#F4B400]" />
                         {lead.phone}
                         {lead.email && (
                           <>
@@ -666,6 +671,27 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
                       {formatDate(lead.createdAt)}
                     </td>
 
+                    <td className="px-4 py-3" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={`tel:${lead.phone}`}
+                          className="flex h-9 w-9 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-blue-300 transition hover:bg-blue-500/10"
+                          aria-label={`Call ${lead.name}`}
+                        >
+                          <Phone className="h-4 w-4" />
+                        </a>
+                        <a
+                          href={`https://wa.me/${lead.whatsappNumber || lead.phone}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex h-9 w-9 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-emerald-300 transition hover:bg-emerald-500/10"
+                          aria-label={`WhatsApp ${lead.name}`}
+                        >
+                          <MessageCircle className="h-4 w-4" />
+                        </a>
+                      </div>
+                    </td>
+
                     {/* Actions */}
                     <td
                       className="px-4 py-3"
@@ -689,7 +715,7 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
 
         {/* ── Pagination ── */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between border-t border-slate-800 bg-slate-900/60 px-6 py-3">
+          <div className="flex items-center justify-between border-t border-white/10 bg-white/[0.03] px-6 py-3">
             <p className="text-xs text-slate-400">
               Showing{' '}
               <span className="font-medium text-white">

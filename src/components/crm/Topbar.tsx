@@ -16,6 +16,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
+import { motion } from 'framer-motion'
 import {
   Menu,
   Search,
@@ -24,6 +25,7 @@ import {
   User,
   LogOut,
   X,
+  Moon,
 } from 'lucide-react'
 
 import { useSidebar } from './Sidebar'
@@ -99,10 +101,7 @@ function TopbarAvatar({ name }: { name: string }) {
   })()
 
   return (
-    <div
-      className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold text-slate-900"
-      style={{ backgroundColor: '#C9A84C' }}
-    >
+    <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F4B400] to-[#f59e0b] text-xs font-black text-[#081120] shadow-lg shadow-[#F4B400]/20 ring-1 ring-white/20">
       {initials}
     </div>
   )
@@ -233,10 +232,15 @@ export default function CRMTopbar() {
   // ─────────────────────────────────────────────────────────────────────────
 
   return (
-    <header className="flex h-16 flex-shrink-0 items-center gap-4 border-b border-slate-700 bg-slate-900 px-4 md:px-6">
+    <motion.header
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.32, ease: 'easeOut' }}
+      className="sticky top-0 z-10 flex min-h-20 flex-shrink-0 items-center gap-3 border-b border-white/10 bg-[#081120]/70 px-3 shadow-lg shadow-black/10 backdrop-blur-2xl sm:px-5 lg:px-8"
+    >
       {/* ── Hamburger (mobile only) ────────────────────────────────────── */}
       <button
-        className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors lg:hidden"
+        className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-gray-300 transition hover:bg-white/10 hover:text-white lg:hidden"
         onClick={toggleSidebar}
         aria-label="Toggle navigation sidebar"
       >
@@ -244,9 +248,14 @@ export default function CRMTopbar() {
       </button>
 
       {/* ── Page title ─────────────────────────────────────────────────── */}
-      <h1 className="flex-shrink-0 text-lg font-bold text-white tracking-tight">
-        {pageTitle}
-      </h1>
+      <div className="min-w-0 flex-shrink-0">
+        <p className="hidden text-[10px] font-bold uppercase tracking-[0.25em] text-[#F4B400] sm:block">
+          The Shivara Group
+        </p>
+        <h1 className="truncate text-lg font-black tracking-tight text-white sm:text-xl">
+          {pageTitle}
+        </h1>
+      </div>
 
       {/* ── Spacer ─────────────────────────────────────────────────────── */}
       <div className="flex-1" />
@@ -254,7 +263,7 @@ export default function CRMTopbar() {
       {/* ── Global search (md+) ────────────────────────────────────────── */}
       <form
         onSubmit={handleSearchSubmit}
-        className="hidden md:flex relative items-center"
+        className="relative hidden items-center md:flex"
         role="search"
         aria-label="Search leads"
       >
@@ -269,10 +278,10 @@ export default function CRMTopbar() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className={cn(
-            'h-9 w-56 rounded-lg border border-slate-700 bg-slate-800',
-            'pl-9 pr-8 text-sm text-white placeholder:text-slate-500',
+            'h-11 w-64 rounded-2xl border border-white/10 bg-white/[0.06]',
+            'pl-10 pr-9 text-sm text-white placeholder:text-gray-500 shadow-inner shadow-black/20',
             'focus:outline-none focus:ring-2 focus:border-transparent transition-all',
-            'hover:border-slate-600'
+            'hover:border-white/20 focus:ring-[#F4B400]/30'
           )}
           style={
             searchQuery
@@ -298,8 +307,17 @@ export default function CRMTopbar() {
       <div className="flex flex-shrink-0 items-center gap-2">
         {/* Notification bell */}
         <button
+          type="button"
+          className="hidden h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-gray-300 transition hover:bg-white/10 hover:text-[#F4B400] sm:flex"
+          aria-label="Theme toggle"
+          title="Theme toggle"
+        >
+          <Moon className="h-5 w-5" />
+        </button>
+
+        <button
           onClick={handleBellClick}
-          className="relative flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-colors"
+          className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.05] text-gray-300 transition hover:bg-white/10 hover:text-white"
           aria-label={
             overdueCount > 0
               ? `${overdueCount} overdue follow-ups`
@@ -320,13 +338,13 @@ export default function CRMTopbar() {
         </button>
 
         {/* Separator */}
-        <div className="mx-1 h-6 w-px bg-slate-700" aria-hidden="true" />
+        <div className="mx-1 hidden h-8 w-px bg-white/10 sm:block" aria-hidden="true" />
 
         {/* User avatar + dropdown */}
         <div className="relative" ref={dropdownRef}>
           <button
             onClick={() => setDropdownOpen((prev) => !prev)}
-            className="flex items-center gap-2 rounded-lg px-2 py-1 hover:bg-slate-800 transition-colors"
+            className="flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.05] px-2 py-1.5 transition hover:bg-white/10"
             aria-haspopup="true"
             aria-expanded={dropdownOpen}
             aria-label="User menu"
@@ -357,6 +375,6 @@ export default function CRMTopbar() {
           )}
         </div>
       </div>
-    </header>
+    </motion.header>
   )
 }

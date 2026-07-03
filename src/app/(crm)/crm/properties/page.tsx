@@ -140,25 +140,28 @@ export default async function PropertiesPage() {
   return (
     <div className="space-y-8">
       {/* ── Page header ──────────────────────────────────────────────────── */}
+      <div className="rounded-[28px] border border-white/10 bg-[#162032]/80 p-6 shadow-2xl shadow-black/20 backdrop-blur-xl sm:p-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">
+          <p className="text-[10px] font-bold uppercase tracking-[0.25em] text-[#F4B400]">Inventory studio</p>
+          <h1 className="mt-1 text-3xl font-black tracking-tight text-white">
             Properties
           </h1>
-          <p className="mt-1 text-sm text-slate-400">
-            Manage your real-estate inventory listings.
+          <p className="mt-2 text-sm text-gray-400">
+            Manage luxury listings with fast controls, image-first cards, and premium visibility states.
           </p>
         </div>
 
         {/* Add Property button — opens the modal (client component) */}
         <AddPropertyModal
           trigger={
-            <button className="inline-flex items-center gap-2 rounded-lg bg-[#C9A84C] px-4 py-2.5 text-sm font-semibold text-slate-950 transition-opacity hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/60">
+            <button className="inline-flex items-center gap-2 rounded-2xl bg-[#F4B400] px-4 py-3 text-sm font-black text-[#081120] shadow-lg shadow-[#F4B400]/20 transition hover:-translate-y-0.5 hover:bg-[#f59e0b] focus:outline-none focus:ring-2 focus:ring-[#F4B400]/60">
               <Plus className="h-4 w-4" />
               Add Property
             </button>
           }
         />
+      </div>
       </div>
 
       {/* ── Stats row ─────────────────────────────────────────────────────── */}

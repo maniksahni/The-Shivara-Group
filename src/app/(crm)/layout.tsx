@@ -56,7 +56,7 @@ export default async function CRMLayout({ children }: CRMLayoutProps) {
        * Full-viewport flex container.
        * Sidebar is fixed-width (260 px); the right pane takes remaining space.
        */}
-      <div className="flex h-screen w-full overflow-hidden bg-slate-950">
+      <div className="flex h-screen w-full overflow-hidden bg-[#081120] text-white">
         {/* ── Left sidebar ──────────────────────────────────────────────── */}
         {/*
          * The sidebar is rendered as a fixed-position column so that it
@@ -66,7 +66,8 @@ export default async function CRMLayout({ children }: CRMLayoutProps) {
         <CRMSidebar />
 
         {/* ── Right pane ────────────────────────────────────────────────── */}
-        <div className="flex flex-1 flex-col min-w-0 overflow-hidden">
+        <div className="relative flex flex-1 flex-col min-w-0 overflow-hidden">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(244,180,0,0.12),transparent_34%),radial-gradient(circle_at_top_right,rgba(59,130,246,0.12),transparent_28%),linear-gradient(180deg,#081120_0%,#0E1726_45%,#111827_100%)]" />
           {/* Sticky top bar — stays visible while content scrolls */}
           <CRMTopbar />
 
@@ -76,7 +77,7 @@ export default async function CRMLayout({ children }: CRMLayoutProps) {
            * `flex-1` ensures this area fills the remaining vertical space
            * below the topbar.
            */}
-          <main className="flex-1 overflow-y-auto bg-slate-950 p-6">
+          <main className="relative z-0 flex-1 overflow-y-auto px-3 pb-24 pt-4 sm:px-5 lg:px-8 lg:pb-8">
             {children}
           </main>
         </div>

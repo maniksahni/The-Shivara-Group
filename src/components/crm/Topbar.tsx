@@ -38,8 +38,11 @@ const PAGE_TITLES: Array<{ prefix: string; title: string }> = [
   { prefix: '/crm/dashboard', title: 'Dashboard' },
   { prefix: '/crm/leads', title: 'Leads' },
   { prefix: '/crm/properties', title: 'Properties' },
+  { prefix: '/crm/calendar', title: 'Calendar' },
+  { prefix: '/crm/activities', title: 'Activities' },
   { prefix: '/crm/reports', title: 'Reports' },
   { prefix: '/crm/agents', title: 'Agents' },
+  { prefix: '/crm/settings', title: 'Settings' },
   { prefix: '/crm/profile', title: 'My Profile' },
 ]
 

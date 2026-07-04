@@ -5,6 +5,7 @@ import { Bath, BedDouble, CalendarDays, CheckCircle2, Heart, MapPin, MessageCirc
 import { isDatabaseConfigured, prisma } from "@/lib/prisma";
 import { LuxuryButton, SectionHeader, SectionShell } from "@/components/website/LuxurySection";
 import { fallbackProperties, siteConfig, type PublicProperty } from "@/components/website/site-data";
+import PropertyExperienceClient from "./PropertyExperienceClient";
 
 export const revalidate = 0;
 
@@ -118,57 +119,53 @@ export default async function PropertyDetailsPage({ params }: Props) {
         </div>
       </section>
 
-      <section className="px-5 py-10 sm:px-8 lg:px-12">
-        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.14fr_0.86fr]">
-          <div
-            className="min-h-[520px] rounded-[2.5rem] bg-cover bg-center shadow-[0_28px_90px_rgba(8,17,32,0.14)]"
-            style={{ backgroundImage: `linear-gradient(180deg,rgba(8,17,32,0.06),rgba(8,17,32,0.36)),url(${gallery[0]})` }}
-          />
-          <div className="grid gap-6">
-            <div className="rounded-[2.5rem] border border-[#081120]/8 bg-white p-6 shadow-[0_24px_70px_rgba(8,17,32,0.07)]">
-              <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-semibold text-[#081120]">
-                Property overview
-              </h2>
-              <p className="mt-4 text-sm leading-8 text-[#4B5563]">{property.description}</p>
-              <div className="mt-6 grid grid-cols-3 gap-3">
-                <Fact icon={<BedDouble className="h-5 w-5" />} label="Bedrooms" value={property.bedrooms ? String(property.bedrooms) : "TBC"} />
-                <Fact icon={<Bath className="h-5 w-5" />} label="Bathrooms" value={property.bathrooms ? String(property.bathrooms) : "TBC"} />
-                <Fact icon={<Ruler className="h-5 w-5" />} label="Area" value={property.area || "TBC"} />
-              </div>
-            </div>
+      <PropertyExperienceClient property={property} gallery={gallery} />
 
-            <div className="rounded-[2.5rem] bg-[#081120] p-6 text-white shadow-[0_24px_70px_rgba(8,17,32,0.12)]">
-              <p className="text-xs font-black uppercase tracking-[0.24em] text-[#D4AF37]">
-                Interested?
-              </p>
-              <h2 className="mt-3 font-[family-name:var(--font-playfair)] text-3xl font-semibold">
-                Book a private discussion.
-              </h2>
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <a
-                  href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(
-                    `Hi The Shivara Group, I am interested in ${property.title}. Please share details.`,
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#10B981] text-sm font-black uppercase tracking-[0.12em] text-white"
-                >
-                  <MessageCircle className="h-4 w-4" />
-                  WhatsApp
-                </a>
-                <a
-                  href={siteConfig.phoneHref}
-                  className="flex min-h-12 items-center justify-center gap-2 rounded-full bg-white text-sm font-black uppercase tracking-[0.12em] text-[#081120]"
-                >
-                  <Phone className="h-4 w-4" />
-                  Call
-                </a>
-              </div>
-              <div className="mt-3">
-                <LuxuryButton href="/contact#site-visit" variant="outline" className="w-full">
-                  Book Site Visit
-                </LuxuryButton>
-              </div>
+      <section className="px-5 pb-6 sm:px-8 lg:px-12">
+        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.14fr_0.86fr]">
+          <div className="rounded-[2.5rem] border border-[#081120]/8 bg-white p-6 shadow-[0_24px_70px_rgba(8,17,32,0.07)]">
+            <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-semibold text-[#081120]">
+              Property overview
+            </h2>
+            <p className="mt-4 text-sm leading-8 text-[#4B5563]">{property.description}</p>
+            <div className="mt-6 grid grid-cols-3 gap-3">
+              <Fact icon={<BedDouble className="h-5 w-5" />} label="Bedrooms" value={property.bedrooms ? String(property.bedrooms) : "TBC"} />
+              <Fact icon={<Bath className="h-5 w-5" />} label="Bathrooms" value={property.bathrooms ? String(property.bathrooms) : "TBC"} />
+              <Fact icon={<Ruler className="h-5 w-5" />} label="Area" value={property.area || "TBC"} />
+            </div>
+          </div>
+
+          <div className="rounded-[2.5rem] bg-[#081120] p-6 text-white shadow-[0_24px_70px_rgba(8,17,32,0.12)]">
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-[#D4AF37]">
+              Interested?
+            </p>
+            <h2 className="mt-3 font-[family-name:var(--font-playfair)] text-3xl font-semibold">
+              Book a private discussion.
+            </h2>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              <a
+                href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(
+                  `Hi The Shivara Group, I am interested in ${property.title}. Please share details.`,
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#10B981] text-sm font-black uppercase tracking-[0.12em] text-white"
+              >
+                <MessageCircle className="h-4 w-4" />
+                WhatsApp
+              </a>
+              <a
+                href={siteConfig.phoneHref}
+                className="flex min-h-12 items-center justify-center gap-2 rounded-full bg-white text-sm font-black uppercase tracking-[0.12em] text-[#081120]"
+              >
+                <Phone className="h-4 w-4" />
+                Call
+              </a>
+            </div>
+            <div className="mt-3">
+              <LuxuryButton href="/contact#site-visit" variant="outline" className="w-full">
+                Book Site Visit
+              </LuxuryButton>
             </div>
           </div>
         </div>

@@ -29,6 +29,9 @@ import {
   LogOut,
   X,
   ChevronRight,
+  CalendarDays,
+  Activity,
+  Settings,
 } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
@@ -181,9 +184,24 @@ export default function CRMSidebar() {
       icon: Building2,
     },
     {
+      label: 'Calendar',
+      href: '/crm/calendar',
+      icon: CalendarDays,
+    },
+    {
+      label: 'Activities',
+      href: '/crm/activities',
+      icon: Activity,
+    },
+    {
       label: 'Reports',
       href: '/crm/reports',
       icon: BarChart3,
+    },
+    {
+      label: 'Settings',
+      href: '/crm/settings',
+      icon: Settings,
     },
     { label: 'Profile', href: '/crm/profile', icon: UserCircle },
   ]
@@ -374,7 +392,9 @@ export default function CRMSidebar() {
       <nav className="fixed bottom-[calc(0.75rem+env(safe-area-inset-bottom))] left-3 right-3 z-40 rounded-[24px] border border-white/10 bg-[#0E1726]/95 p-2 shadow-2xl shadow-black/40 backdrop-blur-2xl md:hidden" aria-label="Mobile CRM navigation">
         <ul className="grid grid-cols-5 gap-1">
           {navItems
-            .slice(0, 5)
+            .filter((item) =>
+              ['/crm/dashboard', '/crm/leads', '/crm/properties', '/crm/calendar', '/crm/profile'].includes(item.href),
+            )
             .map((item) => {
               const active = isActive(item.href)
               const Icon = item.icon

@@ -48,13 +48,13 @@ export default function Footer() {
                   The Shivara Group
                 </p>
                 <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#D4AF37]">
-                  Premium Real Estate
+                  {siteConfig.tagline}
                 </p>
               </div>
             </div>
             <p className="mt-6 max-w-sm text-sm leading-7 text-white/62">
-              Luxury real estate guidance for buyers who want clarity, verified conversations,
-              and a polished journey from first enquiry to site visit.
+              Defining legacies, one address at a time — from Bareilly homes and Aurika plots
+              to Delhi NCR portfolio opportunities.
             </p>
             <div className="mt-6 flex gap-3">
               <a

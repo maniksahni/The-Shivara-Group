@@ -16,18 +16,20 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: "The Shivara Group | Premium Real Estate in Bareilly",
+    default: "The Shivara Group | Bespoke Real Estate Strategies",
     template: "%s | The Shivara Group",
   },
   description:
-    "The Shivara Group — Leading real estate consultancy in Bareilly, Uttar Pradesh. Find your dream apartment, villa, plot, or commercial space with zero brokerage on select properties.",
+    "The Shivara Group — bespoke real estate strategies for Bareilly and Delhi NCR, including premium homes, plots, villas, off-market opportunities, and portfolio guidance.",
   keywords: [
     "real estate Bareilly",
     "property in Bareilly",
-    "flats in Bareilly",
+    "Rajendar Nagar 3BHK",
     "plots in Bareilly UP",
     "Shivara Group",
-    "real estate consultancy Bareilly",
+    "Aurika Bareilly",
+    "Godrej Golf Links",
+    "Bento by Gaurs",
   ],
   openGraph: {
     type: "website",

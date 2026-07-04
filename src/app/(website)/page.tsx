@@ -62,14 +62,13 @@ export default function HomePage() {
 
         <div className="relative mx-auto grid w-full max-w-7xl min-w-0 items-center gap-8 sm:min-h-[calc(100svh-8rem)] lg:grid-cols-[1.08fr_0.92fr]">
           <div className="w-full min-w-0 max-w-3xl overflow-hidden">
-            <Eyebrow dark>Premium real estate in Bareilly</Eyebrow>
+            <Eyebrow dark>{siteConfig.tagline}</Eyebrow>
             <h1 className="max-w-[8.9ch] text-balance font-[family-name:var(--font-playfair)] text-[clamp(2.85rem,13.2vw,3.55rem)] font-semibold leading-[0.96] tracking-[-0.045em] sm:max-w-none sm:text-[clamp(4.6rem,8vw,7.8rem)] sm:leading-[0.92] sm:tracking-[-0.075em]">
-              Addresses that feel like arrival.
+              Defining legacies, one address at a time.
             </h1>
             <p className="mt-4 max-w-[31rem] text-[15px] leading-7 text-white/72 sm:mt-7 sm:max-w-2xl sm:text-xl sm:leading-8">
-              The Shivara Group curates premium residences, villas, plots, and investment
-              opportunities with verified conversations, guided site visits, and a polished
-              buyer journey.
+              Bareilly homes, Aurika plots, Delhi NCR portfolios, and off-market opportunities —
+              curated with pricing, floor plans, and site visits available on direct request.
             </p>
 
             <div className="mt-5 grid w-full max-w-[28rem] grid-cols-1 gap-2.5 sm:mt-9 sm:flex sm:max-w-none sm:flex-row sm:gap-3">

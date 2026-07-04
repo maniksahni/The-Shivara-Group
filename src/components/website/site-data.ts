@@ -3,9 +3,10 @@ import { PropertyType } from "@prisma/client";
 export const siteConfig = {
   name: "The Shivara Group",
   shortName: "Shivara",
-  tagline: "Premium Real Estate",
+  tagline: "Bespoke Real Estate Strategies",
+  brandLine: "Defining Legacies, One Address at a Time.",
   description:
-    "Premium real estate consultancy for verified residences, villas, plots, commercial spaces, and site-visit-led property guidance across Bareilly and Delhi NCR.",
+    "Bespoke real estate strategy and portfolio guidance for premium homes, plots, villas, off-market opportunities, and investment-led property decisions across Bareilly and Delhi NCR.",
   phone: "+91 7060788407",
   phoneHref: "tel:+917060788407",
   whatsapp: "917060788407",
@@ -13,6 +14,8 @@ export const siteConfig = {
     "https://wa.me/917060788407?text=Hi%20The%20Shivara%20Group%2C%20I%20want%20to%20book%20a%20property%20consultation.",
   instagram: "https://www.instagram.com/theshivaragroup",
   instagramHandle: "@theshivaragroup",
+  founderInstagram: "https://www.instagram.com/the_shivamsahani",
+  founderInstagramHandle: "@the_shivamsahani",
   location: "Bareilly, Uttar Pradesh",
   coverage: "Bareilly • Delhi NCR",
   email: "",
@@ -30,102 +33,105 @@ export const navLinks = [
 ] as const;
 
 export const publicStats = [
-  { value: "100+", label: "curated enquiries managed", note: "CRM-backed process" },
-  { value: "5", label: "priority property categories", note: "Homes, villas, plots & more" },
+  { value: "15", label: "public Instagram posts", note: "brand content source" },
+  { value: "6+", label: "priority asset classes", note: "Homes, villas, plots & portfolios" },
   { value: "2", label: "high-intent markets", note: "Bareilly + Delhi NCR" },
-  { value: "24h", label: "site visit coordination", note: "subject to availability" },
+  { value: "1", label: "direct consultant number", note: "Call or WhatsApp" },
 ];
 
 export const propertyCategories = [
-  "Luxury Apartments",
-  "Premium Villas",
+  "Luxury Residences",
+  "Premium Kothis",
+  "3 BHK Homes",
   "Residential Plots",
+  "Villa Communities",
   "Commercial Spaces",
-  "Farmhouse Land",
+  "Off-Market Portfolios",
 ];
 
 export const categoryShowcase = [
   {
-    title: "Luxury Apartments",
-    description: "Elevated residences for families who want location, convenience, and polished amenities.",
+    title: "Luxury Residences",
+    description: "Premium apartments and residences with modern amenities, better views, and guided site visits.",
     image: "https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=1200&q=80",
     href: "/properties?type=APARTMENT",
   },
   {
-    title: "Premium Villas",
-    description: "Independent living, private spaces, and a more refined ownership experience.",
+    title: "Premium Kothis & Villas",
+    description: "Independent homes, park-facing kothis, and villa communities for refined family living.",
     image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
     href: "/properties?type=VILLA",
   },
   {
     title: "Residential Plots",
-    description: "Land opportunities for buyers planning long-term homes or investment-led ownership.",
+    description: "Plot inventory and investment-led residential land opportunities, subject to direct confirmation.",
     image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80",
     href: "/properties?type=PLOT",
   },
   {
-    title: "Commercial Spaces",
-    description: "Retail and commercial opportunities aligned to access, visibility, and business fit.",
+    title: "Delhi NCR Portfolios",
+    description: "High-value NCR opportunities including serviced apartments, golf-linked residences, and off-market portfolios.",
     image: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80",
     href: "/properties?type=COMMERCIAL",
   },
 ];
 
 export const searchSuggestions = [
-  "Civil Lines",
   "Aurika",
+  "Rajendar Nagar",
+  "Godrej Golf Links",
+  "Bento by Gaurs",
   "3 BHK",
-  "Villa",
-  "Plot",
+  "240 Gaj Kothi",
   "Site Visit",
 ];
 
 export const services = [
   {
-    title: "Property Consultation",
+    title: "Bespoke Property Strategy",
     description:
-      "Shortlist verified options around your budget, location preference, possession timeline, and lifestyle goals.",
+      "A tailored property strategy around your budget, location preference, lifestyle, possession timeline, and long-term legacy goals.",
     cta: "Get consultation",
   },
   {
     title: "Site Visit Management",
     description:
-      "Schedule guided visits, compare projects, and receive clear next steps after every property walkthrough.",
+      "Schedule guided visits for homes, plots, villas, and premium projects with clear next steps after every walkthrough.",
     cta: "Book site visit",
   },
   {
-    title: "Investment Advisory",
+    title: "Portfolio Management",
     description:
-      "Understand location growth, inventory quality, exit potential, and long-term fit before committing capital.",
-    cta: "Discuss investment",
+      "Curated portfolio guidance for investors comparing Bareilly, Delhi NCR, Noida, Greater Noida, and Yamuna Expressway opportunities.",
+    cta: "Discuss portfolio",
   },
   {
-    title: "Home Loan Assistance",
+    title: "Off-Market Opportunities",
     description:
-      "Coordinate documentation and connect with verified loan support after property selection.",
-    cta: "Check eligibility",
+      "Discreet access to high-value opportunities and premium inventories where direct confirmation is required before sharing details.",
+    cta: "Request access",
   },
   {
-    title: "Commercial Property Search",
+    title: "Floor Plans, Pricing & Inventory",
     description:
-      "Find retail, office, and commercial opportunities aligned to visibility, footfall, and business needs.",
-    cta: "Explore commercial",
+      "Request pricing, floor plans, availability, and exact inventory through call, WhatsApp, or site-visit enquiry.",
+    cta: "Request details",
   },
   {
     title: "End-to-End Buyer Support",
     description:
-      "From first enquiry to negotiation, booking support, and post-visit follow-ups — managed through CRM.",
+      "From Instagram enquiry to shortlist, site visit, pricing discussion, documentation support, and CRM-backed follow-up.",
     cta: "Start enquiry",
   },
 ];
 
 export const trustHighlights = [
-  "Verified property guidance",
-  "Transparent follow-up process",
-  "Dedicated consultant support",
+  "Bespoke real estate strategy",
+  "Bareilly + Delhi NCR focus",
+  "Off-market portfolio guidance",
+  "Floor plans and pricing on request",
   "WhatsApp-first communication",
-  "Site visit coordination",
-  "No invented listings or fake details",
+  "Guided site visit coordination",
 ];
 
 export const credibilityCards = [
@@ -149,19 +155,19 @@ export const credibilityCards = [
 
 export const investmentHighlights = [
   {
-    title: "Emerging residential pockets",
-    metric: "Location-led",
-    text: "Shortlist micro-markets by access, family convenience, and long-term livability.",
+    title: "Bareilly luxury homes",
+    metric: "Lifestyle-led",
+    text: "Rajendar Nagar homes, park-facing kothis, premium apartments, and family-first residences.",
   },
   {
-    title: "Villa & plot opportunities",
-    metric: "Asset-led",
-    text: "Compare land, independent living, and project-led appreciation narratives before visiting.",
+    title: "Aurika plots & communities",
+    metric: "Inventory-led",
+    text: "Residential plots, sold-out villa signals, commercial zone references, and site-visit-led verification.",
   },
   {
-    title: "Commercial visibility",
-    metric: "Use-case-led",
-    text: "Evaluate storefront/office potential through access, footfall, and business-fit conversations.",
+    title: "Delhi NCR portfolios",
+    metric: "Portfolio-led",
+    text: "Godrej Golf Links, Bento by Gaurs, serviced apartments, and high-value NCR opportunities.",
   },
 ];
 
@@ -175,23 +181,23 @@ export const partnerPlaceholders = [
 export const processSteps = [
   {
     step: "01",
-    title: "Share requirement",
-    text: "Tell us your budget, preferred location, property type, and timeline.",
+    title: "DM or call",
+    text: "Share your requirement on Instagram, WhatsApp, or phone with budget, location, and timeline.",
   },
   {
     step: "02",
     title: "Curated shortlist",
-    text: "We align real inventory and public project highlights to your needs.",
+    text: "The team matches your requirement with available homes, plots, projects, or portfolio opportunities.",
   },
   {
     step: "03",
     title: "Guided site visit",
-    text: "Visit shortlisted projects with a clear comparison framework.",
+    text: "Request pricing, floor plans, and schedule a verified site visit before making a decision.",
   },
   {
     step: "04",
-    title: "Decision support",
-    text: "Get negotiation, documentation, and next-step guidance from the team.",
+    title: "Portfolio support",
+    text: "Move forward with negotiation, documentation, booking, or investment portfolio guidance.",
   },
 ];
 
@@ -230,7 +236,7 @@ export const faqs = [
   {
     question: "Which locations do you cover?",
     answer:
-      "Public information confirms Bareilly and Delhi NCR coverage. More micro-location details can be added after manual business confirmation.",
+      "The official Instagram bio confirms Bareilly and Delhi NCR. Public posts also reference Bareilly, Rajendar Nagar, Noida, Greater Noida, and Yamuna Expressway opportunities.",
   },
   {
     question: "Do you provide home loan assistance?",
@@ -241,10 +247,31 @@ export const faqs = [
 
 export const fallbackProperties = [
   {
+    id: "park-facing-240-gaj-kothi",
+    title: "Park-Facing 240 Gaj Kothi",
+    description:
+      "A public Instagram listing highlighting a spacious 240 Gaj built-up kothi in a peaceful, premium Bareilly neighbourhood facing a lush green park. Pricing, floor plans, and visit slots must be confirmed directly.",
+    price: "Contact for pricing",
+    location: "Bareilly",
+    type: PropertyType.VILLA,
+    bedrooms: null,
+    bathrooms: null,
+    area: "240 Gaj built-up",
+    amenities: [
+      "Park Facing",
+      "Ready to Move",
+      "Prime Location",
+      "Site Visit Available",
+    ],
+    images: [],
+    isActive: true,
+    isFeatured: true,
+  },
+  {
     id: "aurika-the-residences",
     title: "Aurika The Residences",
     description:
-      "A premium residential opportunity publicly highlighted by The Shivara Group. Request verified pricing, floor plans, and current availability before booking.",
+      "A premium residential opportunity publicly highlighted by The Shivara Group with development work, elite community living, commercial-zone reference, and limited plot/inventory messaging. Request verified pricing, floor plans, and current availability before booking.",
     price: "Contact for pricing",
     location: "Bareilly",
     type: PropertyType.APARTMENT,
@@ -265,7 +292,7 @@ export const fallbackProperties = [
     id: "amara-villas-bareilly",
     title: "Amara Villas by Aurika",
     description:
-      "A premium villa community reference from The Shivara Group's public content. Confirm unit inventory, specifications, and pricing directly.",
+      "A premium villa community reference from The Shivara Group's public content. Instagram messaging indicates villas may be sold out, so confirm any resale/new inventory, specifications, and pricing directly.",
     price: "Contact for pricing",
     location: "Bareilly",
     type: PropertyType.VILLA,
@@ -307,33 +334,75 @@ export const fallbackProperties = [
     id: "rajendar-nagar-3bhk",
     title: "Rajendar Nagar 3BHK Homes",
     description:
-      "3BHK home opportunity in Rajendar Nagar, Bareilly. Request exact unit details, floor options, and current availability from the team.",
+      "Ready-to-move 3BHK home opportunity in Rajendar Nagar, Bareilly, publicly described with modern architecture, designer finishes, natural light, and prime neighbourhood positioning. Request exact unit details, floor options, and current availability from the team.",
     price: "Contact for pricing",
     location: "Rajendar Nagar, Bareilly",
     type: PropertyType.APARTMENT,
     bedrooms: 3,
     bathrooms: null,
-    area: "Details on request",
-    amenities: ["3BHK Homes", "Prime Location", "Family Homes", "Call for Details"],
+    area: "Up to 200 Gaj reference",
+    amenities: ["3BHK Homes", "Ready to Move", "Designer Finishes", "Prime Bareilly Location"],
     images: [],
     isActive: true,
     isFeatured: true,
   },
   {
-    id: "flower-city-bareilly",
-    title: "Flower City, Bareilly",
+    id: "singaporean-luxury-bareilly",
+    title: "Singaporean Luxury Project, Bareilly",
     description:
-      "Investment/property highlight referenced in public content. Confirm official pricing, registry status, and inventory before publishing final booking details.",
+      "A public Shivara showcase describing a Singapore-based developer project in Bareilly with 4 towers, swimming pool, basketball court, modern 360° views, greenery, and active construction. Confirm official project name, pricing, floor plans, and inventory directly.",
     price: "Contact for pricing",
     location: "Bareilly",
-    type: PropertyType.PLOT,
+    type: PropertyType.APARTMENT,
     bedrooms: null,
     bathrooms: null,
     area: "Details on request",
     amenities: [
-      "Investment Highlight",
-      "Bareilly",
-      "Inventory on Request",
+      "4 Towers",
+      "Swimming Pool",
+      "Basketball Court",
+      "Construction in Progress",
+    ],
+    images: [],
+    isActive: true,
+    isFeatured: false,
+  },
+  {
+    id: "godrej-golf-links-final-phase",
+    title: "Godrej Golf Links — Final Phase",
+    description:
+      "Delhi NCR portfolio opportunity publicly referenced by The Shivara Group: final phase of residential towers within an established golf-linked township near Greater Noida/Pari Chowk. Confirm pricing, payment plan, inventory, and official documents directly.",
+    price: "Starting reference ₹4.5 Cr onwards",
+    location: "Greater Noida / Delhi NCR",
+    type: PropertyType.APARTMENT,
+    bedrooms: 3,
+    bathrooms: null,
+    area: "3 & 4 BHK residences",
+    amenities: [
+      "Golf-Facing Views",
+      "Established Township",
+      "Low-Density Enclave",
+      "Portfolio Opportunity",
+    ],
+    images: [],
+    isActive: true,
+    isFeatured: true,
+  },
+  {
+    id: "bento-by-gaurs-yamuna-expressway",
+    title: "BENTO by Gaurs — Yamuna Expressway",
+    description:
+      "Ultra-premium serviced apartment opportunity publicly highlighted by The Shivara Group near Yamuna Expressway and the upcoming Noida International Airport. Confirm launch status, pricing, floor plans, and availability directly.",
+    price: "Pre-launch reference ₹85 Lakhs*",
+    location: "Yamuna Expressway / Noida NCR",
+    type: PropertyType.COMMERCIAL,
+    bedrooms: null,
+    bathrooms: null,
+    area: "660–675 sq ft reference",
+    amenities: [
+      "Serviced Apartments",
+      "Fully Furnished",
+      "Centrally Air-Conditioned",
       "Site Visit Available",
     ],
     images: [],

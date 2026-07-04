@@ -7,23 +7,25 @@ import { siteConfig } from "@/components/website/site-data";
 
 export const metadata: Metadata = {
   title: {
-    default: "The Shivara Group | Premium Real Estate in Bareilly",
+    default: "The Shivara Group | Bespoke Real Estate Strategies",
     template: "%s | The Shivara Group",
   },
   description:
-    "Premium real estate consultancy for verified residences, villas, plots, commercial spaces, and site visits across Bareilly and Delhi NCR.",
+    siteConfig.description,
   keywords: [
     "The Shivara Group",
     "premium real estate Bareilly",
     "property in Bareilly",
-    "luxury villas Bareilly",
-    "plots Bareilly",
+    "Aurika Bareilly",
+    "Rajendar Nagar 3BHK",
+    "Godrej Golf Links",
+    "Delhi NCR real estate portfolio",
+    "off-market real estate",
     "site visit Bareilly",
   ],
   openGraph: {
-    title: "The Shivara Group | Premium Real Estate in Bareilly",
-    description:
-      "Verified property guidance, site visits, and luxury real estate consultation across Bareilly and Delhi NCR.",
+    title: "The Shivara Group | Bespoke Real Estate Strategies",
+    description: siteConfig.description,
     siteName: "The Shivara Group",
     locale: "en_IN",
     type: "website",

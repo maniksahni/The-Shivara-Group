@@ -231,7 +231,7 @@ export default function CRMLoginClient() {
           </h2>
 
           <p className="mt-2 text-base text-slate-400 font-light tracking-wider uppercase">
-            Premium Real Estate
+            Bespoke Real Estate
           </p>
 
           {/* Decorative divider */}

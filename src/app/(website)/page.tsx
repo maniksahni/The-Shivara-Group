@@ -48,7 +48,7 @@ const interiorImage =
 export default function HomePage() {
   return (
     <main className="bg-[#F8F5EE]">
-      <section className="relative min-h-[100svh] overflow-hidden bg-[#081120] px-5 pb-12 pt-28 text-white sm:px-8 lg:px-12">
+      <section className="relative min-h-[100svh] overflow-hidden bg-[#081120] px-4 pb-28 pt-28 text-white sm:px-8 sm:pb-12 lg:px-12">
         <div
           className="absolute inset-0 opacity-50"
           style={{
@@ -60,36 +60,36 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(212,175,55,0.26),transparent_34%),radial-gradient(circle_at_78%_18%,rgba(16,185,129,0.18),transparent_30%)]" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#081120] to-transparent" />
 
-        <div className="relative mx-auto grid min-h-[calc(100svh-8rem)] max-w-7xl items-center gap-10 lg:grid-cols-[1.08fr_0.92fr]">
-          <div className="max-w-3xl">
+        <div className="relative mx-auto grid min-h-[calc(100svh-8rem)] w-full max-w-7xl min-w-0 items-center gap-10 lg:grid-cols-[1.08fr_0.92fr]">
+          <div className="w-full min-w-0 max-w-3xl overflow-hidden">
             <Eyebrow dark>Premium real estate in Bareilly</Eyebrow>
-            <h1 className="font-[family-name:var(--font-playfair)] text-[clamp(2.55rem,12vw,7.8rem)] font-semibold leading-[0.92] tracking-[-0.06em] sm:tracking-[-0.075em]">
+            <h1 className="max-w-[8.9ch] text-balance font-[family-name:var(--font-playfair)] text-[clamp(2.85rem,13.2vw,3.55rem)] font-semibold leading-[0.96] tracking-[-0.045em] sm:max-w-none sm:text-[clamp(4.6rem,8vw,7.8rem)] sm:leading-[0.92] sm:tracking-[-0.075em]">
               Addresses that feel like arrival.
             </h1>
-            <p className="mt-7 max-w-2xl text-lg leading-8 text-white/72 sm:text-xl">
+            <p className="mt-6 max-w-[31rem] text-base leading-7 text-white/72 sm:mt-7 sm:max-w-2xl sm:text-xl sm:leading-8">
               The Shivara Group curates premium residences, villas, plots, and investment
               opportunities with verified conversations, guided site visits, and a polished
               buyer journey.
             </p>
 
-            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <LuxuryButton href="/properties">Explore Properties</LuxuryButton>
-              <LuxuryButton href="/contact#site-visit" variant="outline">
+            <div className="mt-8 grid w-full max-w-[28rem] grid-cols-1 gap-3 sm:mt-9 sm:flex sm:max-w-none sm:flex-row">
+              <LuxuryButton href="/properties" className="w-full sm:w-auto">Explore Properties</LuxuryButton>
+              <LuxuryButton href="/contact#site-visit" variant="outline" className="w-full sm:w-auto">
                 Book Site Visit
               </LuxuryButton>
             </div>
 
-            <div className="mt-8 max-w-2xl rounded-[1.75rem] border border-white/12 bg-white/[0.075] p-3 shadow-[0_24px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl">
+            <div className="mt-8 w-full max-w-[28rem] overflow-hidden rounded-[1.5rem] border border-white/12 bg-white/[0.075] p-2.5 shadow-[0_24px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl sm:max-w-2xl sm:rounded-[1.75rem] sm:p-3">
               <div className="flex flex-col gap-3 sm:flex-row">
-                <div className="flex min-h-14 flex-1 items-center gap-3 rounded-2xl bg-white px-4 text-[#081120]">
-                  <Search className="h-5 w-5 text-[#9B7A19]" />
-                  <span className="text-sm font-bold text-[#4B5563]">
+                <div className="flex min-h-14 min-w-0 flex-1 items-center gap-3 rounded-2xl bg-white px-4 text-[#081120]">
+                  <Search className="h-5 w-5 shrink-0 text-[#9B7A19]" />
+                  <span className="min-w-0 truncate text-sm font-bold text-[#4B5563]">
                     Search by project, location, villa, plot...
                   </span>
                 </div>
                 <Link
                   href="/properties"
-                  className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] px-5 text-sm font-black uppercase tracking-[0.14em] text-[#081120] transition hover:bg-[#F5D67B]"
+                  className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] px-5 text-xs font-black uppercase tracking-[0.12em] text-[#081120] transition hover:bg-[#F5D67B] sm:text-sm sm:tracking-[0.14em]"
                 >
                   Search
                   <ArrowUpRight className="h-4 w-4" />

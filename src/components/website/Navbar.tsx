@@ -34,14 +34,14 @@ export default function Navbar() {
           : "bg-gradient-to-b from-[#081120]/78 to-transparent"
       }`}
     >
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-12">
-        <Link href="/" className="group flex items-center gap-3" aria-label="The Shivara Group home">
-          <Monogram className="h-11 w-11 text-2xl font-black transition-transform duration-300 group-hover:scale-105" />
-          <div className="leading-none">
-            <p className="font-[family-name:var(--font-playfair)] text-xl font-semibold tracking-[-0.02em] text-white">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-3 px-4 sm:px-8 lg:px-12">
+        <Link href="/" className="group flex min-w-0 items-center gap-2.5 sm:gap-3" aria-label="The Shivara Group home">
+          <Monogram className="h-10 w-10 shrink-0 text-2xl font-black transition-transform duration-300 group-hover:scale-105 sm:h-11 sm:w-11" />
+          <div className="min-w-0 leading-none">
+            <p className="truncate font-[family-name:var(--font-playfair)] text-lg font-semibold tracking-[-0.02em] text-white sm:text-xl">
               The Shivara Group
             </p>
-            <p className="mt-1 text-[10px] font-black uppercase tracking-[0.28em] text-[#D4AF37]">
+            <p className="mt-1 truncate text-[9px] font-black uppercase tracking-[0.22em] text-[#D4AF37] sm:text-[10px] sm:tracking-[0.28em]">
               Luxury Real Estate
             </p>
           </div>
@@ -83,7 +83,7 @@ export default function Navbar() {
         <button
           type="button"
           onClick={() => setMobileOpen((value) => !value)}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-white backdrop-blur transition-all hover:border-[#D4AF37]/70 lg:hidden"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/12 bg-white/[0.06] text-white backdrop-blur transition-all hover:border-[#D4AF37]/70 lg:hidden"
           aria-expanded={mobileOpen}
           aria-label={mobileOpen ? "Close navigation" : "Open navigation"}
         >

@@ -6,10 +6,10 @@ type ButtonVariant = "gold" | "navy" | "light" | "outline";
 
 export function Eyebrow({ children, dark = false }: { children: ReactNode; dark?: boolean }) {
   return (
-    <div className="mb-4 flex items-center gap-3">
-      <span className="h-px w-10 bg-[#D4AF37]" />
+    <div className="mb-4 flex max-w-full min-w-0 items-center gap-3">
+      <span className="h-px w-10 shrink-0 bg-[#D4AF37]" />
       <span
-        className={`text-[11px] font-black uppercase tracking-[0.34em] ${
+        className={`min-w-0 text-[10px] font-black uppercase tracking-[0.22em] sm:text-[11px] sm:tracking-[0.34em] ${
           dark ? "text-[#F5D67B]" : "text-[#9B7A19]"
         }`}
       >
@@ -44,7 +44,7 @@ export function LuxuryButton({
   return (
     <Link
       href={href}
-      className={`group inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-sm font-black uppercase tracking-[0.16em] transition-all duration-300 hover:-translate-y-0.5 ${variants[variant]} ${className}`}
+      className={`group inline-flex min-h-12 max-w-full items-center justify-center gap-2 rounded-full px-5 text-center text-xs font-black uppercase tracking-[0.12em] transition-all duration-300 hover:-translate-y-0.5 sm:px-6 sm:text-sm sm:tracking-[0.16em] ${variants[variant]} ${className}`}
     >
       {children}
       <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />

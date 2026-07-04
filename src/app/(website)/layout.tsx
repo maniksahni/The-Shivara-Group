@@ -62,7 +62,7 @@ export default function WebsiteLayout({ children }: { children: React.ReactNode 
         </a>
       </div>
 
-      <div className="fixed inset-x-2 bottom-[calc(0.5rem+env(safe-area-inset-bottom))] z-50 grid grid-cols-3 gap-1.5 rounded-[1.15rem] border border-white/20 bg-[#081120]/92 p-1.5 shadow-[0_18px_48px_rgba(0,0,0,0.26)] backdrop-blur-xl md:hidden">
+      <div className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-50 grid grid-cols-3 gap-1.5 rounded-[1.25rem] border border-white/20 bg-[#081120]/94 p-1.5 shadow-[0_18px_48px_rgba(0,0,0,0.26)] backdrop-blur-xl md:hidden">
         <a
           href={siteConfig.phoneHref}
           className="flex min-h-11 items-center justify-center gap-1 rounded-2xl bg-white/8 text-xs font-black text-white"

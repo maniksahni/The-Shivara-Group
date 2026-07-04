@@ -59,6 +59,9 @@
 }
 
 html {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -67,8 +70,16 @@ html {
 body {
   margin: 0;
   padding: 0;
+  width: 100%;
+  max-width: 100%;
   min-height: 100vh;
   overflow-x: hidden;
+  position: relative;
+}
+
+main {
+  max-width: 100%;
+  overflow-x: clip;
 }
 
 /* ─────────────────────────────────────────────

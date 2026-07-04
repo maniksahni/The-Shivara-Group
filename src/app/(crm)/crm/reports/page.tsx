@@ -72,7 +72,7 @@ export default async function ReportsPage() {
         </div>
       </div>
 
-      <div className="-mx-3 overflow-x-auto px-3 md:mx-0 md:px-0">
+      <div className="premium-scrollbar -mx-3 overflow-x-auto px-3 md:mx-0 md:px-0">
         <div className="flex w-max gap-2 md:w-auto md:flex-wrap">
           {["Revenue", "Conversion", "Sources", "Agents", "Projects"].map((chip, index) => (
             <span

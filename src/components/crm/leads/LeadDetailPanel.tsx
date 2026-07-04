@@ -251,7 +251,7 @@ export default function LeadDetailPanel({ lead, currentUserId }: LeadDetailPanel
       {/* ── Right Column: Interactive Tabs Panel (8 cols) ── */}
       <div className="flex min-h-[480px] flex-col overflow-hidden rounded-[26px] border border-white/10 bg-[#162032]/80 shadow-2xl shadow-black/15 backdrop-blur-xl lg:col-span-8">
         {/* Navigation Tabs */}
-        <div className="flex overflow-x-auto border-b border-white/10 bg-[#081120]/70 px-2 py-2 sm:px-4">
+        <div className="premium-scrollbar flex overflow-x-auto border-b border-white/10 bg-[#081120]/70 px-2 py-2 sm:px-4">
           <button
             onClick={() => setActiveTab("notes")}
             className={cn(

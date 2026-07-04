@@ -158,9 +158,9 @@ const ToastItemComponent: React.FC<ToastItemProps> = ({ item, onDismiss }) => (
     className={[
       // Layout
       "flex w-80 max-w-full items-start gap-3 overflow-hidden",
-      "rounded-xl bg-slate-800 p-4 shadow-xl",
+      "rounded-2xl bg-[#0E1726]/95 p-4 shadow-2xl shadow-black/30 backdrop-blur-xl",
       // Left border accent
-      "border border-slate-700 border-l-4",
+      "border border-white/10 border-l-4",
       borderColorMap[item.type],
       // Transition — slide in from right, fade
       "transition-all duration-300 ease-out",
@@ -191,8 +191,8 @@ const ToastItemComponent: React.FC<ToastItemProps> = ({ item, onDismiss }) => (
       onClick={() => onDismiss(item.id)}
       className={[
         "shrink-0 rounded-md p-1 text-slate-500",
-        "hover:bg-slate-700 hover:text-slate-300",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-500",
+        "hover:bg-white/10 hover:text-slate-300",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F4B400]/50",
         "transition-colors duration-100",
       ].join(" ")}
     >
@@ -232,7 +232,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
     <div
       aria-label="Notifications"
       className={[
-        "fixed bottom-4 right-4 z-[9999]",
+        "fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-[9999]",
         "flex flex-col-reverse gap-2",
         // Newest toast is added at the bottom of the list visually
         // (flex-col-reverse flips so newest is on top)

@@ -3,7 +3,7 @@
  *
  * A fully typed, dark-mode styled text input and textarea.
  * Supports label, helper text, and error message slots.
- * Gold focus ring matches the design system accent colour (#C9A84C).
+ * Gold focus ring matches the design system accent colour (#F4B400).
  *
  * Exports:
  *  - Input        : single-line <input>
@@ -58,28 +58,28 @@ export interface TextareaInputProps
 // ---------------------------------------------------------------------------
 
 const labelClass =
-  "block text-sm font-medium text-slate-300 mb-1.5 select-none";
+  "mb-2 block select-none text-sm font-bold text-slate-300";
 
-const errorLabelClass = "block text-sm font-medium text-red-400 mb-1.5 select-none";
+const errorLabelClass = "mb-2 block select-none text-sm font-bold text-red-300";
 
 const baseFieldClass = [
-  "w-full rounded-lg bg-slate-800 text-white placeholder-slate-500",
-  "border border-slate-700",
-  "transition-colors duration-150",
-  "focus:outline-none focus:border-[#C9A84C] focus:ring-1 focus:ring-[#C9A84C]/40",
+  "w-full rounded-2xl bg-slate-800/80 text-white placeholder-slate-500",
+  "border border-white/10 shadow-sm shadow-black/10",
+  "transition-all duration-200",
+  "focus:outline-none focus:border-[#F4B400] focus:ring-2 focus:ring-[#F4B400]/30",
   "disabled:opacity-50 disabled:cursor-not-allowed",
 ].join(" ");
 
 const errorFieldClass = [
-  "w-full rounded-lg bg-slate-800 text-white placeholder-slate-500",
-  "border border-red-500",
-  "transition-colors duration-150",
-  "focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-500/40",
+  "w-full rounded-2xl bg-slate-800/80 text-white placeholder-slate-500",
+  "border border-red-500/70 shadow-sm shadow-red-950/20",
+  "transition-all duration-200",
+  "focus:outline-none focus:border-red-300 focus:ring-2 focus:ring-red-500/30",
   "disabled:opacity-50 disabled:cursor-not-allowed",
 ].join(" ");
 
-const helperClass = "mt-1.5 text-xs text-slate-500";
-const errorMsgClass = "mt-1.5 text-xs text-red-400";
+const helperClass = "mt-2 text-xs leading-5 text-slate-500";
+const errorMsgClass = "mt-2 text-xs font-semibold leading-5 text-red-300";
 
 // ---------------------------------------------------------------------------
 // FieldWrapper — shared label / helper / error layout
@@ -160,8 +160,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
     // Adjust padding to make room for inline addons
     const paddingX = [
-      hasLeft ? "pl-10" : "pl-3.5",
-      hasRight ? "pr-10" : "pr-3.5",
+      hasLeft ? "pl-11" : "pl-4",
+      hasRight ? "pr-11" : "pr-4",
     ].join(" ");
 
     return (
@@ -193,7 +193,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
                 ? `${autoId}-helper`
                 : undefined
             }
-            className={[fieldClass, paddingX, "h-10 text-sm", className]
+            className={[fieldClass, paddingX, "min-h-11 text-sm", className]
               .filter(Boolean)
               .join(" ")}
             {...rest}
@@ -260,7 +260,7 @@ const TextareaInput = forwardRef<HTMLTextAreaElement, TextareaInputProps>(
           }
           className={[
             fieldClass,
-            "px-3.5 py-2.5 text-sm resize-y min-h-[80px]",
+            "min-h-[112px] resize-y px-4 py-3 text-sm leading-6",
             className,
           ]
             .filter(Boolean)

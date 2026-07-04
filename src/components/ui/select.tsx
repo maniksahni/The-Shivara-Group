@@ -3,7 +3,7 @@
  *
  * A fully typed, dark-mode styled native <select> element.
  * Supports label, error message, placeholder option, and a typed options array.
- * Gold focus ring matches the design system accent colour (#C9A84C).
+ * Gold focus ring matches the design system accent colour (#F4B400).
  */
 
 import React, { forwardRef, useId } from "react";
@@ -44,27 +44,27 @@ export interface SelectProps
 // ---------------------------------------------------------------------------
 
 const baseSelectClass = [
-  "w-full h-10 rounded-lg bg-slate-800 text-white text-sm",
-  "border border-slate-700",
-  "pl-3.5 pr-10 appearance-none cursor-pointer",
-  "transition-colors duration-150",
-  "focus:outline-none focus:border-[#C9A84C] focus:ring-1 focus:ring-[#C9A84C]/40",
+  "w-full min-h-11 rounded-2xl bg-slate-800/80 text-white text-sm",
+  "border border-white/10 shadow-sm shadow-black/10",
+  "pl-4 pr-11 appearance-none cursor-pointer",
+  "transition-all duration-200",
+  "focus:outline-none focus:border-[#F4B400] focus:ring-2 focus:ring-[#F4B400]/30",
   "disabled:opacity-50 disabled:cursor-not-allowed",
 ].join(" ");
 
 const errorSelectClass = [
-  "w-full h-10 rounded-lg bg-slate-800 text-white text-sm",
-  "border border-red-500",
-  "pl-3.5 pr-10 appearance-none cursor-pointer",
-  "transition-colors duration-150",
-  "focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-500/40",
+  "w-full min-h-11 rounded-2xl bg-slate-800/80 text-white text-sm",
+  "border border-red-500/70 shadow-sm shadow-red-950/20",
+  "pl-4 pr-11 appearance-none cursor-pointer",
+  "transition-all duration-200",
+  "focus:outline-none focus:border-red-300 focus:ring-2 focus:ring-red-500/30",
   "disabled:opacity-50 disabled:cursor-not-allowed",
 ].join(" ");
 
-const labelClass = "block text-sm font-medium text-slate-300 mb-1.5 select-none";
-const errorLabelClass = "block text-sm font-medium text-red-400 mb-1.5 select-none";
-const helperClass = "mt-1.5 text-xs text-slate-500";
-const errorMsgClass = "mt-1.5 text-xs text-red-400";
+const labelClass = "mb-2 block select-none text-sm font-bold text-slate-300";
+const errorLabelClass = "mb-2 block select-none text-sm font-bold text-red-300";
+const helperClass = "mt-2 text-xs leading-5 text-slate-500";
+const errorMsgClass = "mt-2 text-xs font-semibold leading-5 text-red-300";
 
 // ---------------------------------------------------------------------------
 // Chevron icon (pure SVG, no external dep)

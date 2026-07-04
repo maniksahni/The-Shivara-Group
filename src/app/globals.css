@@ -9,6 +9,7 @@
   --navy-light: #162236;
   --navy-dark:  #080E19;
   --gold:      #C9A84C;
+  --crm-gold:  #F4B400;
   --gold-light: #D4B86A;
   --gold-dark:  #A88835;
 
@@ -39,6 +40,17 @@
   --transition-slow: 400ms ease;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* ─────────────────────────────────────────────
    Base Styles
    ───────────────────────────────────────────── */
@@ -56,6 +68,7 @@ body {
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* ─────────────────────────────────────────────
@@ -73,16 +86,16 @@ body {
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #C9A84C;
+  background: #F4B400;
 }
 
 /* ─────────────────────────────────────────────
    Focus Ring
    ───────────────────────────────────────────── */
 *:focus-visible {
-  outline: 2px solid #C9A84C;
+  outline: 2px solid #F4B400;
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: 12px;
 }
 
 /* ─────────────────────────────────────────────
@@ -133,10 +146,30 @@ body {
 
 /* Skeleton shimmer */
 .skeleton {
-  background: linear-gradient(90deg, #161B22 25%, #21262D 50%, #161B22 75%);
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.11) 50%, rgba(255,255,255,0.04) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
-  border-radius: 4px;
+  border-radius: 18px;
+}
+
+.premium-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(244, 180, 0, 0.45) rgba(255, 255, 255, 0.06);
+}
+
+.premium-scrollbar::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.premium-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+}
+
+.premium-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(244, 180, 0, 0.45);
+  border-radius: 999px;
 }
 
 /* ─────────────────────────────────────────────
@@ -329,4 +362,3 @@ body {
   inset: 0;
   background: linear-gradient(45deg, transparent 30%, rgba(201, 168, 76, 0.05) 50%, transparent 70%);
 }
-

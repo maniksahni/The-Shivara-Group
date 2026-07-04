@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 
@@ -23,6 +24,12 @@ export default function CRMDrawer({
   children,
   footer,
 }: CRMDrawerProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -42,10 +49,14 @@ export default function CRMDrawer({
     };
   }, [isOpen, onClose]);
 
-  return (
+  if (!mounted) {
+    return null;
+  }
+
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-[80] isolate">
+        <div className="fixed inset-0 z-[1000] isolate">
           <motion.button
             type="button"
             aria-label="Close drawer"
@@ -101,6 +112,7 @@ export default function CRMDrawer({
           </motion.aside>
         </div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body,
   );
 }

@@ -32,6 +32,7 @@ import {
   XCircle,
 } from 'lucide-react'
 import { toast } from 'sonner'
+import CRMConfirmDialog from '@/components/crm/CRMConfirmDialog'
 
 import {
   togglePropertyActive,
@@ -120,44 +121,6 @@ function ToggleSwitch({ checked, onChange, disabled, label }: ToggleSwitchProps)
 // Delete Confirm Dialog
 // ---------------------------------------------------------------------------
 
-interface DeleteConfirmProps {
-  onConfirm: () => void
-  onCancel: () => void
-  isPending: boolean
-}
-
-function DeleteConfirmDialog({ onConfirm, onCancel, isPending }: DeleteConfirmProps) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="mx-4 w-full max-w-sm rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
-        <h3 className="text-base font-semibold text-white">Delete Property</h3>
-        <p className="mt-2 text-sm text-slate-400">
-          Are you sure you want to permanently delete this property? This action
-          cannot be undone.
-        </p>
-        <div className="mt-5 flex gap-3">
-          <button
-            type="button"
-            onClick={onCancel}
-            disabled={isPending}
-            className="flex-1 rounded-lg border border-slate-700 bg-slate-800 px-4 py-2 text-sm font-medium text-slate-300 transition-colors hover:bg-slate-700 disabled:opacity-50"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            onClick={onConfirm}
-            disabled={isPending}
-            className="flex-1 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700 disabled:opacity-50"
-          >
-            {isPending ? 'Deleting…' : 'Delete'}
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
-
 // ---------------------------------------------------------------------------
 // PropertyAdminCard — main export
 // ---------------------------------------------------------------------------
@@ -240,7 +203,10 @@ export default function PropertyAdminCard({ property }: PropertyAdminCardProps) 
     <>
       {/* ── Delete confirmation overlay ──────────────────────────────────── */}
       {showDelete && (
-        <DeleteConfirmDialog
+        <CRMConfirmDialog
+          title="Delete Property"
+          description="Are you sure you want to permanently delete this property? This action cannot be undone."
+          confirmLabel="Delete Property"
           onConfirm={handleDelete}
           onCancel={() => setShowDelete(false)}
           isPending={isPendingDelete}

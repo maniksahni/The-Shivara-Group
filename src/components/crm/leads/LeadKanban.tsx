@@ -113,7 +113,7 @@ export default function LeadKanban({ leads, agents, currentUserId }: KanbanProps
   };
 
   return (
-    <div className="flex gap-4 overflow-x-auto pb-6 select-none h-[calc(100vh-220px)] min-h-[500px]">
+    <div className="premium-scrollbar flex min-h-[520px] select-none gap-4 overflow-x-auto pb-6 md:h-[calc(100dvh-260px)]">
       {COLUMNS.map((col) => {
         const columnLeads = boardLeads.filter((l) => l.status === col.key);
 
@@ -122,7 +122,7 @@ export default function LeadKanban({ leads, agents, currentUserId }: KanbanProps
             key={col.key}
             onDragOver={handleDragOver}
             onDrop={(e) => handleDrop(e, col.key)}
-            className="flex-shrink-0 w-80 bg-slate-900 border border-slate-800 rounded-xl flex flex-col h-full overflow-hidden"
+            className="flex h-full w-80 flex-shrink-0 flex-col overflow-hidden rounded-[24px] border border-white/10 bg-[#162032]/80 shadow-xl shadow-black/15 backdrop-blur-xl"
           >
             {/* Column Header */}
             <div className={cn("px-4 py-3 border-t-2 border-b border-slate-800 flex items-center justify-between", col.color)}>
@@ -135,7 +135,7 @@ export default function LeadKanban({ leads, agents, currentUserId }: KanbanProps
             {/* Column Body - Cards List */}
             <div className="flex-grow p-3 space-y-3 overflow-y-auto">
               {columnLeads.length === 0 ? (
-                <div className="h-20 border border-dashed border-slate-800 rounded-lg flex items-center justify-center text-slate-600 text-[10px] uppercase font-semibold">
+                <div className="flex h-20 items-center justify-center rounded-2xl border border-dashed border-white/10 text-[10px] font-semibold uppercase text-slate-600">
                   Drop Leads Here
                 </div>
               ) : (
@@ -151,7 +151,7 @@ export default function LeadKanban({ leads, agents, currentUserId }: KanbanProps
                       onDragStart={(e) => handleDragStart(e, lead.id)}
                       onDragEnd={handleDragEnd}
                       className={cn(
-                        "bg-slate-800 border border-slate-700/60 rounded-xl p-4 cursor-grab active:cursor-grabbing",
+                        "cursor-grab rounded-[20px] border border-white/10 bg-[#0E1726]/80 p-4 shadow-lg shadow-black/10 active:cursor-grabbing",
                         "hover:border-slate-500 transition-colors shadow-sm relative group",
                         isDragging === lead.id ? "opacity-40" : "opacity-100"
                       )}

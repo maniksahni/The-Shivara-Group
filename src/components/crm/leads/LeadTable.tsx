@@ -41,6 +41,7 @@ import {
 import { toast } from 'sonner'
 
 import { StatusBadge, SourceBadge, PriorityBadge } from '@/components/ui/badge'
+import CRMConfirmDialog from '@/components/crm/CRMConfirmDialog'
 import { bulkAssignLeads, deleteLead, updateLeadStatus } from '@/features/leads/actions'
 import { formatDate, getInitials } from '@/lib/utils'
 
@@ -269,60 +270,6 @@ function ActionMenu({ lead, onEdit, onStatusChange, onDelete }: ActionMenuProps)
 // ---------------------------------------------------------------------------
 // DeleteConfirmModal
 // ---------------------------------------------------------------------------
-
-function DeleteConfirmModal({
-  lead,
-  onConfirm,
-  onCancel,
-  loading,
-}: {
-  lead: Lead
-  onConfirm: () => void
-  onCancel: () => void
-  loading: boolean
-}) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onCancel} />
-      <div className="relative z-10 w-full max-w-sm rounded-xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
-        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10">
-          <Trash2 className="h-6 w-6 text-red-400" />
-        </div>
-        <h2 className="text-lg font-semibold text-white">Delete Lead?</h2>
-        <p className="mt-2 text-sm text-slate-400">
-          Are you sure you want to permanently delete{' '}
-          <span className="font-medium text-white">{lead.name}</span>? This
-          action cannot be undone.
-        </p>
-        <div className="mt-6 flex gap-3">
-          <button
-            type="button"
-            onClick={onCancel}
-            disabled={loading}
-            className={[
-              'flex-1 rounded-lg border border-slate-600 px-4 py-2 text-sm',
-              'text-slate-300 hover:bg-slate-800 transition-colors duration-150',
-            ].join(' ')}
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            onClick={onConfirm}
-            disabled={loading}
-            className={[
-              'flex-1 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold',
-              'text-white hover:bg-red-500 transition-colors duration-150',
-              'disabled:opacity-60',
-            ].join(' ')}
-          >
-            {loading ? 'Deleting…' : 'Delete'}
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 // ---------------------------------------------------------------------------
 // LeadTable Component
@@ -647,7 +594,7 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
 
       {/* ── Table wrapper ── */}
       <div className="hidden overflow-hidden rounded-[26px] border border-white/10 bg-[#162032]/80 shadow-2xl shadow-black/20 backdrop-blur-xl md:block">
-        <div className="overflow-x-auto">
+        <div className="premium-scrollbar overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-800">
             {/* ── Head ── */}
             <thead>
@@ -921,11 +868,13 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
 
       {/* ── Delete confirmation modal ── */}
       {deleteTarget && (
-        <DeleteConfirmModal
-          lead={deleteTarget}
+        <CRMConfirmDialog
+          title="Delete Lead"
+          description={`Are you sure you want to permanently delete ${deleteTarget.name}? This action cannot be undone.`}
+          confirmLabel="Delete Lead"
           onConfirm={handleDelete}
           onCancel={() => setDeleteTarget(null)}
-          loading={deleteLoading}
+          isPending={deleteLoading}
         />
       )}
     </>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { CheckCircle2, MessageCircle, Send, X } from "lucide-react";
 import type { PublicProperty } from "@/components/website/site-data";
 import { siteConfig } from "@/components/website/site-data";
@@ -21,11 +22,17 @@ export default function ClientEnquiryModal({
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousOverflow;
     };
   }, []);
 
@@ -73,8 +80,12 @@ export default function ClientEnquiryModal({
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-[70] flex items-end justify-center p-0 sm:items-center sm:p-5" role="dialog" aria-modal="true">
+  if (!mounted) {
+    return null;
+  }
+
+  return createPortal(
+    <div className="fixed inset-0 z-[1000] flex items-end justify-center p-0 sm:items-center sm:p-5" role="dialog" aria-modal="true">
       <button
         type="button"
         className="absolute inset-0 bg-[#081120]/74 backdrop-blur-md"
@@ -210,7 +221,8 @@ export default function ClientEnquiryModal({
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

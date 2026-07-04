@@ -44,15 +44,15 @@ export interface ButtonProps
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: [
-    "bg-[#C9A84C] text-slate-900 font-semibold",
-    "hover:bg-[#b8963e] active:bg-[#a6862f]",
-    "focus-visible:ring-[#C9A84C]/50",
-    "disabled:bg-[#C9A84C]/50 disabled:text-slate-900/50",
+    "bg-[#F4B400] text-[#081120] font-black shadow-lg shadow-[#F4B400]/15",
+    "hover:bg-[#f59e0b] active:scale-[0.98]",
+    "focus-visible:ring-[#F4B400]/50",
+    "disabled:bg-[#F4B400]/50 disabled:text-slate-900/50",
   ].join(" "),
 
   secondary: [
-    "bg-transparent text-slate-200 border border-slate-600",
-    "hover:bg-slate-700 hover:border-slate-500 active:bg-slate-600",
+    "bg-white/[0.06] text-slate-200 border border-white/10",
+    "hover:bg-white/[0.1] hover:border-white/20 active:scale-[0.98]",
     "focus-visible:ring-slate-500/50",
     "disabled:border-slate-700 disabled:text-slate-500",
   ].join(" "),
@@ -66,16 +66,16 @@ const variantStyles: Record<ButtonVariant, string> = {
 
   ghost: [
     "bg-transparent text-slate-300",
-    "hover:bg-slate-700/60 hover:text-white active:bg-slate-700",
+    "hover:bg-white/[0.08] hover:text-white active:scale-[0.98]",
     "focus-visible:ring-slate-500/50",
     "disabled:text-slate-600",
   ].join(" "),
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
-  sm: "h-8 px-3 text-xs gap-1.5 rounded-md",
-  md: "h-10 px-4 text-sm gap-2 rounded-lg",
-  lg: "h-12 px-6 text-base gap-2.5 rounded-xl",
+  sm: "min-h-9 px-3 text-xs gap-1.5 rounded-xl",
+  md: "min-h-11 px-4 text-sm gap-2 rounded-2xl",
+  lg: "min-h-12 px-6 text-base gap-2.5 rounded-2xl",
 };
 
 // ---------------------------------------------------------------------------
@@ -126,7 +126,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const baseStyles = [
       "inline-flex items-center justify-center",
       "select-none whitespace-nowrap",
-      "transition-colors duration-150",
+      "transition-all duration-200",
       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900",
       "disabled:cursor-not-allowed disabled:pointer-events-none",
       fullWidth ? "w-full" : "",

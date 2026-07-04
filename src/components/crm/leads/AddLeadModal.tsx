@@ -1,14 +1,14 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { leadSchema, LeadInput } from "@/lib/validations";
 import { LeadStatus, Priority, LeadSource, PropertyType } from "@prisma/client";
 import { createLead, updateLead } from "@/features/leads/actions";
-import { X, Save, AlertCircle, UserRound, Home, Settings2 } from "lucide-react";
+import { Save, AlertCircle, UserRound, Home, Settings2 } from "lucide-react";
+import CRMDrawer from "@/components/crm/CRMDrawer";
 import { useToast } from "@/components/ui/toast";
 
 interface Agent {
@@ -74,6 +74,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
     "rounded-[22px] border border-white/10 bg-white/[0.035] p-4 shadow-xl shadow-black/10";
   const sectionTitleClass =
     "mb-4 flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-[#F4B400]";
+  const formId = `lead-drawer-form-${lead?.id ?? "new"}`;
 
   useEffect(() => {
     if (!isEditMode && searchParams.get("addLead") === "1") {
@@ -166,73 +167,38 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
     }
   }, [isEditMode, pathname, reset, router, searchParams]);
 
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        handleClose();
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [handleClose, isOpen]);
-
   return (
     <>
       <span className="inline-flex" onClickCapture={handleOpen}>{trigger}</span>
 
-      <AnimatePresence>
-      {isOpen && (
-        <div className="fixed inset-0 z-[80] flex items-stretch justify-end">
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-[#020617]/72 backdrop-blur-[5px]"
-            onClick={handleClose}
-          />
-
-          {/* Slide-over Container */}
-          <motion.div
-            initial={{ x: "100%", opacity: 0.92 }}
-            animate={{ x: 0, y: 0, opacity: 1 }}
-            exit={{ x: "100%", opacity: 0.92 }}
-            transition={{ type: "spring", damping: 34, stiffness: 300 }}
-            className="relative z-10 flex h-[100dvh] w-full flex-col overflow-hidden border-l border-white/10 bg-[#0E1726] text-white shadow-[-28px_0_90px_rgba(0,0,0,0.48)] md:w-[600px] md:max-w-[600px] xl:w-[640px] xl:max-w-[640px]"
-          >
-            {/* Header */}
-            <div className="sticky top-0 z-10 flex flex-shrink-0 items-start justify-between gap-4 border-b border-white/10 bg-[#0E1726]/96 px-4 pb-4 pt-[calc(1rem+env(safe-area-inset-top))] shadow-lg shadow-black/10 backdrop-blur-xl md:px-6">
-              <div className="min-w-0">
-                <div className="mb-3 h-1 w-12 rounded-full bg-white/20 md:hidden" />
-                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#F4B400]">Lead workspace</p>
-                <h3 className="mt-1 truncate text-xl font-black text-white">
-                  {isEditMode ? "Edit Lead Information" : "Create New Lead"}
-                </h3>
-                <p className="mt-1 text-xs leading-5 text-slate-400">
-                  Capture enquiry details, assignment, and the next follow-up in one clean flow.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={handleClose}
-                aria-label="Close lead drawer"
-                className="rounded-2xl border border-white/10 bg-white/[0.06] p-2.5 text-gray-300 transition hover:bg-white/10 hover:text-white"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Scrollable Form Body */}
-            <form onSubmit={handleSubmit(onSubmit)} className="min-h-0 flex-grow space-y-4 overflow-y-auto overscroll-contain px-4 py-5 pb-28 md:px-6 md:py-5">
+      <CRMDrawer
+        isOpen={isOpen}
+        onClose={handleClose}
+        eyebrow="Lead workspace"
+        title={isEditMode ? "Edit Lead Information" : "Create New Lead"}
+        description="Capture enquiry details, assignment, and the next follow-up in one clean flow."
+        footer={
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              onClick={handleClose}
+              className="min-h-11 rounded-2xl border border-white/10 px-5 py-3 text-sm font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              form={formId}
+              disabled={isSubmitting}
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#F4B400] px-6 py-3 text-sm font-black text-[#081120] shadow-lg shadow-[#F4B400]/20 transition hover:bg-[#f59e0b] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <Save className="h-4 w-4" />
+              {isSubmitting ? "Saving..." : isEditMode ? "Save Changes" : "Create Lead"}
+            </button>
+          </div>
+        }
+      >
+        <form id={formId} onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {error && (
                 <div className="flex items-start gap-3 rounded-2xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-red-200">
                   <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
@@ -419,29 +385,8 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                 </div>
               </div>
 
-              {/* Bottom Footer Actions inside Modal Form */}
-              <div className="sticky bottom-0 -mx-4 flex flex-shrink-0 justify-end gap-3 border-t border-white/10 bg-[#0E1726]/95 px-4 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur md:-mx-5 md:px-5">
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="min-h-11 flex-1 rounded-2xl border border-white/10 px-4 py-3 text-sm font-bold text-gray-300 transition hover:bg-white/10 hover:text-white md:flex-none"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex min-h-11 flex-1 items-center justify-center gap-1.5 rounded-2xl bg-[#F4B400] px-5 py-3 text-sm font-black text-[#081120] transition hover:bg-[#f59e0b] disabled:opacity-50 md:flex-none"
-                >
-                  <Save className="w-4 h-4" />
-                  {isSubmitting ? "Saving..." : isEditMode ? "Save Changes" : "Create Lead"}
-                </button>
-              </div>
-            </form>
-          </motion.div>
-        </div>
-      )}
-      </AnimatePresence>
+        </form>
+      </CRMDrawer>
     </>
   );
 }

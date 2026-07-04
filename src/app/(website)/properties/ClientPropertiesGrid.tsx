@@ -72,7 +72,7 @@ export default function ClientPropertiesGrid({
               className="min-h-14 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] pl-12 pr-4 text-sm font-semibold outline-none transition placeholder:text-[#6B7280]/70 focus:border-[#D4AF37] focus:bg-white focus:ring-4 focus:ring-[#D4AF37]/14"
             />
           </div>
-          <div className="flex gap-2 overflow-x-auto pb-1 lg:pb-0">
+          <div className="premium-scrollbar flex gap-2 overflow-x-auto pb-1 lg:pb-0">
             {filterTabs.map((tab) => (
               <button
                 key={tab.value}

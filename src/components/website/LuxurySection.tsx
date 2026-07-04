@@ -87,7 +87,7 @@ export function SectionHeader({
         <Eyebrow dark={dark}>{eyebrow}</Eyebrow>
       </div>
       <h2
-        className={`font-[family-name:var(--font-playfair)] text-4xl font-semibold leading-[1.02] tracking-[-0.04em] sm:text-5xl lg:text-6xl ${
+        className={`font-[family-name:var(--font-playfair)] text-[2.25rem] font-semibold leading-[1.04] tracking-[-0.035em] sm:text-5xl sm:tracking-[-0.04em] lg:text-6xl ${
           dark ? "text-white" : "text-[#081120]"
         }`}
       >

@@ -53,7 +53,7 @@ export default function PropertyExperienceClient({
       <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.12fr_0.88fr]">
         <div className="space-y-4">
           <div
-            className="relative min-h-[520px] overflow-hidden rounded-[2.5rem] bg-cover bg-center shadow-[0_28px_90px_rgba(8,17,32,0.14)]"
+            className="relative min-h-[320px] overflow-hidden rounded-[2rem] bg-cover bg-center shadow-[0_28px_90px_rgba(8,17,32,0.14)] sm:min-h-[520px] sm:rounded-[2.5rem]"
             style={{
               backgroundImage: `linear-gradient(180deg,rgba(8,17,32,0.02),rgba(8,17,32,0.36)),url(${gallery[activeImage]})`,
             }}
@@ -81,13 +81,13 @@ export default function PropertyExperienceClient({
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
             {gallery.slice(0, 3).map((image, index) => (
               <button
                 key={image}
                 type="button"
                 onClick={() => setActiveImage(index)}
-                className={`h-28 rounded-3xl bg-cover bg-center ring-2 transition ${
+                className={`h-20 rounded-2xl bg-cover bg-center ring-2 transition sm:h-28 sm:rounded-3xl ${
                   activeImage === index ? "ring-[#D4AF37]" : "ring-transparent"
                 }`}
                 style={{ backgroundImage: `url(${image})` }}

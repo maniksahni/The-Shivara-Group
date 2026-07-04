@@ -20,7 +20,7 @@ export default function ServicesPage() {
             Buyer services
           </p>
           <div className="mt-5 grid gap-8 lg:grid-cols-[1fr_0.7fr] lg:items-end">
-            <h1 className="font-[family-name:var(--font-playfair)] text-5xl font-semibold leading-[0.95] tracking-[-0.06em] sm:text-7xl lg:text-8xl">
+            <h1 className="font-[family-name:var(--font-playfair)] text-[2.55rem] font-semibold leading-[0.98] tracking-[-0.045em] sm:text-7xl sm:tracking-[-0.06em] lg:text-8xl">
               Services designed around confident decisions.
             </h1>
             <p className="text-lg leading-8 text-white/66">
@@ -38,7 +38,7 @@ export default function ServicesPage() {
             return (
               <div
                 key={service.title}
-                className="group rounded-[2.2rem] border border-[#081120]/8 bg-white p-7 shadow-[0_24px_70px_rgba(8,17,32,0.07)] transition hover:-translate-y-2 hover:bg-[#081120] hover:text-white"
+                className="group rounded-[1.75rem] border border-[#081120]/8 bg-white p-5 shadow-[0_24px_70px_rgba(8,17,32,0.07)] transition hover:-translate-y-2 hover:bg-[#081120] hover:text-white sm:rounded-[2.2rem] sm:p-7"
               >
                 <div className="mb-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#D4AF37] text-[#081120]">
                   <Icon className="h-6 w-6" />
@@ -46,7 +46,7 @@ export default function ServicesPage() {
                 <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-semibold">
                   {service.title}
                 </h2>
-                <p className="mt-4 min-h-28 text-sm leading-7 text-[#4B5563] transition group-hover:text-white/66">
+                <p className="mt-4 text-sm leading-7 text-[#4B5563] transition group-hover:text-white/66 sm:min-h-28">
                   {service.description}
                 </p>
                 <LuxuryButton

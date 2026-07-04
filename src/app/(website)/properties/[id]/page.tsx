@@ -96,7 +96,7 @@ export default async function PropertyDetailsPage({ params }: Props) {
               <p className="text-xs font-black uppercase tracking-[0.34em] text-[#D4AF37]">
                 {property.type.replace("_", " ")}
               </p>
-              <h1 className="mt-4 font-[family-name:var(--font-playfair)] text-5xl font-semibold leading-[0.96] tracking-[-0.06em] sm:text-7xl">
+              <h1 className="mt-4 font-[family-name:var(--font-playfair)] text-[2.55rem] font-semibold leading-[0.98] tracking-[-0.045em] sm:text-7xl sm:tracking-[-0.06em]">
                 {property.title}
               </h1>
               <p className="mt-5 flex items-center gap-2 text-white/68">
@@ -128,7 +128,7 @@ export default async function PropertyDetailsPage({ params }: Props) {
               Property overview
             </h2>
             <p className="mt-4 text-sm leading-8 text-[#4B5563]">{property.description}</p>
-            <div className="mt-6 grid grid-cols-3 gap-3">
+            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
               <Fact icon={<BedDouble className="h-5 w-5" />} label="Bedrooms" value={property.bedrooms ? String(property.bedrooms) : "TBC"} />
               <Fact icon={<Bath className="h-5 w-5" />} label="Bathrooms" value={property.bathrooms ? String(property.bathrooms) : "TBC"} />
               <Fact icon={<Ruler className="h-5 w-5" />} label="Area" value={property.area || "TBC"} />

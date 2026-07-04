@@ -168,10 +168,10 @@ export default function CRMLoginClient() {
      * On mobile: single column (form stacked below branding).
      * On md+: two equal columns side-by-side.
      */
-    <div className="flex min-h-screen flex-col md:flex-row">
+    <div className="flex min-h-[100dvh] flex-col md:flex-row">
       {/* ── Left panel — dark navy brand area ─────────────────────────── */}
       <div
-        className="relative flex flex-col items-center justify-center gap-8 overflow-hidden px-8 py-12 md:w-1/2 md:min-h-screen"
+        className="relative flex min-h-[34dvh] flex-col items-center justify-center gap-5 overflow-hidden px-6 py-8 md:min-h-screen md:w-1/2 md:gap-8 md:px-8 md:py-12"
         style={{
           background:
             'linear-gradient(135deg, #020617 0%, #0f172a 50%, #1a1f35 100%)',
@@ -191,7 +191,7 @@ export default function CRMLoginClient() {
 
         {/* Brand */}
         <div className="relative z-10 text-center">
-          <div className="mb-4 flex justify-center">
+          <div className="mb-3 flex justify-center md:mb-4">
             <div
               className="flex h-16 w-16 items-center justify-center rounded-2xl text-3xl font-black text-slate-900 shadow-2xl"
               style={{ backgroundColor: '#C9A84C' }}
@@ -218,14 +218,14 @@ export default function CRMLoginClient() {
             <div className="h-px flex-1" style={{ backgroundColor: '#C9A84C50' }} />
           </div>
 
-          <p className="mt-4 max-w-xs text-sm text-slate-500 leading-relaxed">
+          <p className="mt-4 max-w-xs text-sm leading-relaxed text-slate-500">
             Managing luxury properties across prime locations. Your trusted
             partner in real estate excellence.
           </p>
         </div>
 
         {/* CSS art graphic */}
-        <div className="relative z-10 w-full max-w-[280px]">
+        <div className="relative z-10 hidden w-full max-w-[280px] md:block">
           <LuxuryGraphic />
         </div>
 
@@ -236,7 +236,7 @@ export default function CRMLoginClient() {
       </div>
 
       {/* ── Right panel — login form ───────────────────────────────────── */}
-      <div className="flex flex-col items-center justify-center bg-slate-950 px-6 py-12 md:w-1/2 md:min-h-screen">
+      <div className="flex flex-1 flex-col items-center justify-center bg-slate-950 px-5 py-8 pb-[calc(2rem+env(safe-area-inset-bottom))] md:min-h-screen md:w-1/2 md:px-6 md:py-12">
         <div className="w-full max-w-md">
           {/* Heading */}
           <div className="mb-8 text-center">

@@ -75,7 +75,7 @@ export default async function PropertiesPage() {
             Verified catalog
           </p>
           <div className="mt-5 grid gap-8 lg:grid-cols-[1fr_0.74fr] lg:items-end">
-            <h1 className="font-[family-name:var(--font-playfair)] text-5xl font-semibold leading-[0.95] tracking-[-0.06em] sm:text-7xl lg:text-8xl">
+            <h1 className="font-[family-name:var(--font-playfair)] text-[2.55rem] font-semibold leading-[0.98] tracking-[-0.045em] sm:text-7xl sm:tracking-[-0.06em] lg:text-8xl">
               Premium properties, curated for serious buyers.
             </h1>
             <p className="text-lg leading-8 text-white/66">

@@ -40,7 +40,7 @@ export default function AboutPage() {
           <Eyebrow dark>About the brand</Eyebrow>
           <div className="grid gap-10 lg:grid-cols-[1fr_0.82fr] lg:items-end">
             <div>
-              <h1 className="font-[family-name:var(--font-playfair)] text-5xl font-semibold leading-[0.94] tracking-[-0.06em] sm:text-7xl lg:text-8xl">
+              <h1 className="font-[family-name:var(--font-playfair)] text-[2.55rem] font-semibold leading-[0.98] tracking-[-0.045em] sm:text-7xl sm:tracking-[-0.06em] lg:text-8xl">
                 Premium property guidance, built around trust.
               </h1>
               <p className="mt-7 max-w-2xl text-lg leading-8 text-white/68">
@@ -67,7 +67,7 @@ export default function AboutPage() {
       <SectionShell>
         <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div
-            className="min-h-[520px] rounded-[2.5rem] bg-cover bg-center shadow-[0_30px_90px_rgba(8,17,32,0.16)]"
+            className="min-h-[320px] rounded-[2rem] bg-cover bg-center shadow-[0_30px_90px_rgba(8,17,32,0.16)] sm:min-h-[520px] sm:rounded-[2.5rem]"
             style={{ backgroundImage: `url(${lobbyImage})` }}
           />
           <div>

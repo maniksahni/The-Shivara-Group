@@ -63,7 +63,7 @@ export default function HomePage() {
         <div className="relative mx-auto grid min-h-[calc(100svh-8rem)] max-w-7xl items-center gap-10 lg:grid-cols-[1.08fr_0.92fr]">
           <div className="max-w-3xl">
             <Eyebrow dark>Premium real estate in Bareilly</Eyebrow>
-            <h1 className="font-[family-name:var(--font-playfair)] text-[clamp(3.2rem,9vw,7.8rem)] font-semibold leading-[0.9] tracking-[-0.075em]">
+            <h1 className="font-[family-name:var(--font-playfair)] text-[clamp(2.55rem,12vw,7.8rem)] font-semibold leading-[0.92] tracking-[-0.06em] sm:tracking-[-0.075em]">
               Addresses that feel like arrival.
             </h1>
             <p className="mt-7 max-w-2xl text-lg leading-8 text-white/72 sm:text-xl">
@@ -284,7 +284,7 @@ export default function HomePage() {
             <Link
               key={category.title}
               href={category.href}
-              className="group relative min-h-[420px] overflow-hidden rounded-[2.2rem] bg-[#081120] shadow-[0_24px_70px_rgba(8,17,32,0.12)]"
+              className="group relative min-h-[340px] overflow-hidden rounded-[2rem] bg-[#081120] shadow-[0_24px_70px_rgba(8,17,32,0.12)] sm:min-h-[420px] sm:rounded-[2.2rem]"
             >
               <div
                 className="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-110"
@@ -293,7 +293,7 @@ export default function HomePage() {
                 }}
               />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.24),transparent_34%)]" />
-              <div className="relative flex h-full min-h-[420px] flex-col justify-end p-6 text-white">
+              <div className="relative flex h-full min-h-[340px] flex-col justify-end p-5 text-white sm:min-h-[420px] sm:p-6">
                 <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-[#F5D67B]">
                   Explore
                 </p>

@@ -32,7 +32,7 @@ export const metadata: Metadata = {
 
 export default function WebsiteLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#F8F5EE] text-[#081120] antialiased">
+    <div className="min-h-[100dvh] overflow-x-hidden bg-[#F8F5EE] text-[#081120] antialiased">
       <Navbar />
       {children}
       <Footer />
@@ -62,10 +62,10 @@ export default function WebsiteLayout({ children }: { children: React.ReactNode 
         </a>
       </div>
 
-      <div className="fixed inset-x-3 bottom-3 z-50 grid grid-cols-3 gap-2 rounded-[1.35rem] border border-white/20 bg-[#081120]/92 p-2 shadow-[0_18px_48px_rgba(0,0,0,0.26)] backdrop-blur-xl md:hidden">
+      <div className="fixed inset-x-2 bottom-[calc(0.5rem+env(safe-area-inset-bottom))] z-50 grid grid-cols-3 gap-1.5 rounded-[1.15rem] border border-white/20 bg-[#081120]/92 p-1.5 shadow-[0_18px_48px_rgba(0,0,0,0.26)] backdrop-blur-xl md:hidden">
         <a
           href={siteConfig.phoneHref}
-          className="flex min-h-12 items-center justify-center gap-1 rounded-2xl bg-white/8 text-xs font-black text-white"
+          className="flex min-h-11 items-center justify-center gap-1 rounded-2xl bg-white/8 text-xs font-black text-white"
         >
           <Phone className="h-4 w-4 text-[#D4AF37]" />
           Call
@@ -74,14 +74,14 @@ export default function WebsiteLayout({ children }: { children: React.ReactNode 
           href={siteConfig.whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex min-h-12 items-center justify-center gap-1 rounded-2xl bg-[#10B981] text-xs font-black text-white"
+          className="flex min-h-11 items-center justify-center gap-1 rounded-2xl bg-[#10B981] text-xs font-black text-white"
         >
           <MessageCircle className="h-4 w-4" />
           WhatsApp
         </a>
         <Link
           href="/contact#site-visit"
-          className="flex min-h-12 items-center justify-center gap-1 rounded-2xl bg-[#D4AF37] text-xs font-black text-[#081120]"
+          className="flex min-h-11 items-center justify-center gap-1 rounded-2xl bg-[#D4AF37] text-xs font-black text-[#081120]"
         >
           <CalendarDays className="h-4 w-4" />
           Visit

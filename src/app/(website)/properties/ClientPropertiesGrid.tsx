@@ -193,7 +193,7 @@ export default function ClientPropertiesGrid({
                     {property.location}
                   </p>
 
-                  <div className="mt-5 grid grid-cols-3 gap-2">
+                  <div className="mt-5 grid grid-cols-1 gap-2 min-[420px]:grid-cols-3">
                     <Fact icon={<BedDouble className="h-4 w-4" />} value={property.bedrooms ? `${property.bedrooms} Beds` : "On request"} />
                     <Fact icon={<Bath className="h-4 w-4" />} value={property.bathrooms ? `${property.bathrooms} Baths` : "Verified"} />
                     <Fact icon={<Ruler className="h-4 w-4" />} value={property.area || "Area TBC"} />
@@ -214,17 +214,17 @@ export default function ClientPropertiesGrid({
                     ))}
                   </div>
 
-                  <div className="mt-6 grid grid-cols-[1fr_auto_auto] gap-2">
+                  <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-[1fr_auto_auto]">
                     <button
                       type="button"
                       onClick={() => setSelectedProperty(property)}
-                      className="min-h-12 rounded-full bg-[#081120] px-4 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-[#D4AF37] hover:text-[#081120]"
+                      className="col-span-2 min-h-12 rounded-full bg-[#081120] px-4 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-[#D4AF37] hover:text-[#081120] sm:col-span-1"
                     >
                       Quick Enquiry
                     </button>
                     <a
                       href={siteConfig.phoneHref}
-                      className="flex h-12 w-12 items-center justify-center rounded-full bg-[#F8F5EE] text-[#081120]"
+                      className="flex h-12 w-full items-center justify-center rounded-full bg-[#F8F5EE] text-[#081120] sm:w-12"
                       aria-label="Call"
                     >
                       <Phone className="h-5 w-5" />
@@ -235,7 +235,7 @@ export default function ClientPropertiesGrid({
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex h-12 w-12 items-center justify-center rounded-full bg-[#10B981] text-white"
+                      className="flex h-12 w-full items-center justify-center rounded-full bg-[#10B981] text-white sm:w-12"
                       aria-label="WhatsApp"
                     >
                       <MessageCircle className="h-5 w-5" />

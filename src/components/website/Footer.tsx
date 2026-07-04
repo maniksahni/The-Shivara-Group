@@ -9,13 +9,13 @@ export default function Footer() {
   return (
     <footer className="relative overflow-hidden bg-[#081120] text-white">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(212,175,55,0.18),transparent_32%),radial-gradient(circle_at_85%_30%,rgba(16,185,129,0.12),transparent_30%)]" />
-      <div className="relative mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-12 lg:py-20">
-        <div className="mb-12 grid gap-6 rounded-[2rem] border border-[#D4AF37]/18 bg-white/[0.045] p-6 backdrop-blur md:grid-cols-[1.2fr_0.8fr] md:p-8">
+      <div className="relative mx-auto max-w-7xl px-4 py-10 pb-24 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
+        <div className="mb-8 grid gap-5 rounded-[1.6rem] border border-[#D4AF37]/18 bg-white/[0.045] p-5 backdrop-blur sm:mb-12 sm:rounded-[2rem] sm:p-6 md:grid-cols-[1.2fr_0.8fr] md:p-8">
           <div>
-            <p className="text-xs font-black uppercase tracking-[0.34em] text-[#D4AF37]">
+            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#D4AF37] sm:text-xs sm:tracking-[0.34em]">
               Ready to move from scrolling to visiting?
             </p>
-            <h2 className="mt-3 font-[family-name:var(--font-playfair)] text-3xl font-semibold tracking-[-0.03em] sm:text-5xl">
+            <h2 className="mt-2 font-[family-name:var(--font-playfair)] text-[1.9rem] font-semibold leading-[1.05] tracking-[-0.03em] sm:mt-3 sm:text-5xl">
               Book a private property consultation with Shivara.
             </h2>
           </div>

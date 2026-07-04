@@ -137,7 +137,18 @@ export default function CRMLoginClient() {
     event.preventDefault()
     setForm((prev) => ({ ...prev, loading: true, error: null }))
 
-    const callbackUrl = searchParams.get('callbackUrl') ?? '/crm/dashboard'
+    const rawCallbackUrl = searchParams.get('callbackUrl') ?? '/crm/dashboard'
+    const callbackUrl = (() => {
+      try {
+        const parsed = new URL(rawCallbackUrl, window.location.origin)
+        return parsed.origin === window.location.origin
+          ? `${parsed.pathname}${parsed.search}${parsed.hash}`
+          : '/crm/dashboard'
+      } catch {
+        return '/crm/dashboard'
+      }
+    })()
+
     const result = await signIn('credentials', {
       email: form.email.trim(),
       password: form.password,
@@ -146,7 +157,19 @@ export default function CRMLoginClient() {
     })
 
     if (result?.ok) {
-      router.push(result.url ?? callbackUrl)
+      const safeResultUrl = (() => {
+        try {
+          if (!result.url) return callbackUrl
+          const parsed = new URL(result.url, window.location.origin)
+          return parsed.origin === window.location.origin
+            ? `${parsed.pathname}${parsed.search}${parsed.hash}`
+            : callbackUrl
+        } catch {
+          return callbackUrl
+        }
+      })()
+
+      router.push(safeResultUrl)
       router.refresh()
       return
     }

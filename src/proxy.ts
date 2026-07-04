@@ -4,11 +4,13 @@
  * Next.js Edge Middleware for Shivara CRM route protection.
  *
  * Rules:
- *  1. All /crm/* routes require an authenticated session.
+ *  1. If SITE_URL / NEXT_PUBLIC_SITE_URL is configured, non-canonical hosts
+ *     are redirected to the custom production domain.
+ *  2. All /crm/* routes require an authenticated session.
  *     Unauthenticated users are redirected to /crm/login.
- *  2. /crm/agents/* routes are restricted to users with role === 'ADMIN'.
+ *  3. /crm/agents/* routes are restricted to users with role === 'ADMIN'.
  *     Non-admin users are redirected to /crm/dashboard.
- *  3. The /crm/login page itself is always accessible (explicitly excluded
+ *  4. The /crm/login page itself is always accessible (explicitly excluded
  *     from protection so we don't create an infinite redirect loop).
  */
 
@@ -29,11 +31,18 @@ const DASHBOARD_PATH = '/crm/dashboard'
 /** Routes that only ADMIN users may access. */
 const ADMIN_ONLY_PREFIX = '/crm/agents'
 
-function getPublicOrigin(request: NextRequest) {
-  if (process.env.NEXTAUTH_URL) {
-    return process.env.NEXTAUTH_URL
-  }
+function normalizeOrigin(value: string | undefined) {
+  if (!value) return null
 
+  try {
+    const url = new URL(value)
+    return url.origin
+  } catch {
+    return null
+  }
+}
+
+function getRequestOrigin(request: NextRequest) {
   const forwardedHost = request.headers.get('x-forwarded-host')
   const forwardedProto = request.headers.get('x-forwarded-proto') || 'https'
 
@@ -42,6 +51,46 @@ function getPublicOrigin(request: NextRequest) {
   }
 
   return request.nextUrl.origin
+}
+
+function getCanonicalOrigin() {
+  return (
+    normalizeOrigin(process.env.NEXT_PUBLIC_SITE_URL) ||
+    normalizeOrigin(process.env.SITE_URL) ||
+    normalizeOrigin(process.env.APP_URL) ||
+    null
+  )
+}
+
+function getPublicOrigin(request: NextRequest) {
+  const requestOrigin = getRequestOrigin(request)
+  const canonicalOrigin = getCanonicalOrigin()
+
+  if (!canonicalOrigin) {
+    return requestOrigin
+  }
+
+  const requestHost = new URL(requestOrigin).host
+  const canonicalHost = new URL(canonicalOrigin).host
+
+  // Local development should keep working on localhost/127.0.0.1.
+  if (requestHost.includes('localhost') || requestHost.startsWith('127.0.0.1')) {
+    return requestOrigin
+  }
+
+  // Railway fallback domains should generate redirects/callbacks on the
+  // configured custom domain once SITE_URL/NEXT_PUBLIC_SITE_URL is set.
+  if (requestHost.endsWith('.up.railway.app') || requestHost.endsWith('.railway.app')) {
+    return canonicalOrigin
+  }
+
+  // For any already-custom domain, preserve the incoming host so CRM login
+  // never jumps to a different domain because of an old NEXTAUTH_URL value.
+  if (requestHost !== canonicalHost) {
+    return requestOrigin
+  }
+
+  return canonicalOrigin
 }
 
 function getPublicUrl(request: NextRequest, pathname: string) {
@@ -55,6 +104,26 @@ function getPublicUrl(request: NextRequest, pathname: string) {
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
+  const canonicalOrigin = getCanonicalOrigin()
+  const requestOrigin = getRequestOrigin(request)
+
+  if (canonicalOrigin) {
+    const requestHost = new URL(requestOrigin).host
+    const canonicalHost = new URL(canonicalOrigin).host
+    const isLocal =
+      requestHost.includes('localhost') || requestHost.startsWith('127.0.0.1')
+
+    if (!isLocal && requestHost !== canonicalHost) {
+      const canonicalUrl = new URL(request.nextUrl.pathname + request.nextUrl.search, canonicalOrigin)
+      return NextResponse.redirect(canonicalUrl, 308)
+    }
+  }
+
+  // Public website routes do not require auth. Keep the proxy active for
+  // canonical-domain enforcement above, but only protect CRM routes below.
+  if (!pathname.startsWith('/crm')) {
+    return NextResponse.next()
+  }
 
   // ── 1. Always allow the login page through ──────────────────────────────
   // This check is technically redundant given the matcher below, but it is a
@@ -107,11 +176,12 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   /**
-   * Run this middleware for every request whose path starts with /crm/,
-   * EXCEPT for the login page so we never loop on redirect.
+   * Run the proxy for page requests so canonical custom-domain redirects work
+   * across the public website and CRM. Static assets and API routes are
+   * excluded. Auth protection itself is still limited to /crm routes above.
    *
-   * The negative lookahead `(?!login)` excludes /crm/login and any
-   * sub-paths under it (e.g. /crm/login?callbackUrl=...).
+   * The login page is handled in code instead of the matcher so the same proxy
+   * can also redirect old Railway-hosted login URLs to the custom domain.
    */
-  matcher: ['/crm/((?!login(?:/|$)).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)'],
 }

@@ -150,17 +150,17 @@ export default function ContactPage() {
               {
                 icon: MapPin,
                 title: "Office location",
-                text: "Bareilly, Uttar Pradesh — full address manual completion required",
+                text: "Bareilly, Uttar Pradesh — private consultations by appointment",
               },
               {
                 icon: Clock,
                 title: "Working hours",
-                text: "Manual completion required. Site visits available by appointment.",
+                text: "Site visits and consultations available by appointment.",
               },
               {
                 icon: Mail,
                 title: "Email",
-                text: "Manual completion required",
+                text: "Please call or WhatsApp for the fastest response",
               },
             ].map((item) => (
               <div key={item.title} className="rounded-[2rem] border border-[#081120]/8 bg-white p-5 shadow-[0_18px_50px_rgba(8,17,32,0.05)]">
@@ -211,7 +211,7 @@ export default function ContactPage() {
                   Google Maps location
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-white/62">
-                  Official map pin/manual office address pending completion.
+                  Connect with the team for location guidance and appointment details.
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-3 p-4">

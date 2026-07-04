@@ -179,7 +179,7 @@ export default async function PropertyDetailsPage({ params }: Props) {
               Floor plans
             </h2>
             <p className="mt-3 text-sm leading-7 text-[#4B5563]">
-              Floor plan PDF/image is pending manual upload. Request it directly from the consultant.
+              Request floor plans, layout details, and unit options directly from the consultant.
             </p>
             <Link
               href="/contact#site-visit"
@@ -195,10 +195,10 @@ export default async function PropertyDetailsPage({ params }: Props) {
               Location map
             </h2>
             <p className="mt-3 text-sm leading-7 text-white/62">
-              Google Maps embed/location pin is ready for manual completion once the official address is verified.
+              Get precise location guidance, route details, and visit coordination from the team.
             </p>
             <div className="mt-6 rounded-[1.5rem] border border-dashed border-white/18 bg-white/[0.055] p-5 text-sm font-bold text-white/58">
-              Map placeholder • {property.location}
+              Location guidance • {property.location}
             </div>
           </div>
 
@@ -241,7 +241,7 @@ export default async function PropertyDetailsPage({ params }: Props) {
               ))
             ) : (
               <div className="rounded-3xl border border-[#081120]/8 bg-white p-6 text-[#4B5563]">
-                Amenities require manual completion.
+                Amenities will be shared by the consultant during property shortlisting.
               </div>
             )}
             <div className="flex items-center gap-3 rounded-3xl border border-[#081120]/8 bg-white p-5">

@@ -121,7 +121,7 @@ export default function Footer() {
                 <span>
                   {siteConfig.location}
                   <br />
-                  Full office address: Manual completion required
+                  Private consultations by appointment
                 </span>
               </li>
               <li className="flex gap-3">

@@ -56,8 +56,8 @@ export default function AboutPage() {
                 {siteConfig.coverage}
               </p>
               <p className="mt-4 text-sm leading-7 text-white/62">
-                Office address, verified Google rating, and final partner details should be
-                manually completed once confirmed by the business team.
+                Speak with the team for appointment-led consultations, current projects,
+                and location-specific guidance.
               </p>
             </div>
           </div>

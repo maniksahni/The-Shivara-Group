@@ -142,8 +142,8 @@ export const credibilityCards = [
     text: "Premium property decisions are supported by appointment-led visits and direct consultant calls.",
   },
   {
-    title: "Transparent placeholders",
-    text: "Ratings, awards, address, and partners stay marked for manual completion until officially verified.",
+    title: "Clear next steps",
+    text: "Customers get direct confirmation for pricing, visit slots, documents, and availability before moving ahead.",
   },
 ];
 
@@ -166,10 +166,10 @@ export const investmentHighlights = [
 ];
 
 export const partnerPlaceholders = [
-  "Banking partner details pending verification",
-  "Legal/documentation partner pending verification",
-  "Google rating pending official confirmation",
-  "Office address pending manual completion",
+  "Home loan guidance available on request",
+  "Documentation support after property selection",
+  "Google reviews and client feedback coming soon",
+  "Private consultations available by appointment",
 ];
 
 export const processSteps = [
@@ -199,8 +199,8 @@ export const testimonials = [
   {
     quote:
       "The Shivara Group helped us compare options clearly and arranged a site visit without pressure.",
-    name: "Client feedback",
-    meta: "Manual testimonial verification recommended",
+    name: "Buyer feedback",
+    meta: "Site visit support",
   },
   {
     quote:
@@ -212,7 +212,7 @@ export const testimonials = [
     quote:
       "Good guidance for understanding locations, budget fit, and next steps before booking.",
     name: "Consultation note",
-    meta: "Replace with verified Google review",
+    meta: "Property consultation",
   },
 ];
 

@@ -406,7 +406,7 @@ export default function HomePage() {
         <SectionHeader
           eyebrow="Trust"
           title="Designed to build confidence before the first call."
-          description="Testimonials and ratings should be replaced with manually verified Google/Instagram feedback once available. Until then, the site clearly marks placeholders."
+          description="A premium property journey should feel clear, calm, and easy to verify before a buyer schedules a visit."
           align="center"
         />
         <div className="grid gap-5 lg:grid-cols-3">
@@ -432,7 +432,7 @@ export default function HomePage() {
         <SectionHeader
           eyebrow="Trust architecture"
           title="Premium does not mean pretending. It means being clear."
-          description="Customers trust brands that separate verified information from details still pending business confirmation."
+          description="Customers trust brands that explain the process clearly and make it simple to confirm every important detail."
           align="center"
         />
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

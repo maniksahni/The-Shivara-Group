@@ -67,7 +67,7 @@ export default async function CRMLayout({ children }: CRMLayoutProps) {
        * Full-viewport flex container.
        * Sidebar is fixed-width (260 px); the right pane takes remaining space.
        */}
-      <div className="flex h-screen w-full overflow-hidden bg-[#081120] text-white">
+      <div className="flex h-[100dvh] w-full overflow-hidden bg-[#081120] text-white">
         {/* ── Left sidebar ──────────────────────────────────────────────── */}
         {/*
          * The sidebar is rendered as a fixed-position column so that it
@@ -88,7 +88,7 @@ export default async function CRMLayout({ children }: CRMLayoutProps) {
            * `flex-1` ensures this area fills the remaining vertical space
            * below the topbar.
            */}
-          <main className="relative z-0 flex-1 overflow-y-auto px-3 pb-24 pt-4 sm:px-5 lg:px-8 lg:pb-8">
+          <main className="relative z-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-[calc(6.5rem+env(safe-area-inset-bottom))] pt-4 sm:px-5 md:pb-8 lg:px-8">
             {children}
           </main>
 
@@ -96,7 +96,7 @@ export default async function CRMLayout({ children }: CRMLayoutProps) {
             agents={agents}
             trigger={
               <button
-                className="fixed bottom-[92px] right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#F4B400] text-[#081120] shadow-2xl shadow-[#F4B400]/30 ring-1 ring-white/20 transition active:scale-95 md:hidden"
+                className="fixed bottom-[calc(92px+env(safe-area-inset-bottom))] right-5 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#F4B400] text-[#081120] shadow-2xl shadow-[#F4B400]/30 ring-1 ring-white/20 transition active:scale-95 md:hidden"
                 aria-label="Add lead"
               >
                 <Plus className="h-6 w-6" />

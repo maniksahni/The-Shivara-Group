@@ -1,90 +1,120 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { propertySchema, PropertyInput } from "@/lib/validations";
+import { AlertCircle, BadgeCheck, Building2, ImagePlus, MapPin, Save, Sparkles } from "lucide-react";
 import { PropertyType } from "@prisma/client";
-import { createProperty, updateProperty } from "@/features/properties/actions";
-import { X, Save, AlertCircle } from "lucide-react";
+import type { z } from "zod";
+
+import CRMDrawer from "@/components/crm/CRMDrawer";
 import { useToast } from "@/components/ui/toast";
+import { createProperty, updateProperty } from "@/features/properties/actions";
+import { propertySchema } from "@/lib/validations";
+
+type PropertyFormValues = z.input<typeof propertySchema>;
+
+interface PropertyForForm {
+  id: string;
+  title: string;
+  description: string | null;
+  price: string | number;
+  location: string;
+  type: PropertyType | string;
+  bedrooms: number | null;
+  bathrooms: number | null;
+  area: string | null;
+  amenities: string[];
+  images: string[];
+  isActive: boolean;
+  isFeatured: boolean;
+}
 
 interface AddPropertyModalProps {
   trigger: React.ReactElement<{ onClick?: React.MouseEventHandler }>;
-  property?: any; // If editing
+  property?: PropertyForForm;
 }
 
 export default function AddPropertyModal({ trigger, property }: AddPropertyModalProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [error, setError] = useState("");
+  const [formError, setFormError] = useState("");
+  const [amenityText, setAmenityText] = useState(property?.amenities?.join(", ") ?? "");
+  const [imageText, setImageText] = useState(property?.images?.join("\n") ?? "");
   const { toast } = useToast();
   const router = useRouter();
+  const isEditMode = Boolean(property);
 
-  const isEditMode = !!property;
-
-  // Initialize form with defaults
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm({
+  } = useForm<PropertyFormValues>({
     resolver: zodResolver(propertySchema),
     defaultValues: {
-      title: property?.title || "",
-      description: property?.description || "",
-      price: property?.price || "",
-      location: property?.location || "",
-      type: property?.type || PropertyType.APARTMENT,
-      bedrooms: property?.bedrooms ?? undefined,
-      bathrooms: property?.bathrooms ?? undefined,
-      area: property?.area || "",
-      amenities: property?.amenities || [],
-      images: property?.images || [],
+      title: property?.title ?? "",
+      description: property?.description ?? "",
+      price: property?.price ? String(property.price) : "",
+      location: property?.location ?? "",
+      type: (property?.type as PropertyType) ?? PropertyType.APARTMENT,
+      bedrooms: property?.bedrooms ?? null,
+      bathrooms: property?.bathrooms ?? null,
+      area: property?.area ?? "",
+      amenities: property?.amenities ?? [],
+      images: property?.images ?? [],
       isActive: property?.isActive ?? true,
       isFeatured: property?.isFeatured ?? false,
     },
   });
 
-  // Handle tags for amenities
-  const [amenityText, setAmenityText] = useState<string>(
-    property?.amenities ? property.amenities.join(", ") : ""
-  );
+  const handleClose = () => {
+    setIsOpen(false);
+    setFormError("");
+    if (!isEditMode) {
+      reset();
+      setAmenityText("");
+      setImageText("");
+    }
+  };
 
-  const onSubmit = async (data: any) => {
-    setError("");
+  const onSubmit = async (data: PropertyFormValues) => {
+    setFormError("");
 
-    // Process amenities array
-    const amenitiesArr = amenityText
+    const amenities = amenityText
       .split(",")
-      .map((tag: string) => tag.trim())
-      .filter((tag: string) => tag.length > 0);
+      .map((item) => item.trim())
+      .filter(Boolean);
+
+    const images = imageText
+      .split(/\n|,/)
+      .map((item) => item.trim())
+      .filter(Boolean);
 
     const formattedData = {
       ...data,
-      bedrooms: data.bedrooms === "" || data.bedrooms == null ? null : Number(data.bedrooms),
-      bathrooms: data.bathrooms === "" || data.bathrooms == null ? null : Number(data.bathrooms),
-      area: data.area || null,
-      amenities: amenitiesArr,
-      images: data.images && data.images.length > 0 ? data.images : [],
+      bedrooms: data.bedrooms === undefined || data.bedrooms === null ? null : Number(data.bedrooms),
+      bathrooms: data.bathrooms === undefined || data.bathrooms === null ? null : Number(data.bathrooms),
+      area: data.area?.trim() || null,
+      amenities,
+      images,
+      isActive: Boolean(data.isActive),
+      isFeatured: Boolean(data.isFeatured),
     };
 
     try {
-      let result;
-      if (isEditMode && property) {
-        result = await updateProperty(property.id, formattedData);
-      } else {
-        result = await createProperty(formattedData);
-      }
+      const result =
+        isEditMode && property
+          ? await updateProperty(property.id, formattedData)
+          : await createProperty(formattedData);
 
       if (!result.success) {
-        throw new Error(result.error || "Operation failed");
+        throw new Error(result.error || "Could not save property.");
       }
 
       toast({
-        title: isEditMode ? "Property Updated" : "Property Created",
-        description: `Successfully ${isEditMode ? "saved updates for" : "created property listing"} "${data.title}".`,
+        title: isEditMode ? "Property updated" : "Property created",
+        description: `"${data.title}" has been saved successfully.`,
         type: "success",
       });
 
@@ -92,214 +122,247 @@ export default function AddPropertyModal({ trigger, property }: AddPropertyModal
       if (!isEditMode) {
         reset();
         setAmenityText("");
+        setImageText("");
       }
       router.refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to save property detail. Please review inputs.");
-    }
-  };
-
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
-
-  const handleClose = () => {
-    setIsOpen(false);
-    setError("");
-    if (!isEditMode) {
-      reset();
-      setAmenityText("");
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to save property. Please review the form and try again.";
+      setFormError(message);
+      toast({
+        title: "Property save failed",
+        description: message,
+        type: "error",
+      });
     }
   };
 
   return (
     <>
-      <span onClickCapture={handleOpen}>{trigger}</span>
+      <span className="inline-flex" onClickCapture={() => setIsOpen(true)}>
+        {trigger}
+      </span>
 
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center p-0 sm:items-center sm:p-4">
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-[#0F1B2D]/75 backdrop-blur-sm transition-opacity"
-            onClick={handleClose}
-          />
+      <CRMDrawer
+        isOpen={isOpen}
+        onClose={handleClose}
+        eyebrow="Inventory studio"
+        title={isEditMode ? "Edit Property Listing" : "Add New Property"}
+        description="Keep every listing complete, polished, and ready for public discovery."
+        footer={
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              onClick={handleClose}
+              className="min-h-11 rounded-2xl border border-white/10 px-5 py-3 text-sm font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              form="property-drawer-form"
+              disabled={isSubmitting}
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#F4B400] px-6 py-3 text-sm font-black text-[#081120] shadow-lg shadow-[#F4B400]/20 transition hover:bg-[#f59e0b] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <Save className="h-4 w-4" />
+              {isSubmitting ? "Saving..." : isEditMode ? "Save Changes" : "Create Property"}
+            </button>
+          </div>
+        }
+      >
+        <form id="property-drawer-form" onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          {formError && (
+            <div className="flex items-start gap-3 rounded-2xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-red-200">
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>{formError}</span>
+            </div>
+          )}
 
-          {/* Modal Container */}
-          <div className="relative z-10 flex max-h-[92vh] w-full max-w-2xl flex-col overflow-hidden rounded-t-[28px] border border-slate-800 bg-slate-900 text-white shadow-2xl animate-fade-in-scale sm:max-h-[90vh] sm:rounded-2xl">
-            {/* Header */}
-            <div className="px-6 py-4 border-b border-slate-800 bg-slate-950 flex items-center justify-between flex-shrink-0">
-              <h3 className="font-bold text-base text-white">
-                {isEditMode ? "Edit Property Listing" : "Add New Property"}
-              </h3>
-              <button
-                onClick={handleClose}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
+          <FormSection icon={<Building2 className="h-4 w-4" />} title="Basic Details">
+            <Field label="Property title" error={errors.title?.message} required>
+              <input
+                type="text"
+                {...register("title")}
+                placeholder="e.g. 3BHK luxury apartment near Civil Lines"
+                className={fieldClass}
+              />
+            </Field>
+
+            <Field label="Property type" error={errors.type?.message} required>
+              <select {...register("type")} className={fieldClass}>
+                <option value={PropertyType.APARTMENT}>Apartment</option>
+                <option value={PropertyType.VILLA}>Villa</option>
+                <option value={PropertyType.PLOT}>Plot</option>
+                <option value={PropertyType.COMMERCIAL}>Commercial</option>
+                <option value={PropertyType.FARMHOUSE}>Farmhouse</option>
+              </select>
+            </Field>
+          </FormSection>
+
+          <FormSection icon={<BadgeCheck className="h-4 w-4" />} title="Pricing">
+            <Field label="Price / price tag" error={errors.price?.message} required>
+              <input
+                type="text"
+                {...register("price")}
+                placeholder="e.g. ₹45 Lakh / Contact for pricing"
+                className={fieldClass}
+              />
+            </Field>
+          </FormSection>
+
+          <FormSection icon={<MapPin className="h-4 w-4" />} title="Location">
+            <Field label="Location" error={errors.location?.message} required>
+              <input
+                type="text"
+                {...register("location")}
+                placeholder="e.g. Civil Lines, Bareilly"
+                className={fieldClass}
+              />
+            </Field>
+          </FormSection>
+
+          <FormSection icon={<Sparkles className="h-4 w-4" />} title="Property Features">
+            <div className="grid gap-4 sm:grid-cols-3">
+              <Field label="Bedrooms" error={errors.bedrooms?.message}>
+                <input
+                  type="number"
+                  min={0}
+                  inputMode="numeric"
+                  {...register("bedrooms")}
+                  placeholder="3"
+                  className={fieldClass}
+                />
+              </Field>
+              <Field label="Bathrooms" error={errors.bathrooms?.message}>
+                <input
+                  type="number"
+                  min={0}
+                  inputMode="numeric"
+                  {...register("bathrooms")}
+                  placeholder="2"
+                  className={fieldClass}
+                />
+              </Field>
+              <Field label="Area" error={errors.area?.message}>
+                <input
+                  type="text"
+                  {...register("area")}
+                  placeholder="1,800 sqft"
+                  className={fieldClass}
+                />
+              </Field>
             </div>
 
-            {/* Scrollable Form Body */}
-            <form onSubmit={handleSubmit(onSubmit)} className="flex-grow space-y-6 overflow-y-auto p-4 pb-24 sm:p-6">
-              {error && (
-                <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs p-3 rounded-lg flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4" />
-                  <span>{error}</span>
-                </div>
-              )}
+            <Field label="Amenities">
+              <input
+                type="text"
+                value={amenityText}
+                onChange={(event) => setAmenityText(event.target.value)}
+                placeholder="Parking, Lift, Power Backup, Gated Entry"
+                className={fieldClass}
+              />
+            </Field>
+          </FormSection>
 
-              {/* Title Section */}
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1">Property Title *</label>
-                  <input
-                    type="text"
-                    {...register("title")}
-                    placeholder="e.g. 3BHK Luxury Duplex Penthouse"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
-                  />
-                  {errors.title && <p className="text-red-400 text-[10px] mt-1">{errors.title.message}</p>}
-                </div>
+          <FormSection icon={<ImagePlus className="h-4 w-4" />} title="Images">
+            <Field label="Image URLs" error={errors.images?.message}>
+              <textarea
+                value={imageText}
+                onChange={(event) => setImageText(event.target.value)}
+                rows={4}
+                placeholder="Paste one image URL per line"
+                className={`${fieldClass} min-h-32 resize-none py-4`}
+              />
+            </Field>
+            <p className="text-xs leading-5 text-slate-500">
+              Use publicly accessible image URLs. Empty images are allowed; the public site will
+              use premium fallback visuals.
+            </p>
+          </FormSection>
 
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1">Description *</label>
-                  <textarea
-                    rows={4}
-                    {...register("description")}
-                    placeholder="Describe layout details, location advantages, pricing breakdown..."
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C] resize-none"
-                  />
-                  {errors.description && <p className="text-red-400 text-[10px] mt-1">{errors.description.message}</p>}
-                </div>
-              </div>
+          <FormSection icon={<BadgeCheck className="h-4 w-4" />} title="Status">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <label className="flex min-h-14 items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 text-sm font-bold text-slate-200">
+                <input
+                  type="checkbox"
+                  {...register("isActive")}
+                  className="h-4 w-4 rounded border-white/20 bg-[#111827] text-[#F4B400] focus:ring-[#F4B400]/30"
+                />
+                Listed Active
+              </label>
+              <label className="flex min-h-14 items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 text-sm font-bold text-slate-200">
+                <input
+                  type="checkbox"
+                  {...register("isFeatured")}
+                  className="h-4 w-4 rounded border-white/20 bg-[#111827] text-[#F4B400] focus:ring-[#F4B400]/30"
+                />
+                Featured Property
+              </label>
+            </div>
+          </FormSection>
 
-              {/* Specs Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-slate-800 pt-6">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1">Pricing / Price Tag *</label>
-                  <input
-                    type="text"
-                    {...register("price")}
-                    placeholder="e.g. ₹45 Lakh"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
-                  />
-                  {errors.price && <p className="text-red-400 text-[10px] mt-1">{errors.price.message}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1">Location *</label>
-                  <input
-                    type="text"
-                    {...register("location")}
-                    placeholder="e.g. Civil Lines, Bareilly"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
-                  />
-                  {errors.location && <p className="text-red-400 text-[10px] mt-1">{errors.location.message}</p>}
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1">Property Type *</label>
-                  <select
-                    {...register("type")}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
-                  >
-                    <option value={PropertyType.APARTMENT}>Apartment</option>
-                    <option value={PropertyType.VILLA}>Villa</option>
-                    <option value={PropertyType.PLOT}>Plot</option>
-                    <option value={PropertyType.COMMERCIAL}>Commercial</option>
-                    <option value={PropertyType.FARMHOUSE}>Farmhouse</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Structural Section */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 border-t border-slate-800 pt-6">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1">Bedrooms Count</label>
-                  <input
-                    type="number"
-                    {...register("bedrooms")}
-                    placeholder="e.g. 3"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1">Bathrooms Count</label>
-                  <input
-                    type="number"
-                    {...register("bathrooms")}
-                    placeholder="e.g. 2"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1">Built-up Area (Sq Ft / Sq Yd)</label>
-                  <input
-                    type="text"
-                    {...register("area")}
-                    placeholder="e.g. 1,800 sqft"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
-                  />
-                </div>
-              </div>
-
-              {/* Amenities & Flags */}
-              <div className="border-t border-slate-800 pt-6 space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-400 mb-1">
-                    Amenities (Comma-separated)
-                  </label>
-                  <input
-                    type="text"
-                    value={amenityText}
-                    onChange={(e) => setAmenityText(e.target.value)}
-                    placeholder="e.g. Modular Kitchen, Parking, Gated Entry, Power Backup"
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
-                  />
-                </div>
-
-                <div className="flex items-center gap-6 pt-2">
-                  <label className="flex items-center gap-2 text-xs font-semibold text-slate-300 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      {...register("isActive")}
-                      className="rounded bg-slate-800 border-slate-700 text-[#C9A84C] focus:ring-[#C9A84C]"
-                    />
-                    Listed Active (Show on Website)
-                  </label>
-                  <label className="flex items-center gap-2 text-xs font-semibold text-slate-300 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      {...register("isFeatured")}
-                      className="rounded bg-slate-800 border-slate-700 text-[#C9A84C] focus:ring-[#C9A84C]"
-                    />
-                    Featured Spot (Highlighted in Grid)
-                  </label>
-                </div>
-              </div>
-
-              {/* Bottom Footer Actions */}
-              <div className="sticky bottom-0 -mx-4 flex flex-shrink-0 justify-end gap-3 border-t border-slate-800 bg-slate-900/95 px-4 py-4 backdrop-blur sm:static sm:mx-0 sm:bg-transparent sm:p-0 sm:pt-6">
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="min-h-11 px-4 py-2 border border-slate-700 text-slate-300 text-xs font-bold rounded-lg hover:bg-slate-800 hover:text-white transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="flex min-h-11 items-center gap-1.5 rounded-lg bg-[#C9A84C] px-5 py-2.5 text-xs font-bold text-slate-900 transition-colors hover:bg-[#b8963e] disabled:opacity-50"
-                >
-                  <Save className="w-4 h-4" />
-                  {isSubmitting ? "Saving..." : isEditMode ? "Save Changes" : "Create Listing"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+          <FormSection icon={<Building2 className="h-4 w-4" />} title="Description">
+            <Field label="Description" error={errors.description?.message} required>
+              <textarea
+                rows={7}
+                {...register("description")}
+                placeholder="Describe layout details, amenities, location advantages, possession, and visit guidance..."
+                className={`${fieldClass} min-h-44 resize-none py-4`}
+              />
+            </Field>
+          </FormSection>
+        </form>
+      </CRMDrawer>
     </>
+  );
+}
+
+const fieldClass =
+  "min-h-12 w-full rounded-2xl border border-white/10 bg-[#111827]/80 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-[#F4B400]/70 focus:bg-[#111827] focus:ring-4 focus:ring-[#F4B400]/10";
+
+const labelClass =
+  "mb-2 block text-[11px] font-black uppercase tracking-[0.16em] text-slate-400";
+
+function FormSection({
+  icon,
+  title,
+  children,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <section className="rounded-[24px] border border-white/10 bg-white/[0.035] p-4 shadow-xl shadow-black/10 sm:p-5">
+      <h3 className="mb-4 flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-[#F4B400]">
+        {icon}
+        {title}
+      </h3>
+      <div className="space-y-4">{children}</div>
+    </section>
+  );
+}
+
+function Field({
+  label,
+  required,
+  error,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  error?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="block">
+      <span className={labelClass}>
+        {label} {required && <span className="text-red-400">*</span>}
+      </span>
+      {children}
+      {error && <p className="mt-2 text-xs font-semibold text-red-300">{error}</p>}
+    </label>
   );
 }

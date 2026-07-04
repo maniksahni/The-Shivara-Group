@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -154,7 +154,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
     setIsOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsOpen(false);
     setError("");
     if (!isEditMode) reset();
@@ -164,7 +164,26 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
       const next = params.toString();
       router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
     }
-  };
+  }, [isEditMode, pathname, reset, router, searchParams]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        handleClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleClose, isOpen]);
 
   return (
     <>
@@ -172,26 +191,26 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
 
       <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center md:items-stretch md:justify-end">
+        <div className="fixed inset-0 z-[80] flex items-stretch justify-end">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-[#081120]/55 backdrop-blur-[2px] md:bg-[#081120]/35"
+            className="absolute inset-0 bg-[#020617]/72 backdrop-blur-[5px]"
             onClick={handleClose}
           />
 
           {/* Slide-over Container */}
           <motion.div
-            initial={{ y: typeof window !== "undefined" && window.innerWidth < 768 ? 720 : 0, x: typeof window !== "undefined" && window.innerWidth >= 768 ? 440 : 0, opacity: 0 }}
+            initial={{ x: "100%", opacity: 0.92 }}
             animate={{ x: 0, y: 0, opacity: 1 }}
-            exit={{ y: typeof window !== "undefined" && window.innerWidth < 768 ? 720 : 0, x: typeof window !== "undefined" && window.innerWidth >= 768 ? 440 : 0, opacity: 0 }}
-            transition={{ type: "spring", damping: 28, stiffness: 260 }}
-            className="relative z-10 flex max-h-[96dvh] w-full flex-col overflow-hidden rounded-t-[30px] border border-white/10 bg-[#0E1726]/98 text-white shadow-2xl shadow-black/50 backdrop-blur-2xl md:h-full md:max-h-none md:w-[440px] md:max-w-[440px] md:rounded-l-[26px] md:rounded-tr-none md:border-y-0 md:border-r-0 xl:w-[480px] xl:max-w-[480px]"
+            exit={{ x: "100%", opacity: 0.92 }}
+            transition={{ type: "spring", damping: 34, stiffness: 300 }}
+            className="relative z-10 flex h-[100dvh] w-full flex-col overflow-hidden border-l border-white/10 bg-[#0E1726] text-white shadow-[-28px_0_90px_rgba(0,0,0,0.48)] md:w-[600px] md:max-w-[600px] xl:w-[640px] xl:max-w-[640px]"
           >
             {/* Header */}
-            <div className="flex flex-shrink-0 items-start justify-between gap-4 border-b border-white/10 bg-gradient-to-r from-white/[0.07] to-transparent px-4 py-4 md:px-5">
+            <div className="sticky top-0 z-10 flex flex-shrink-0 items-start justify-between gap-4 border-b border-white/10 bg-[#0E1726]/96 px-4 pb-4 pt-[calc(1rem+env(safe-area-inset-top))] shadow-lg shadow-black/10 backdrop-blur-xl md:px-6">
               <div className="min-w-0">
                 <div className="mb-3 h-1 w-12 rounded-full bg-white/20 md:hidden" />
                 <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#F4B400]">Lead workspace</p>
@@ -213,7 +232,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
             </div>
 
             {/* Scrollable Form Body */}
-            <form onSubmit={handleSubmit(onSubmit)} className="flex-grow space-y-4 overflow-y-auto px-4 py-5 pb-28 md:px-5 md:py-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="min-h-0 flex-grow space-y-4 overflow-y-auto overscroll-contain px-4 py-5 pb-28 md:px-6 md:py-5">
               {error && (
                 <div className="flex items-start gap-3 rounded-2xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-red-200">
                   <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />

@@ -1,219 +1,224 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { createAgent, updateAgent } from "@/features/agents/actions";
-import { X, Save, AlertCircle } from "lucide-react";
+import { AlertCircle, Save, UserRound } from "lucide-react";
+
+import CRMDrawer from "@/components/crm/CRMDrawer";
 import { useToast } from "@/components/ui/toast";
+import { createAgent, updateAgent } from "@/features/agents/actions";
+
+interface AgentForForm {
+  id: string;
+  name: string | null;
+  email: string;
+  phone: string | null;
+  role?: "ADMIN" | "AGENT";
+}
+
+interface AgentFormData {
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  role: "ADMIN" | "AGENT";
+}
 
 interface AddAgentModalProps {
   trigger: React.ReactElement<{ onClick?: React.MouseEventHandler }>;
-  agent?: any; // If editing
+  agent?: AgentForForm;
 }
 
 export default function AddAgentModal({ trigger, agent }: AddAgentModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState("");
   const { toast } = useToast();
+  const router = useRouter();
+  const isEditMode = Boolean(agent);
 
-  const isEditMode = !!agent;
-
-  // Since edit/add schemas differ slightly (password required vs optional),
-  // we do simple react hook form validation manually or with custom resolver.
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
-  } = useForm({
+    formState: { isSubmitting },
+  } = useForm<AgentFormData>({
     defaultValues: {
-      name: agent?.name || "",
-      email: agent?.email || "",
+      name: agent?.name ?? "",
+      email: agent?.email ?? "",
       password: "",
-      phone: agent?.phone || "",
-      role: agent?.role || "AGENT",
+      phone: agent?.phone ?? "",
+      role: agent?.role ?? "AGENT",
     },
   });
-
-  const onSubmit = async (data: any) => {
-    setError("");
-
-    // Basic Validation
-    if (!data.name.trim() || !data.email.trim()) {
-      setError("Name and Email are required.");
-      return;
-    }
-
-    if (!isEditMode && (!data.password || data.password.length < 8)) {
-      setError("Password is required and must be at least 8 characters.");
-      return;
-    }
-
-    const payload: any = {
-      name: data.name.trim(),
-      email: data.email.toLowerCase().trim(),
-      phone: data.phone.trim() || undefined,
-      role: data.role,
-    };
-
-    if (data.password) {
-      payload.password = data.password;
-    }
-
-    try {
-      let result;
-      if (isEditMode && agent) {
-        result = await updateAgent(agent.id, payload);
-      } else {
-        result = await createAgent(payload);
-      }
-
-      if (!result.success) {
-        throw new Error(result.error || "Operation failed");
-      }
-
-      toast({
-        title: isEditMode ? "Agent Profile Updated" : "Agent Registered",
-        description: `Successfully ${isEditMode ? "updated details for" : "created login credentials for"} "${data.name}".`,
-        type: "success",
-      });
-
-      setIsOpen(false);
-      reset();
-      window.location.reload(); // Reload to refresh Stats
-    } catch (err: any) {
-      setError(err.message || "Failed to process request.");
-    }
-  };
-
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
 
   const handleClose = () => {
     setIsOpen(false);
     setError("");
-    reset();
+    if (!isEditMode) {
+      reset();
+    }
+  };
+
+  const onSubmit = async (data: AgentFormData) => {
+    setError("");
+
+    if (!data.name.trim() || !data.email.trim()) {
+      setError("Name and email are required.");
+      return;
+    }
+
+    if (!isEditMode && data.password.length < 8) {
+      setError("Password is required and must be at least 8 characters.");
+      return;
+    }
+
+    const payload = {
+      name: data.name.trim(),
+      email: data.email.toLowerCase().trim(),
+      phone: data.phone.trim() || undefined,
+      role: data.role,
+      ...(data.password ? { password: data.password } : {}),
+    };
+
+    try {
+      const result =
+        isEditMode && agent
+          ? await updateAgent(agent.id, payload)
+          : await createAgent({
+              name: payload.name,
+              email: payload.email,
+              password: data.password,
+              phone: payload.phone,
+              role: payload.role,
+              isActive: true,
+            });
+
+      if (!result.success) {
+        throw new Error(result.error || "Could not save agent.");
+      }
+
+      toast({
+        title: isEditMode ? "Agent updated" : "Agent registered",
+        description: `${data.name} has been saved successfully.`,
+        type: "success",
+      });
+
+      setIsOpen(false);
+      if (!isEditMode) {
+        reset();
+      }
+      router.refresh();
+    } catch (caughtError) {
+      const message =
+        caughtError instanceof Error
+          ? caughtError.message
+          : "Failed to save agent. Please try again.";
+      setError(message);
+      toast({
+        title: "Agent save failed",
+        description: message,
+        type: "error",
+      });
+    }
   };
 
   return (
     <>
-      <span onClick={handleOpen} style={{ display: 'contents' }}>{trigger}</span>
+      <span className="inline-flex" onClickCapture={() => setIsOpen(true)}>
+        {trigger}
+      </span>
 
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          {/* Backdrop */}
-          <div
-            className="absolute inset-0 bg-[#0F1B2D]/75 backdrop-blur-sm transition-opacity"
-            onClick={handleClose}
-          />
-
-          {/* Modal Container */}
-          <div className="relative bg-slate-900 border border-slate-800 text-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden z-10 animate-fade-in-scale">
-            {/* Header */}
-            <div className="px-6 py-4 border-b border-slate-800 bg-slate-950 flex items-center justify-between">
-              <h3 className="font-bold text-base text-white">
-                {isEditMode ? "Update Agent Profile" : "Register Sales Agent"}
-              </h3>
-              <button
-                onClick={handleClose}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
+      <CRMDrawer
+        isOpen={isOpen}
+        onClose={handleClose}
+        eyebrow="Team management"
+        title={isEditMode ? "Update Agent Profile" : "Register Sales Agent"}
+        description="Manage CRM users without leaving the current workspace."
+        footer={
+          <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              onClick={handleClose}
+              className="min-h-11 rounded-2xl border border-white/10 px-5 py-3 text-sm font-bold text-slate-300 transition hover:bg-white/10 hover:text-white"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              form="agent-drawer-form"
+              disabled={isSubmitting}
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#F4B400] px-6 py-3 text-sm font-black text-[#081120] shadow-lg shadow-[#F4B400]/20 transition hover:bg-[#f59e0b] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <Save className="h-4 w-4" />
+              {isSubmitting ? "Saving..." : isEditMode ? "Save Changes" : "Register Agent"}
+            </button>
+          </div>
+        }
+      >
+        <form id="agent-drawer-form" onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          {error && (
+            <div className="flex items-start gap-3 rounded-2xl border border-red-500/25 bg-red-500/10 p-4 text-sm text-red-200">
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>{error}</span>
             </div>
+          )}
 
-            {/* Form Body */}
-            <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
-              {error && (
-                <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-xs p-3 rounded-lg flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4" />
-                  <span>{error}</span>
-                </div>
-              )}
-
-              {/* Name */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1">Full Name *</label>
-                <input
-                  type="text"
-                  required
-                  {...register("name")}
-                  placeholder="e.g. Rahul Sharma"
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
-                />
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1">Login Email *</label>
-                <input
-                  type="email"
-                  required
-                  {...register("email")}
-                  placeholder="e.g. rahul@shivaragroup.com"
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
-                />
-              </div>
-
-              {/* Password */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1">
-                  Password {isEditMode ? "(Leave blank to keep same)" : "*"}
-                </label>
+          <section className="rounded-[24px] border border-white/10 bg-white/[0.035] p-4 shadow-xl shadow-black/10 sm:p-5">
+            <h3 className="mb-4 flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-[#F4B400]">
+              <UserRound className="h-4 w-4" />
+              Agent Details
+            </h3>
+            <div className="space-y-4">
+              <Field label="Full name" required>
+                <input {...register("name")} placeholder="e.g. Rahul Sharma" className={fieldClass} />
+              </Field>
+              <Field label="Login email" required>
+                <input type="email" {...register("email")} placeholder="agent@example.com" className={fieldClass} />
+              </Field>
+              <Field label={isEditMode ? "Password (optional)" : "Password"} required={!isEditMode}>
                 <input
                   type="password"
                   {...register("password")}
-                  placeholder={isEditMode ? "Enter new password if changing" : "Minimum 8 characters"}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
+                  placeholder={isEditMode ? "Leave blank to keep same" : "Minimum 8 characters"}
+                  className={fieldClass}
                 />
-              </div>
-
-              {/* Phone */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1">Contact Phone Number</label>
-                <input
-                  type="text"
-                  {...register("phone")}
-                  placeholder="10-digit mobile number"
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
-                />
-              </div>
-
-              {/* Role */}
-              <div>
-                <label className="block text-xs font-semibold text-slate-400 mb-1">System Role *</label>
-                <select
-                  {...register("role")}
-                  className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-[#C9A84C]"
-                >
+              </Field>
+              <Field label="Contact phone">
+                <input {...register("phone")} placeholder="10-digit mobile number" className={fieldClass} />
+              </Field>
+              <Field label="System role" required>
+                <select {...register("role")} className={fieldClass}>
                   <option value="AGENT">Sales Agent</option>
                   <option value="ADMIN">Administrator</option>
                 </select>
-              </div>
-
-              {/* Footer Actions */}
-              <div className="border-t border-slate-800 pt-4 flex justify-end gap-3">
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="px-4 py-2 border border-slate-700 text-slate-300 text-xs font-bold rounded-lg hover:bg-slate-800 hover:text-white transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="px-5 py-2.5 bg-[#C9A84C] text-slate-900 text-xs font-bold rounded-lg hover:bg-[#b8963e] disabled:opacity-50 flex items-center gap-1.5 transition-colors"
-                >
-                  <Save className="w-4 h-4" />
-                  {isSubmitting ? "Saving..." : isEditMode ? "Save Changes" : "Register Agent"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+              </Field>
+            </div>
+          </section>
+        </form>
+      </CRMDrawer>
     </>
+  );
+}
+
+const fieldClass =
+  "min-h-12 w-full rounded-2xl border border-white/10 bg-[#111827]/80 px-4 py-3 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-[#F4B400]/70 focus:bg-[#111827] focus:ring-4 focus:ring-[#F4B400]/10";
+
+function Field({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-2 block text-[11px] font-black uppercase tracking-[0.16em] text-slate-400">
+        {label} {required && <span className="text-red-400">*</span>}
+      </span>
+      {children}
+    </label>
   );
 }

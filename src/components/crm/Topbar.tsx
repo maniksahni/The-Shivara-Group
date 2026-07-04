@@ -233,7 +233,7 @@ export default function CRMTopbar() {
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.32, ease: 'easeOut' }}
-      className="sticky top-0 z-20 flex min-h-16 flex-shrink-0 items-center gap-3 border-b border-white/10 bg-[#081120]/88 px-3 shadow-lg shadow-black/10 backdrop-blur-2xl sm:px-5 md:min-h-20 lg:px-8"
+      className="sticky top-0 z-20 flex min-h-16 flex-shrink-0 items-center gap-3 border-b border-white/10 bg-[#081120]/88 px-3 pt-[env(safe-area-inset-top)] shadow-lg shadow-black/10 backdrop-blur-2xl sm:px-5 md:min-h-20 lg:px-8"
     >
       <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F4B400] to-[#f59e0b] text-base font-black text-[#081120] shadow-lg shadow-[#F4B400]/20 md:hidden">
         S

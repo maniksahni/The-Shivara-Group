@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
+import { BadgeCheck, Building2, MapPinned, Sparkles } from "lucide-react";
 import { isDatabaseConfigured, prisma } from "@/lib/prisma";
 import ClientPropertiesGrid from "./ClientPropertiesGrid";
 import {
+  partnerPlaceholders,
   fallbackProperties,
   sampleSeedTitles,
   type PublicProperty,
 } from "@/components/website/site-data";
+import { SectionShell } from "@/components/website/LuxurySection";
 
 export const metadata: Metadata = {
   title: "Properties",
@@ -80,6 +83,21 @@ export default async function PropertiesPage() {
               should be confirmed directly with The Shivara Group.
             </p>
           </div>
+          <div className="mt-10 grid gap-3 sm:grid-cols-3">
+            {[
+              ["Verified visibility", "Active public listings only", BadgeCheck],
+              ["Guided shortlist", "Compare category, location and visit readiness", MapPinned],
+              ["Site visit CTA", "Move from browsing to appointment", Sparkles],
+            ].map(([title, text, Icon]) => (
+              <div key={title as string} className="rounded-[1.5rem] border border-white/10 bg-white/[0.055] p-4 backdrop-blur">
+                <Icon className="h-5 w-5 text-[#D4AF37]" />
+                <h2 className="mt-4 text-sm font-black uppercase tracking-[0.16em] text-white">
+                  {title as string}
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-white/58">{text as string}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -88,6 +106,31 @@ export default async function PropertiesPage() {
           <ClientPropertiesGrid initialProperties={properties} />
         </div>
       </section>
+
+      <SectionShell className="bg-white pb-28 md:pb-24">
+        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div>
+            <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9B7A19]">
+              Verification desk
+            </p>
+            <h2 className="mt-3 font-[family-name:var(--font-playfair)] text-4xl font-semibold tracking-[-0.04em] text-[#081120] sm:text-5xl">
+              Every listing deserves a direct confirmation before booking.
+            </h2>
+            <p className="mt-5 text-sm leading-8 text-[#4B5563]">
+              This catalog is designed for premium discovery. Final pricing, official inventory,
+              payment plans, maps, and loan support should be confirmed by The Shivara Group team.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {partnerPlaceholders.map((item) => (
+              <div key={item} className="rounded-[1.5rem] bg-[#F8F5EE] p-5">
+                <Building2 className="h-5 w-5 text-[#9B7A19]" />
+                <p className="mt-4 text-sm font-black text-[#081120]">{item}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </SectionShell>
     </main>
   );
 }

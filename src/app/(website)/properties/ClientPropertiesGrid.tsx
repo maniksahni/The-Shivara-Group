@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { PropertyType } from "@prisma/client";
 import { Bath, BedDouble, Heart, MapPin, MessageCircle, Phone, Ruler, Search, Sparkles } from "lucide-react";
@@ -28,8 +29,13 @@ export default function ClientPropertiesGrid({
 }: {
   initialProperties: PublicProperty[];
 }) {
-  const [selectedType, setSelectedType] = useState("ALL");
-  const [searchQuery, setSearchQuery] = useState("");
+  const searchParams = useSearchParams();
+  const initialType = searchParams.get("type");
+  const initialQuery = searchParams.get("q") ?? "";
+  const [selectedType, setSelectedType] = useState(
+    initialType && filterTabs.some((tab) => tab.value === initialType) ? initialType : "ALL",
+  );
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [selectedProperty, setSelectedProperty] = useState<PublicProperty | null>(null);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
 

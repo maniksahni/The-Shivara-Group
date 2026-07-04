@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Bath, BedDouble, CalendarDays, CheckCircle2, Heart, MapPin, MessageCircle, Phone, Ruler } from "lucide-react";
+import { Bath, BedDouble, CalendarDays, CheckCircle2, Download, FileText, Heart, MapPin, MessageCircle, Phone, Ruler } from "lucide-react";
 import { isDatabaseConfigured, prisma } from "@/lib/prisma";
 import { LuxuryButton, SectionHeader, SectionShell } from "@/components/website/LuxurySection";
 import { fallbackProperties, siteConfig, type PublicProperty } from "@/components/website/site-data";
@@ -167,6 +167,59 @@ export default async function PropertyDetailsPage({ params }: Props) {
                 Book Site Visit
               </LuxuryButton>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-6 sm:px-8 lg:px-12">
+        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-3">
+          <div className="rounded-[2.2rem] border border-[#081120]/8 bg-white p-6 shadow-[0_22px_65px_rgba(8,17,32,0.06)]">
+            <FileText className="h-7 w-7 text-[#9B7A19]" />
+            <h2 className="mt-6 font-[family-name:var(--font-playfair)] text-3xl font-semibold tracking-[-0.03em] text-[#081120]">
+              Floor plans
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-[#4B5563]">
+              Floor plan PDF/image is pending manual upload. Request it directly from the consultant.
+            </p>
+            <Link
+              href="/contact#site-visit"
+              className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-[#081120] px-5 text-sm font-black uppercase tracking-[0.12em] text-white"
+            >
+              Request floor plan
+            </Link>
+          </div>
+
+          <div className="rounded-[2.2rem] border border-[#081120]/8 bg-[#081120] p-6 text-white shadow-[0_22px_65px_rgba(8,17,32,0.12)]">
+            <MapPin className="h-7 w-7 text-[#D4AF37]" />
+            <h2 className="mt-6 font-[family-name:var(--font-playfair)] text-3xl font-semibold tracking-[-0.03em]">
+              Location map
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-white/62">
+              Google Maps embed/location pin is ready for manual completion once the official address is verified.
+            </p>
+            <div className="mt-6 rounded-[1.5rem] border border-dashed border-white/18 bg-white/[0.055] p-5 text-sm font-bold text-white/58">
+              Map placeholder • {property.location}
+            </div>
+          </div>
+
+          <div className="rounded-[2.2rem] border border-[#D4AF37]/24 bg-[#D4AF37] p-6 text-[#081120] shadow-[0_22px_65px_rgba(212,175,55,0.16)]">
+            <Download className="h-7 w-7" />
+            <h2 className="mt-6 font-[family-name:var(--font-playfair)] text-3xl font-semibold tracking-[-0.03em]">
+              Brochure
+            </h2>
+            <p className="mt-3 text-sm font-semibold leading-7">
+              Get pricing, availability, specifications, and site visit guidance directly from the team.
+            </p>
+            <a
+              href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(
+                `Hi The Shivara Group, please share brochure/details for ${property.title}.`,
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex min-h-12 items-center justify-center rounded-full bg-[#081120] px-5 text-sm font-black uppercase tracking-[0.12em] text-white"
+            >
+              Request brochure
+            </a>
           </div>
         </div>
       </section>

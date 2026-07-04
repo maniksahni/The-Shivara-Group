@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {
   ArrowDown,
+  ArrowUpRight,
   BadgeCheck,
   CalendarDays,
   CheckCircle2,
@@ -8,9 +9,11 @@ import {
   Home,
   MapPin,
   MessageCircle,
+  Search,
   ShieldCheck,
   Sparkles,
   Star,
+  TrendingUp,
 } from "lucide-react";
 import {
   Eyebrow,
@@ -20,10 +23,15 @@ import {
   SectionShell,
 } from "@/components/website/LuxurySection";
 import {
+  categoryShowcase,
+  credibilityCards,
   fallbackProperties,
   faqs,
+  investmentHighlights,
+  partnerPlaceholders,
   processSteps,
   publicStats,
+  searchSuggestions,
   services,
   siteConfig,
   testimonials,
@@ -69,6 +77,35 @@ export default function HomePage() {
               <LuxuryButton href="/contact#site-visit" variant="outline">
                 Book Site Visit
               </LuxuryButton>
+            </div>
+
+            <div className="mt-8 max-w-2xl rounded-[1.75rem] border border-white/12 bg-white/[0.075] p-3 shadow-[0_24px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl">
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <div className="flex min-h-14 flex-1 items-center gap-3 rounded-2xl bg-white px-4 text-[#081120]">
+                  <Search className="h-5 w-5 text-[#9B7A19]" />
+                  <span className="text-sm font-bold text-[#4B5563]">
+                    Search by project, location, villa, plot...
+                  </span>
+                </div>
+                <Link
+                  href="/properties"
+                  className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] px-5 text-sm font-black uppercase tracking-[0.14em] text-[#081120] transition hover:bg-[#F5D67B]"
+                >
+                  Search
+                  <ArrowUpRight className="h-4 w-4" />
+                </Link>
+              </div>
+              <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+                {searchSuggestions.map((item) => (
+                  <Link
+                    key={item}
+                    href={`/properties?q=${encodeURIComponent(item)}`}
+                    className="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.12em] text-white/70 transition hover:border-[#D4AF37]/60 hover:text-[#F5D67B]"
+                  >
+                    {item}
+                  </Link>
+                ))}
+              </div>
             </div>
 
             <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -237,6 +274,44 @@ export default function HomePage() {
 
       <SectionShell className="bg-white">
         <SectionHeader
+          eyebrow="Property universe"
+          title="Browse like a premium buyer, not a spreadsheet."
+          description="A flagship real estate experience should make categories feel visual, focused, and easy to act on from mobile."
+          align="center"
+        />
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+          {categoryShowcase.map((category) => (
+            <Link
+              key={category.title}
+              href={category.href}
+              className="group relative min-h-[420px] overflow-hidden rounded-[2.2rem] bg-[#081120] shadow-[0_24px_70px_rgba(8,17,32,0.12)]"
+            >
+              <div
+                className="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-110"
+                style={{
+                  backgroundImage: `linear-gradient(180deg,rgba(8,17,32,0.08),rgba(8,17,32,0.86)),url(${category.image})`,
+                }}
+              />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.24),transparent_34%)]" />
+              <div className="relative flex h-full min-h-[420px] flex-col justify-end p-6 text-white">
+                <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-[#F5D67B]">
+                  Explore
+                </p>
+                <h3 className="font-[family-name:var(--font-playfair)] text-3xl font-semibold tracking-[-0.03em]">
+                  {category.title}
+                </h3>
+                <p className="mt-3 text-sm leading-7 text-white/66">{category.description}</p>
+                <span className="mt-6 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#081120] transition group-hover:bg-[#D4AF37]">
+                  <ArrowUpRight className="h-5 w-5" />
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </SectionShell>
+
+      <SectionShell className="bg-white">
+        <SectionHeader
           eyebrow="Services"
           title="Built for high-intent buyers, investors, and families."
           description="Every service is designed around a real outcome: shortlist faster, visit confidently, and move forward with verified information."
@@ -272,6 +347,31 @@ export default function HomePage() {
               </Link>
             </div>
           ))}
+        </div>
+      </SectionShell>
+
+      <SectionShell className="bg-[#F8F5EE]">
+        <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
+          <SectionHeader
+            eyebrow="Investment lens"
+            title="Property decisions need a stronger point of view."
+            description="The site now frames opportunities around location, asset type, and use-case clarity — without inventing returns or fake promises."
+          />
+          <div className="grid gap-4 md:grid-cols-3">
+            {investmentHighlights.map((item) => (
+              <div
+                key={item.title}
+                className="rounded-[2rem] border border-[#081120]/8 bg-white p-6 shadow-[0_20px_60px_rgba(8,17,32,0.06)]"
+              >
+                <TrendingUp className="h-7 w-7 text-[#9B7A19]" />
+                <p className="mt-8 text-xs font-black uppercase tracking-[0.22em] text-[#9B7A19]">
+                  {item.metric}
+                </p>
+                <h3 className="mt-2 text-xl font-black text-[#081120]">{item.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-[#4B5563]">{item.text}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </SectionShell>
 
@@ -323,6 +423,31 @@ export default function HomePage() {
               <p className="text-lg leading-8 text-[#1F2937]">“{testimonial.quote}”</p>
               <p className="mt-6 font-bold text-[#081120]">{testimonial.name}</p>
               <p className="text-sm text-[#6B7280]">{testimonial.meta}</p>
+            </div>
+          ))}
+        </div>
+      </SectionShell>
+
+      <SectionShell className="bg-white">
+        <SectionHeader
+          eyebrow="Trust architecture"
+          title="Premium does not mean pretending. It means being clear."
+          description="Customers trust brands that separate verified information from details still pending business confirmation."
+          align="center"
+        />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {credibilityCards.map((card) => (
+            <div key={card.title} className="rounded-[2rem] border border-[#081120]/8 bg-[#F8F5EE] p-6">
+              <BadgeCheck className="h-6 w-6 text-[#10B981]" />
+              <h3 className="mt-5 text-lg font-black text-[#081120]">{card.title}</h3>
+              <p className="mt-3 text-sm leading-7 text-[#4B5563]">{card.text}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-6 grid gap-3 rounded-[2rem] bg-[#081120] p-5 text-white sm:grid-cols-2 lg:grid-cols-4">
+          {partnerPlaceholders.map((item) => (
+            <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.055] p-4 text-sm font-bold text-white/68">
+              {item}
             </div>
           ))}
         </div>

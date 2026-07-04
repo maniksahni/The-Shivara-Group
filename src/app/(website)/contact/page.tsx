@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Calendar, CheckCircle2, Clock, Mail, MapPin, MessageCircle, Phone, Send, Sparkles } from "lucide-react";
+import { Calendar, CheckCircle2, Clock, Mail, MapPin, MessageCircle, Phone, Send, ShieldCheck, Sparkles } from "lucide-react";
 import { PropertyType } from "@prisma/client";
 import { LuxuryButton } from "@/components/website/LuxurySection";
 import { siteConfig } from "@/components/website/site-data";
@@ -203,6 +203,31 @@ export default function ContactPage() {
                 </LuxuryButton>
               </div>
             </div>
+
+            <div className="overflow-hidden rounded-[2rem] border border-[#081120]/8 bg-white shadow-[0_18px_50px_rgba(8,17,32,0.05)]">
+              <div className="min-h-56 bg-[radial-gradient(circle_at_20%_20%,rgba(212,175,55,0.35),transparent_30%),linear-gradient(135deg,#081120,#13223A)] p-5 text-white">
+                <MapPin className="h-7 w-7 text-[#D4AF37]" />
+                <h2 className="mt-16 font-[family-name:var(--font-playfair)] text-3xl font-semibold">
+                  Google Maps location
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-white/62">
+                  Official map pin/manual office address pending completion.
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-3 p-4">
+                <a href={siteConfig.phoneHref} className="flex min-h-12 items-center justify-center rounded-2xl bg-[#F8F5EE] text-sm font-black text-[#081120]">
+                  Call
+                </a>
+                <a
+                  href={siteConfig.whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex min-h-12 items-center justify-center rounded-2xl bg-[#10B981] text-sm font-black text-white"
+                >
+                  WhatsApp
+                </a>
+              </div>
+            </div>
           </aside>
 
           <div id="site-visit" className="rounded-[2.4rem] border border-[#081120]/8 bg-white p-5 shadow-[0_28px_90px_rgba(8,17,32,0.1)] sm:p-8">
@@ -238,6 +263,15 @@ export default function ContactPage() {
               <h2 className="mt-2 font-[family-name:var(--font-playfair)] text-4xl font-semibold tracking-[-0.04em] text-[#081120]">
                 {activeTab === "visit" ? "Choose a preferred visit slot." : "Tell us what you are looking for."}
               </h2>
+            </div>
+
+            <div className="mb-6 grid gap-3 sm:grid-cols-3">
+              {["CRM lead created", "Consultant follow-up", "Visit confirmation"].map((item) => (
+                <div key={item} className="flex items-center gap-2 rounded-2xl bg-[#F8F5EE] p-3 text-xs font-black uppercase tracking-[0.12em] text-[#4B5563]">
+                  <ShieldCheck className="h-4 w-4 shrink-0 text-[#10B981]" />
+                  {item}
+                </div>
+              ))}
             </div>
 
             {submitted ? (

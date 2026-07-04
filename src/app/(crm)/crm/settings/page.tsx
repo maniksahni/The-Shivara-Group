@@ -12,8 +12,8 @@ export default async function CRMSettingsPage() {
   const cards = [
     {
       icon: ShieldCheck,
-      title: "Google-only authentication",
-      text: "Production CRM access is restricted through authorised Google accounts configured in Railway.",
+      title: "Password authentication",
+      text: "Production CRM access is restricted to active CRM users with a private admin password.",
       status: "Active",
     },
     {

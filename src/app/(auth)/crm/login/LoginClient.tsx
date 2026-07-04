@@ -5,23 +5,13 @@
  *
  * Premium CRM login page for Shivara Group.
  *
- * Layout:
- *  • Left half  — dark navy panel with brand logo, tagline, and a purely
- *                 CSS luxury art graphic (animated gold circles / lines).
- *  • Right half — white/slate card containing Google login.
- *
- * Behaviour:
- *  - Uses `signIn` from next-auth/react with the 'google' provider.
- *  - On success: redirects to /crm/dashboard via NextAuth callbackUrl.
- *  - On failure: displays the error message from NextAuth.
- *  - Google sign-in is available for the configured authorised CRM email.
- *  - Fully responsive: panels stack vertically on mobile.
+ * Credentials-only CRM login page.
  */
 
 import React, { useState } from 'react'
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
-import { Loader2, AlertCircle, ShieldCheck } from 'lucide-react'
+import { Loader2, AlertCircle, ShieldCheck, Mail, LockKeyhole } from 'lucide-react'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CSS luxury art graphic — pure CSS gold circles and lines
@@ -107,7 +97,9 @@ function LuxuryGraphic() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface FormState {
-  googleLoading: boolean
+  email: string
+  password: string
+  loading: boolean
   error: string | null
 }
 
@@ -116,11 +108,8 @@ function getAuthErrorMessage(error: string | null) {
 
   const messages: Record<string, string> = {
     CredentialsSignin: 'Invalid email or password.',
-    OAuthSignin: 'Google sign-in could not start. Please try again.',
-    OAuthCallback: 'Google sign-in could not be completed. Please try again.',
-    OAuthAccountNotLinked: 'This Google account is not linked to an active CRM user.',
-    AccessDenied: 'This Google account is not authorised for CRM access.',
-    Configuration: 'Google sign-in is not configured yet.',
+    AccessDenied: 'This CRM account is not authorised.',
+    Configuration: 'CRM sign-in is not configured yet.',
   }
 
   return messages[error] ?? 'Sign in failed. Please try again.'
@@ -132,20 +121,41 @@ function getAuthErrorMessage(error: string | null) {
 
 export default function CRMLoginClient() {
   const searchParams = useSearchParams()
+  const router = useRouter()
 
   // Restore any server-side auth error surfaced via the URL
   const urlError = searchParams.get('error')
 
   const [form, setForm] = useState<FormState>({
-    googleLoading: false,
+    email: '',
+    password: '',
+    loading: false,
     error: getAuthErrorMessage(urlError),
   })
 
-  async function handleGoogleSignIn() {
-    setForm((prev) => ({ ...prev, googleLoading: true, error: null }))
+  async function handleCredentialsSignIn(event: React.FormEvent) {
+    event.preventDefault()
+    setForm((prev) => ({ ...prev, loading: true, error: null }))
 
     const callbackUrl = searchParams.get('callbackUrl') ?? '/crm/dashboard'
-    await signIn('google', { callbackUrl })
+    const result = await signIn('credentials', {
+      email: form.email.trim(),
+      password: form.password,
+      redirect: false,
+      callbackUrl,
+    })
+
+    if (result?.ok) {
+      router.push(result.url ?? callbackUrl)
+      router.refresh()
+      return
+    }
+
+    setForm((prev) => ({
+      ...prev,
+      loading: false,
+      error: getAuthErrorMessage(result?.error ?? 'CredentialsSignin'),
+    }))
   }
 
   // ─────────────────────────────────────────────────────────────────────────
@@ -232,7 +242,7 @@ export default function CRMLoginClient() {
           <div className="mb-8 text-center">
             <h1 className="text-2xl font-bold text-white">Sign In to CRM</h1>
             <p className="mt-1.5 text-sm text-slate-400">
-              Continue with your authorised Google account
+              Use the authorised admin email and password
             </p>
           </div>
 
@@ -248,26 +258,54 @@ export default function CRMLoginClient() {
             </div>
           )}
 
-          <button
-            type="button"
-            onClick={handleGoogleSignIn}
-            disabled={form.googleLoading}
-            className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-700 bg-white px-4 py-3.5 text-sm font-bold text-slate-900 shadow-2xl shadow-black/20 transition-all duration-150 hover:bg-slate-100 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            {form.googleLoading ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                Connecting Google…
-              </>
-            ) : (
-              <>
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-base font-black text-blue-600">
-                  G
-                </span>
-                Continue with Google
-              </>
-            )}
-          </button>
+          <form onSubmit={handleCredentialsSignIn} className="space-y-4">
+            <label className="block">
+              <span className="mb-2 block text-sm font-bold text-slate-300">Email Address</span>
+              <div className="relative">
+                <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
+                  required
+                  autoComplete="email"
+                  placeholder="admin@example.com"
+                  className="min-h-12 w-full rounded-2xl border border-white/10 bg-slate-900/80 pl-11 pr-4 text-sm font-semibold text-white outline-none transition placeholder:text-slate-600 focus:border-[#C9A84C] focus:ring-4 focus:ring-[#C9A84C]/10"
+                />
+              </div>
+            </label>
+
+            <label className="block">
+              <span className="mb-2 block text-sm font-bold text-slate-300">Password</span>
+              <div className="relative">
+                <LockKeyhole className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                <input
+                  type="password"
+                  value={form.password}
+                  onChange={(event) => setForm((prev) => ({ ...prev, password: event.target.value }))}
+                  required
+                  autoComplete="current-password"
+                  placeholder="Enter admin password"
+                  className="min-h-12 w-full rounded-2xl border border-white/10 bg-slate-900/80 pl-11 pr-4 text-sm font-semibold text-white outline-none transition placeholder:text-slate-600 focus:border-[#C9A84C] focus:ring-4 focus:ring-[#C9A84C]/10"
+                />
+              </div>
+            </label>
+
+            <button
+              type="submit"
+              disabled={form.loading}
+              className="flex w-full min-h-12 items-center justify-center gap-3 rounded-2xl bg-[#C9A84C] px-4 py-3.5 text-sm font-black text-slate-950 shadow-2xl shadow-[#C9A84C]/15 transition-all duration-150 hover:bg-[#F0D080] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {form.loading ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                  Signing in…
+                </>
+              ) : (
+                'Sign In to CRM'
+              )}
+            </button>
+          </form>
 
           {/* Authorised account note */}
           <div className="mt-8 rounded-lg border border-slate-700/60 bg-slate-900/50 px-4 py-4">
@@ -277,8 +315,8 @@ export default function CRMLoginClient() {
             </p>
 
             <p className="text-[11px] leading-relaxed text-slate-500">
-              Google sign-in is restricted to the authorised admin email configured in Railway.
-              No demo users are available on production.
+              CRM access is password-based. Keep the admin email and password private,
+              and update the password from the database seed or admin user record.
             </p>
           </div>
         </div>

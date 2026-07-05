@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Calendar, CheckCircle2, Clock, Mail, MapPin, MessageCircle, Phone, Send, ShieldCheck, Sparkles } from "lucide-react";
 import { PropertyType } from "@prisma/client";
 import { LuxuryButton } from "@/components/website/LuxurySection";
+import PropertyMatchFinder from "@/components/website/PropertyMatchFinder";
 import { siteConfig } from "@/components/website/site-data";
 
 function toDateTimeLocalValue(date: Date): string {
@@ -122,6 +123,12 @@ export default function ContactPage() {
               submission creates a lead for the CRM team to follow up.
             </p>
           </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-10 sm:px-8 lg:px-12">
+        <div className="mx-auto max-w-7xl">
+          <PropertyMatchFinder compact />
         </div>
       </section>
 

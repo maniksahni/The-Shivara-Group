@@ -49,6 +49,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const isPropertyMatchFinder =
+      typeof validatedData.message === 'string' &&
+      validatedData.message.includes('Source: Property Match Finder')
+
     // ── Persist lead + activity inside a transaction ───────────────────────
     const lead = await prisma.$transaction(async (tx) => {
       const newLead = await tx.lead.create({
@@ -62,6 +66,7 @@ export async function POST(request: NextRequest) {
           propertyType: validatedData.propertyType || null,
           source: validatedData.source,
           status: validatedData.status,
+          priority: validatedData.priority,
         },
         select: { id: true },
       })
@@ -69,7 +74,9 @@ export async function POST(request: NextRequest) {
       await tx.leadActivity.create({
         data: {
           leadId: newLead.id,
-          action: 'Lead created from website',
+          action: isPropertyMatchFinder
+            ? 'Lead created from Property Match Finder'
+            : 'Lead created from website',
           newValue: validatedData.message
             ? `Source: ${validatedData.source}. Message: ${validatedData.message}`
             : `Source: ${validatedData.source}`,

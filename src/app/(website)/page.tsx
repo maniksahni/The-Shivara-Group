@@ -23,6 +23,7 @@ import {
   SectionHeader,
   SectionShell,
 } from "@/components/website/LuxurySection";
+import PropertyMatchFinder from "@/components/website/PropertyMatchFinder";
 import {
   categoryShowcase,
   credibilityCards,
@@ -31,7 +32,6 @@ import {
   bareillyGuide,
   investmentHighlights,
   partnerPlaceholders,
-  propertyMatchSteps,
   processSteps,
   publicStats,
   searchSuggestions,
@@ -200,54 +200,7 @@ export default function HomePage() {
       </SectionShell>
 
       <SectionShell className="bg-[#F8F5EE]">
-        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-          <SectionHeader
-            eyebrow="Property Match Finder"
-            title="Tell us the requirement. We shortlist like consultants."
-            description="A guided quiz-style experience helps Instagram visitors move from vague browsing to a clear call or WhatsApp consultation."
-          />
-          <div className="rounded-[1.75rem] border border-[#081120]/8 bg-white p-4 shadow-[0_24px_70px_rgba(8,17,32,0.08)] sm:rounded-[2.4rem] sm:p-6">
-            <div className="grid gap-3 sm:grid-cols-2">
-              {propertyMatchSteps.map((step, index) => (
-                <div key={step.question} className="rounded-[1.35rem] bg-[#F8F5EE] p-4 sm:rounded-[1.75rem] sm:p-5">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#081120] text-xs font-black text-[#F5D67B]">
-                      {index + 1}
-                    </span>
-                    <h3 className="text-base font-black text-[#081120]">{step.question}</h3>
-                  </div>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {step.options.map((option) => (
-                      <span
-                        key={option}
-                        className="rounded-full border border-[#081120]/8 bg-white px-3 py-2 text-[11px] font-black uppercase tracking-[0.11em] text-[#4B5563]"
-                      >
-                        {option}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-4 grid gap-3 rounded-[1.35rem] bg-[#081120] p-4 text-white sm:mt-5 sm:grid-cols-[1fr_auto] sm:items-center sm:rounded-[1.75rem] sm:p-5">
-              <div>
-                <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#D4AF37]">
-                  Best-fit shortlist
-                </p>
-                <h3 className="mt-1 text-xl font-black">Get matched with the best property options.</h3>
-              </div>
-              <a
-                href={siteConfig.whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#10B981] px-5 text-sm font-black uppercase tracking-[0.12em] text-white"
-              >
-                <MessageCircle className="h-4 w-4" />
-                WhatsApp Consultation
-              </a>
-            </div>
-          </div>
-        </div>
+        <PropertyMatchFinder />
       </SectionShell>
 
       <SectionShell id="curated">

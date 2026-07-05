@@ -383,6 +383,8 @@ export const enquirySchema = z.object({
 
   status: z.enum(['NEW', 'SITE_VISIT_SCHEDULED']).default('NEW'),
 
+  priority: z.enum(['HIGH', 'MEDIUM', 'LOW']).default('MEDIUM'),
+
   followUpDate: optionalDateTimeInput('Site visit date must be a valid date and time'),
 
   /** Optional free-text message from the enquirer. */

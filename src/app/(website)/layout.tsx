@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CalendarDays, MessageCircle, Phone } from "lucide-react";
 import Footer from "@/components/website/Footer";
+import FloatingPropertyMatchCTA from "@/components/website/FloatingPropertyMatchCTA";
 import Navbar from "@/components/website/Navbar";
 import { siteConfig } from "@/components/website/site-data";
+import { ToastProvider } from "@/components/ui/toast";
 
 export const metadata: Metadata = {
   title: {
@@ -34,12 +36,14 @@ export const metadata: Metadata = {
 
 export default function WebsiteLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-[100dvh] overflow-x-hidden bg-[#F8F5EE] text-[#081120] antialiased">
-      <Navbar />
-      {children}
-      <Footer />
+    <ToastProvider>
+      <div className="min-h-[100dvh] overflow-x-hidden bg-[#F8F5EE] text-[#081120] antialiased">
+        <Navbar />
+        {children}
+        <Footer />
+        <FloatingPropertyMatchCTA />
 
-      <div className="fixed bottom-5 right-5 z-50 hidden flex-col gap-3 md:flex">
+        <div className="fixed bottom-5 right-5 z-50 hidden flex-col gap-3 md:flex">
         <a
           href={siteConfig.whatsappHref}
           target="_blank"
@@ -62,9 +66,9 @@ export default function WebsiteLayout({ children }: { children: React.ReactNode 
             Call now
           </span>
         </a>
-      </div>
+        </div>
 
-      <div className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-50 grid grid-cols-3 gap-1.5 rounded-[1.25rem] border border-white/20 bg-[#081120]/94 p-1.5 shadow-[0_18px_48px_rgba(0,0,0,0.26)] backdrop-blur-xl md:hidden">
+        <div className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-50 grid grid-cols-3 gap-1.5 rounded-[1.25rem] border border-white/20 bg-[#081120]/94 p-1.5 shadow-[0_18px_48px_rgba(0,0,0,0.26)] backdrop-blur-xl md:hidden">
         <a
           href={siteConfig.phoneHref}
           className="flex min-h-11 items-center justify-center gap-1 rounded-2xl bg-white/8 text-xs font-black text-white"
@@ -88,7 +92,8 @@ export default function WebsiteLayout({ children }: { children: React.ReactNode 
           <CalendarDays className="h-4 w-4" />
           Visit
         </Link>
+        </div>
       </div>
-    </div>
+    </ToastProvider>
   );
 }

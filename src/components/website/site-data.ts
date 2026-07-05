@@ -307,7 +307,7 @@ export const testimonials = [
 
 export const faqs = [
   {
-    question: "Does The Shivara Group share verified property details?",
+    question: "Do you provide verified properties?",
     answer:
       "Yes. The website uses publicly available project references and CRM-backed enquiries. Pricing, availability, and official inventory should be confirmed directly with the team before booking.",
   },
@@ -325,6 +325,21 @@ export const faqs = [
     question: "Do you provide home loan assistance?",
     answer:
       "The site includes loan assistance as a consultation CTA. Final partners and eligibility checks should be confirmed manually by the business team.",
+  },
+  {
+    question: "Do you handle documentation?",
+    answer:
+      "Yes, documentation support is part of the buyer journey after property shortlisting and verification. Final legal checks should be completed before booking.",
+  },
+  {
+    question: "Can I contact directly on WhatsApp?",
+    answer:
+      "Yes. WhatsApp is the fastest enquiry channel on the website, and every major section includes a direct WhatsApp CTA.",
+  },
+  {
+    question: "Do you deal in residential and commercial properties?",
+    answer:
+      "Yes. The Shivara Group showcases residential homes, plots, villas, commercial spaces, and investment-led opportunities across Bareilly and Delhi NCR.",
   },
 ];
 

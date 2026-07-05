@@ -24,6 +24,7 @@ import {
   SectionHeader,
   SectionShell,
 } from "@/components/website/LuxurySection";
+import FloatingEnquiryCard from "@/components/website/FloatingEnquiryCard";
 import PropertyMatchFinder from "@/components/website/PropertyMatchFinder";
 import {
   categoryShowcase,
@@ -121,6 +122,10 @@ export default function HomePage() {
               </div>
             </div>
 
+            <div className="mt-4 w-full max-w-[30rem] lg:hidden">
+              <FloatingEnquiryCard />
+            </div>
+
             <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-10 sm:grid-cols-4 sm:gap-3">
               {publicStats.map((stat) => (
                 <div
@@ -139,28 +144,8 @@ export default function HomePage() {
           </div>
 
           <div className="relative hidden lg:block">
-            <div className="absolute -left-8 top-8 z-10 w-72 rounded-[2rem] border border-white/14 bg-white/[0.08] p-5 shadow-2xl backdrop-blur-xl">
-              <div className="flex items-center gap-3">
-                <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#D4AF37] text-[#081120]">
-                  <CalendarDays className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.2em] text-[#F5D67B]">
-                    Free consultation
-                  </p>
-                  <p className="font-semibold">Start with a guided shortlist</p>
-                </div>
-              </div>
-              <p className="mt-4 text-sm leading-6 text-white/62">
-                Share your budget, intent, and preferred locality. Shivara matches the right
-                options before your first site visit.
-              </p>
-              <Link
-                href="/#property-match-finder"
-                className="mt-5 inline-flex rounded-full bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#081120]"
-              >
-                Find my property
-              </Link>
+            <div className="absolute -left-16 top-8 z-10 w-[420px]">
+              <FloatingEnquiryCard />
             </div>
 
             <div className="ml-auto h-[640px] max-w-[520px] rounded-[3rem] border border-white/12 bg-cover bg-center shadow-[0_40px_120px_rgba(0,0,0,0.42)]"
@@ -236,11 +221,11 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3">
+        <div className="premium-scrollbar mt-8 flex snap-x gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:overflow-visible md:pb-0 xl:grid-cols-3">
           {fallbackProperties.slice(0, 3).map((property, index) => (
             <article
               key={property.id}
-              className="group overflow-hidden rounded-[1.6rem] border border-[#081120]/8 bg-white shadow-[0_24px_70px_rgba(8,17,32,0.08)] transition duration-500 hover:-translate-y-2 hover:shadow-[0_32px_90px_rgba(8,17,32,0.16)] sm:rounded-[2rem]"
+              className="group w-[86vw] shrink-0 snap-center overflow-hidden rounded-[1.6rem] border border-[#081120]/8 bg-white shadow-[0_24px_70px_rgba(8,17,32,0.08)] transition duration-500 hover:-translate-y-2 hover:shadow-[0_32px_90px_rgba(8,17,32,0.16)] sm:w-[420px] sm:rounded-[2rem] md:w-auto"
             >
               <Link href={`/properties/${property.id}`} className="block">
                 <div
@@ -362,7 +347,7 @@ export default function HomePage() {
         <div className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
           <SectionHeader
             eyebrow="Bareilly Property Guide"
-            title="Local context, not random listings."
+            title="Explore Bareilly’s most promising property locations."
             description="The Shivara experience positions every enquiry around location fit, lifestyle, investment intent, and site-visit readiness."
             dark
           />
@@ -385,9 +370,9 @@ export default function HomePage() {
       </SectionShell>
 
       <SectionShell className="bg-white">
-        <SectionHeader
-          eyebrow="Services"
-          title="Built for high-intent buyers, investors, and families."
+          <SectionHeader
+            eyebrow="Premium services"
+            title="Built for high-intent buyers, investors, and families."
           description="Every service is designed around a real outcome: shortlist faster, visit confidently, and move forward with verified information."
           align="center"
         />
@@ -484,9 +469,9 @@ export default function HomePage() {
       <SectionShell className="bg-[#081120] text-white">
         <div className="grid gap-7 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12">
           <SectionHeader
-            eyebrow="Process"
-            title="From Instagram enquiry to site visit — without confusion."
-            description="The public website feeds a CRM-driven enquiry flow so the team can track leads, follow-ups, and visit requests instead of losing conversations across channels."
+            eyebrow="Property journey"
+            title="A smoother path from requirement to final booking."
+            description="Every enquiry is guided through shortlisting, site visits, negotiation, loan support, documentation, and booking clarity."
             dark
           />
           <div className="grid gap-4">
@@ -592,7 +577,7 @@ export default function HomePage() {
                 Conversion first
               </p>
               <h2 className="mt-2 font-[family-name:var(--font-playfair)] text-[2rem] font-semibold leading-[1.05] tracking-[-0.04em] sm:mt-3 sm:text-6xl">
-                One conversation can shortlist your next address.
+                Tell us your requirement. We’ll find the right property for you.
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-7 text-white/64 sm:mt-5 sm:text-base">
                 Call, WhatsApp, or book a site visit. The CRM will capture your enquiry and
@@ -610,7 +595,10 @@ export default function HomePage() {
                 WhatsApp Now
               </a>
               <LuxuryButton href="/contact#site-visit" variant="light">
-                Book Site Visit
+                Book Free Consultation
+              </LuxuryButton>
+              <LuxuryButton href="/properties" variant="outline">
+                Explore Properties
               </LuxuryButton>
             </div>
           </div>

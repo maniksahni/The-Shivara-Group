@@ -54,7 +54,7 @@ const interiorImage =
 export default function HomePage() {
   return (
     <main className="bg-[#F8F5EE]">
-      <section className="relative overflow-hidden bg-[#081120] px-4 pb-14 pt-20 text-white sm:min-h-[100svh] sm:px-8 sm:pb-12 sm:pt-28 lg:px-12">
+      <section className="relative overflow-hidden bg-[#081120] px-4 pb-10 pt-20 text-white sm:min-h-[100svh] sm:px-8 sm:pb-12 sm:pt-28 lg:px-12">
         <div
           className="absolute inset-0 opacity-50"
           style={{
@@ -67,9 +67,9 @@ export default function HomePage() {
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#081120] to-transparent" />
 
         <div className="relative mx-auto grid w-full max-w-7xl min-w-0 items-center gap-8 sm:min-h-[calc(100svh-8rem)] lg:grid-cols-[1.08fr_0.92fr]">
-          <div className="w-full min-w-0 max-w-3xl overflow-hidden">
+          <div className="w-full min-w-0 max-w-3xl">
             <Eyebrow dark>{siteConfig.tagline}</Eyebrow>
-            <h1 className="max-w-[8.9ch] text-balance font-[family-name:var(--font-playfair)] text-[clamp(2.85rem,13.2vw,3.55rem)] font-semibold leading-[0.96] tracking-[-0.045em] sm:max-w-none sm:text-[clamp(4.6rem,8vw,7.8rem)] sm:leading-[0.92] sm:tracking-[-0.075em]">
+            <h1 className="max-w-[12ch] text-balance font-[family-name:var(--font-playfair)] text-[clamp(2.35rem,10.5vw,3.05rem)] font-semibold leading-[1.02] tracking-[-0.04em] sm:max-w-none sm:text-[clamp(4.6rem,8vw,7.8rem)] sm:leading-[0.92] sm:tracking-[-0.075em]">
               Find your perfect property with Bareilly&apos;s trusted real estate experts.
             </h1>
             <p className="mt-3 max-w-[31rem] text-[15px] leading-7 text-white/72 sm:mt-7 sm:max-w-2xl sm:text-xl sm:leading-8">
@@ -77,23 +77,23 @@ export default function HomePage() {
               investment plots, site visits, loan support, and documentation assistance.
             </p>
 
-            <div className="mt-4 grid w-full max-w-[28rem] grid-cols-1 gap-2.5 sm:mt-9 sm:flex sm:max-w-none sm:flex-row sm:gap-3">
-              <LuxuryButton href="/properties" className="w-full sm:w-auto">Explore Properties</LuxuryButton>
-              <LuxuryButton href="/#property-match-finder" variant="outline" className="w-full sm:w-auto">
+            <div className="mt-4 grid w-full max-w-[28rem] grid-cols-2 gap-2 sm:mt-9 sm:flex sm:max-w-none sm:flex-row sm:gap-3">
+              <LuxuryButton href="/properties" className="col-span-2 w-full sm:w-auto">Explore Properties</LuxuryButton>
+              <LuxuryButton href="/#property-match-finder" variant="outline" className="w-full px-3 text-[10px] tracking-[0.06em] sm:w-auto sm:px-6 sm:text-sm sm:tracking-[0.16em]">
                 Get Free Consultation
               </LuxuryButton>
               <a
                 href={siteConfig.whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-12 max-w-full items-center justify-center gap-2 rounded-full bg-[#10B981] px-5 text-center text-xs font-black uppercase tracking-[0.12em] text-white shadow-[0_18px_45px_rgba(16,185,129,0.24)] transition-all duration-300 hover:-translate-y-0.5 sm:px-6 sm:text-sm sm:tracking-[0.16em]"
+                className="inline-flex min-h-12 max-w-full items-center justify-center gap-2 rounded-full bg-[#10B981] px-3 text-center text-[11px] font-black uppercase tracking-[0.08em] text-white shadow-[0_18px_45px_rgba(16,185,129,0.24)] transition-all duration-300 hover:-translate-y-0.5 sm:px-6 sm:text-sm sm:tracking-[0.16em]"
               >
                 <MessageCircle className="h-4 w-4" />
                 WhatsApp Now
               </a>
             </div>
 
-            <div className="mt-4 w-full max-w-[28rem] overflow-hidden rounded-[1.5rem] border border-white/12 bg-white/[0.075] p-2 shadow-[0_24px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl sm:mt-8 sm:max-w-2xl sm:rounded-[1.75rem] sm:p-3">
+            <div className="mt-4 hidden w-full max-w-[28rem] overflow-hidden rounded-[1.5rem] border border-white/12 bg-white/[0.075] p-2 shadow-[0_24px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl sm:mt-8 sm:block sm:max-w-2xl sm:rounded-[1.75rem] sm:p-3">
               <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
                 <div className="flex min-h-14 min-w-0 flex-1 items-center gap-3 rounded-2xl bg-white px-4 text-[#081120]">
                   <Search className="h-5 w-5 shrink-0 text-[#9B7A19]" />
@@ -126,11 +126,11 @@ export default function HomePage() {
               <FloatingEnquiryCard />
             </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-10 sm:grid-cols-4 sm:gap-3">
+            <div className="premium-scrollbar mt-3 flex snap-x gap-2 overflow-x-auto pb-1 sm:mt-10 sm:grid sm:grid-cols-4 sm:gap-3 sm:overflow-visible sm:pb-0">
               {publicStats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="rounded-2xl border border-white/10 bg-white/[0.055] p-3 backdrop-blur sm:rounded-3xl sm:p-4"
+                  className="min-w-[8.4rem] snap-start rounded-2xl border border-white/10 bg-white/[0.055] p-3 backdrop-blur sm:min-w-0 sm:rounded-3xl sm:p-4"
                 >
                   <p className="font-[family-name:var(--font-playfair)] text-2xl font-semibold text-[#F5D67B] sm:text-3xl">
                     {stat.value}

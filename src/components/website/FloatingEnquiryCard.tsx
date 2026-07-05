@@ -97,33 +97,33 @@ export default function FloatingEnquiryCard() {
   return (
     <form
       onSubmit={submit}
-      className="relative overflow-hidden rounded-[1.75rem] border border-white/14 bg-white/[0.09] p-3 shadow-[0_30px_90px_rgba(0,0,0,0.30)] backdrop-blur-2xl sm:rounded-[2.2rem] sm:p-4"
+      className="relative overflow-hidden rounded-[1.5rem] border border-white/14 bg-white/[0.09] p-2 shadow-[0_30px_90px_rgba(0,0,0,0.30)] backdrop-blur-2xl sm:rounded-[2.2rem] sm:p-4"
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_0%,rgba(212,175,55,0.20),transparent_34%)]" />
-      <div className="relative rounded-[1.35rem] bg-white p-4 text-[#081120] sm:rounded-[1.85rem] sm:p-5">
-        <div className="mb-4 flex items-start justify-between gap-3">
+      <div className="relative rounded-[1.2rem] bg-white p-3 text-[#081120] sm:rounded-[1.85rem] sm:p-5">
+        <div className="mb-3 flex items-start justify-between gap-3 sm:mb-4">
           <div>
-            <p className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.24em] text-[#9B7A19]">
+            <p className="inline-flex items-center gap-2 text-[9px] font-black uppercase tracking-[0.2em] text-[#9B7A19] sm:text-[10px] sm:tracking-[0.24em]">
               <Sparkles className="h-3.5 w-3.5" />
               Premium consultation
             </p>
-            <h2 className="mt-2 font-[family-name:var(--font-playfair)] text-2xl font-semibold leading-tight tracking-[-0.035em]">
+            <h2 className="mt-1.5 font-[family-name:var(--font-playfair)] text-xl font-semibold leading-tight tracking-[-0.035em] sm:mt-2 sm:text-2xl">
               Get property suggestions
             </h2>
           </div>
           {submitted && <CheckCircle2 className="h-6 w-6 shrink-0 text-[#10B981]" />}
         </div>
 
-        <div className="grid gap-3">
+        <div className="grid gap-2.5 sm:gap-3">
           <label>
-            <span className="mb-2 flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#6B7280]">
+            <span className="mb-1.5 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.14em] text-[#6B7280] sm:mb-2 sm:text-[11px] sm:tracking-[0.16em]">
               <Building2 className="h-3.5 w-3.5" />
               Property Type
             </span>
             <select
               value={propertyType}
               onChange={(event) => setPropertyType(event.target.value as PropertyType)}
-              className="min-h-12 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] px-4 text-sm font-bold outline-none transition focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/14"
+              className="min-h-11 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] px-3 text-sm font-bold outline-none transition focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/14 sm:min-h-12 sm:px-4"
             >
               {propertyTypeOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -133,15 +133,15 @@ export default function FloatingEnquiryCard() {
             </select>
           </label>
 
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
             <label>
-              <span className="mb-2 block text-[11px] font-black uppercase tracking-[0.16em] text-[#6B7280]">
+              <span className="mb-1.5 block text-[10px] font-black uppercase tracking-[0.14em] text-[#6B7280] sm:mb-2 sm:text-[11px] sm:tracking-[0.16em]">
                 Budget
               </span>
               <select
                 value={budget}
                 onChange={(event) => setBudget(event.target.value)}
-                className="min-h-12 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] px-4 text-sm font-bold outline-none transition focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/14"
+                className="min-h-11 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] px-3 text-xs font-bold outline-none transition focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/14 sm:min-h-12 sm:px-4 sm:text-sm"
               >
                 {budgetOptions.map((option) => (
                   <option key={option}>{option}</option>
@@ -149,7 +149,7 @@ export default function FloatingEnquiryCard() {
               </select>
             </label>
             <label>
-              <span className="mb-2 flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#6B7280]">
+              <span className="mb-1.5 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.14em] text-[#6B7280] sm:mb-2 sm:text-[11px] sm:tracking-[0.16em]">
                 <MapPin className="h-3.5 w-3.5" />
                 Location
               </span>
@@ -157,25 +157,25 @@ export default function FloatingEnquiryCard() {
                 value={location}
                 onChange={(event) => setLocation(event.target.value)}
                 placeholder="Bareilly prime / Not sure"
-                className="min-h-12 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] px-4 text-sm font-bold outline-none transition placeholder:text-[#6B7280]/60 focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/14"
+                className="min-h-11 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] px-3 text-xs font-bold outline-none transition placeholder:text-[#6B7280]/60 focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/14 sm:min-h-12 sm:px-4 sm:text-sm"
               />
             </label>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
             <label>
-              <span className="mb-2 block text-[11px] font-black uppercase tracking-[0.16em] text-[#6B7280]">
+              <span className="mb-1.5 block text-[10px] font-black uppercase tracking-[0.14em] text-[#6B7280] sm:mb-2 sm:text-[11px] sm:tracking-[0.16em]">
                 Name
               </span>
               <input
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 placeholder="Your name"
-                className="min-h-12 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] px-4 text-sm font-bold outline-none transition placeholder:text-[#6B7280]/60 focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/14"
+                className="min-h-11 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] px-3 text-xs font-bold outline-none transition placeholder:text-[#6B7280]/60 focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/14 sm:min-h-12 sm:px-4 sm:text-sm"
               />
             </label>
             <label>
-              <span className="mb-2 flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#6B7280]">
+              <span className="mb-1.5 flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.14em] text-[#6B7280] sm:mb-2 sm:text-[11px] sm:tracking-[0.16em]">
                 <Phone className="h-3.5 w-3.5" />
                 Phone
               </span>
@@ -184,7 +184,7 @@ export default function FloatingEnquiryCard() {
                 onChange={(event) => setPhone(event.target.value)}
                 placeholder="10-digit mobile"
                 inputMode="tel"
-                className="min-h-12 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] px-4 text-sm font-bold outline-none transition placeholder:text-[#6B7280]/60 focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/14"
+                className="min-h-11 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] px-3 text-xs font-bold outline-none transition placeholder:text-[#6B7280]/60 focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/14 sm:min-h-12 sm:px-4 sm:text-sm"
               />
             </label>
           </div>
@@ -204,7 +204,7 @@ export default function FloatingEnquiryCard() {
         <button
           type="submit"
           disabled={submitting}
-          className="mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] px-5 text-sm font-black uppercase tracking-[0.13em] text-[#081120] shadow-[0_18px_42px_rgba(212,175,55,0.24)] transition hover:-translate-y-0.5 hover:bg-[#F5D67B] disabled:cursor-not-allowed disabled:opacity-70"
+          className="mt-3 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] px-4 text-xs font-black uppercase tracking-[0.11em] text-[#081120] shadow-[0_18px_42px_rgba(212,175,55,0.24)] transition hover:-translate-y-0.5 hover:bg-[#F5D67B] disabled:cursor-not-allowed disabled:opacity-70 sm:mt-4 sm:min-h-12 sm:px-5 sm:text-sm sm:tracking-[0.13em]"
         >
           {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
           Get Property Suggestions

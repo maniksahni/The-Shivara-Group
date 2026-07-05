@@ -9,7 +9,7 @@ import { ToastProvider } from "@/components/ui/toast";
 
 export const metadata: Metadata = {
   title: {
-    default: "The Shivara Group | Bespoke Real Estate Strategies",
+    default: "The Shivara Group | Premium Real Estate in Bareilly",
     template: "%s | The Shivara Group",
   },
   description:
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     "site visit Bareilly",
   ],
   openGraph: {
-    title: "The Shivara Group | Bespoke Real Estate Strategies",
+    title: "The Shivara Group | Premium Real Estate in Bareilly",
     description: siteConfig.description,
     siteName: "The Shivara Group",
     locale: "en_IN",

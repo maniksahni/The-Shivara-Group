@@ -9,6 +9,7 @@ import {
   Home,
   MapPin,
   MessageCircle,
+  Phone,
   Search,
   ShieldCheck,
   Sparkles,
@@ -68,18 +69,27 @@ export default function HomePage() {
           <div className="w-full min-w-0 max-w-3xl overflow-hidden">
             <Eyebrow dark>{siteConfig.tagline}</Eyebrow>
             <h1 className="max-w-[8.9ch] text-balance font-[family-name:var(--font-playfair)] text-[clamp(2.85rem,13.2vw,3.55rem)] font-semibold leading-[0.96] tracking-[-0.045em] sm:max-w-none sm:text-[clamp(4.6rem,8vw,7.8rem)] sm:leading-[0.92] sm:tracking-[-0.075em]">
-              Defining legacies, one address at a time.
+              Find your perfect property with Bareilly&apos;s trusted real estate experts.
             </h1>
             <p className="mt-3 max-w-[31rem] text-[15px] leading-7 text-white/72 sm:mt-7 sm:max-w-2xl sm:text-xl sm:leading-8">
-              Bareilly homes, Aurika plots, Delhi NCR portfolios, and off-market opportunities —
-              curated with pricing, floor plans, and site visits available on direct request.
+              A luxury guided property journey for verified Bareilly homes, commercial spaces,
+              investment plots, site visits, loan support, and documentation assistance.
             </p>
 
             <div className="mt-4 grid w-full max-w-[28rem] grid-cols-1 gap-2.5 sm:mt-9 sm:flex sm:max-w-none sm:flex-row sm:gap-3">
               <LuxuryButton href="/properties" className="w-full sm:w-auto">Explore Properties</LuxuryButton>
-              <LuxuryButton href="/contact#site-visit" variant="outline" className="w-full sm:w-auto">
-                Book Site Visit
+              <LuxuryButton href="/#property-match-finder" variant="outline" className="w-full sm:w-auto">
+                Get Free Consultation
               </LuxuryButton>
+              <a
+                href={siteConfig.whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-12 max-w-full items-center justify-center gap-2 rounded-full bg-[#10B981] px-5 text-center text-xs font-black uppercase tracking-[0.12em] text-white shadow-[0_18px_45px_rgba(16,185,129,0.24)] transition-all duration-300 hover:-translate-y-0.5 sm:px-6 sm:text-sm sm:tracking-[0.16em]"
+              >
+                <MessageCircle className="h-4 w-4" />
+                WhatsApp Now
+              </a>
             </div>
 
             <div className="mt-4 w-full max-w-[28rem] overflow-hidden rounded-[1.5rem] border border-white/12 bg-white/[0.075] p-2 shadow-[0_24px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl sm:mt-8 sm:max-w-2xl sm:rounded-[1.75rem] sm:p-3">
@@ -91,10 +101,10 @@ export default function HomePage() {
                   </span>
                 </div>
                 <Link
-                  href="/properties"
+                  href="/#property-match-finder"
                   className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] px-5 text-xs font-black uppercase tracking-[0.12em] text-[#081120] transition hover:bg-[#F5D67B] sm:text-sm sm:tracking-[0.14em]"
                 >
-                  Search
+                  Find Match
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -136,20 +146,20 @@ export default function HomePage() {
                 </div>
                 <div>
                   <p className="text-xs font-black uppercase tracking-[0.2em] text-[#F5D67B]">
-                    Private tour
+                    Free consultation
                   </p>
-                  <p className="font-semibold">Site visits by appointment</p>
+                  <p className="font-semibold">Start with a guided shortlist</p>
                 </div>
               </div>
               <p className="mt-4 text-sm leading-6 text-white/62">
-                Share your budget and preferred location. The team coordinates the next available
-                visit slot.
+                Share your budget, intent, and preferred locality. Shivara matches the right
+                options before your first site visit.
               </p>
               <Link
-                href="/contact#site-visit"
+                href="/#property-match-finder"
                 className="mt-5 inline-flex rounded-full bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.16em] text-[#081120]"
               >
-                Schedule now
+                Find my property
               </Link>
             </div>
 
@@ -164,11 +174,11 @@ export default function HomePage() {
                 <Heart className="h-5 w-5 text-[#F5D67B]" />
               </div>
               <h3 className="mt-4 font-[family-name:var(--font-playfair)] text-2xl font-semibold">
-                Aurika Residences
+                Premium Bareilly Shortlist
               </h3>
               <p className="mt-2 flex items-center gap-2 text-sm text-white/62">
                 <MapPin className="h-4 w-4 text-[#D4AF37]" />
-                Bareilly
+                Homes • plots • commercial • investment
               </p>
             </div>
           </div>
@@ -228,41 +238,46 @@ export default function HomePage() {
 
         <div className="mt-8 grid gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-3">
           {fallbackProperties.slice(0, 3).map((property, index) => (
-            <Link
+            <article
               key={property.id}
-              href={`/properties/${property.id}`}
               className="group overflow-hidden rounded-[1.6rem] border border-[#081120]/8 bg-white shadow-[0_24px_70px_rgba(8,17,32,0.08)] transition duration-500 hover:-translate-y-2 hover:shadow-[0_32px_90px_rgba(8,17,32,0.16)] sm:rounded-[2rem]"
             >
-              <div
-                className="relative h-56 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.03] sm:h-72"
-                style={{
-                  backgroundImage: `linear-gradient(180deg,rgba(8,17,32,0.04),rgba(8,17,32,0.62)), url(${
-                    index === 1 ? villaImage : heroImage
-                  })`,
-                }}
-              >
-                <div className="absolute left-4 top-4 rounded-full bg-white px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-[#081120]">
-                  {property.type.replace("_", " ")}
-                </div>
-                {property.isFeatured && (
-                  <div className="absolute right-4 top-4 rounded-full bg-[#D4AF37] px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-[#081120]">
-                    Featured
+              <Link href={`/properties/${property.id}`} className="block">
+                <div
+                  className="relative h-56 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.03] sm:h-72"
+                  style={{
+                    backgroundImage: `linear-gradient(180deg,rgba(8,17,32,0.04),rgba(8,17,32,0.62)), url(${
+                      index === 1 ? villaImage : heroImage
+                    })`,
+                  }}
+                >
+                  <div className="absolute left-4 top-4 rounded-full bg-white px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-[#081120]">
+                    {property.type.replace("_", " ")}
                   </div>
-                )}
-                <div className="absolute bottom-4 left-4 right-4 text-white">
-                  <p className="text-sm font-black uppercase tracking-[0.2em] text-[#F5D67B]">
-                    {property.price}
-                  </p>
-                  <h3 className="mt-1.5 font-[family-name:var(--font-playfair)] text-2xl font-semibold sm:mt-2 sm:text-3xl">
-                    {property.title}
-                  </h3>
+                  {property.isFeatured && (
+                    <div className="absolute right-4 top-4 rounded-full bg-[#D4AF37] px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-[#081120]">
+                      Featured
+                    </div>
+                  )}
+                  <div className="absolute bottom-4 left-4 right-4 text-white">
+                    <p className="text-sm font-black uppercase tracking-[0.2em] text-[#F5D67B]">
+                      {property.price}
+                    </p>
+                    <h3 className="mt-1.5 font-[family-name:var(--font-playfair)] text-2xl font-semibold sm:mt-2 sm:text-3xl">
+                      {property.title}
+                    </h3>
+                  </div>
                 </div>
-              </div>
+              </Link>
               <div className="p-4 sm:p-6">
                 <p className="flex items-center gap-2 text-sm font-semibold text-[#4B5563]">
                   <MapPin className="h-4 w-4 text-[#D4AF37]" />
                   {property.location}
                 </p>
+                <div className="mt-3 flex items-center gap-2 text-xs font-black uppercase tracking-[0.14em] text-[#10B981]">
+                  <BadgeCheck className="h-4 w-4" />
+                  Visit-ready enquiry
+                </div>
                 <div className="mt-4 flex flex-wrap gap-2 sm:mt-5">
                   {property.amenities.slice(0, 3).map((amenity) => (
                     <span
@@ -273,8 +288,34 @@ export default function HomePage() {
                     </span>
                   ))}
                 </div>
+                <div className="mt-5 grid grid-cols-[1fr_auto_auto] gap-2">
+                  <Link
+                    href={`/properties/${property.id}`}
+                    className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#081120] px-4 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:bg-[#D4AF37] hover:text-[#081120]"
+                  >
+                    View Details
+                  </Link>
+                  <a
+                    href={siteConfig.phoneHref}
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#F8F5EE] text-[#081120]"
+                    aria-label={`Call for ${property.title}`}
+                  >
+                    <Phone className="h-4 w-4" />
+                  </a>
+                  <a
+                    href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(
+                      `Hi The Shivara Group, I am interested in ${property.title}. Please share details.`,
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#10B981] text-white"
+                    aria-label={`WhatsApp for ${property.title}`}
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                  </a>
+                </div>
               </div>
-            </Link>
+            </article>
           ))}
         </div>
       </SectionShell>

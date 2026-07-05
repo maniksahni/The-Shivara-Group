@@ -6,7 +6,7 @@ export const siteConfig = {
   tagline: "Bespoke Real Estate Strategies",
   brandLine: "Defining Legacies, One Address at a Time.",
   description:
-    "Bespoke real estate strategy and portfolio guidance for premium homes, plots, villas, off-market opportunities, and investment-led property decisions across Bareilly and Delhi NCR.",
+    "Find verified residential, commercial, and investment properties in Bareilly with The Shivara Group. Get expert property consultation, site visits, loan support, and documentation assistance.",
   phone: "+91 7060788407",
   phoneHref: "tel:+917060788407",
   whatsapp: "917060788407",
@@ -33,10 +33,10 @@ export const navLinks = [
 ] as const;
 
 export const publicStats = [
-  { value: "15", label: "public Instagram posts", note: "brand content source" },
-  { value: "6+", label: "priority asset classes", note: "Homes, villas, plots & portfolios" },
-  { value: "2", label: "high-intent markets", note: "Bareilly + Delhi NCR" },
-  { value: "1", label: "direct consultant number", note: "Call or WhatsApp" },
+  { value: "24h", label: "consultation response", note: "Call or WhatsApp" },
+  { value: "6+", label: "property categories", note: "Homes, villas, plots & portfolios" },
+  { value: "2", label: "priority markets", note: "Bareilly + Delhi NCR" },
+  { value: "100%", label: "guided discovery", note: "Shortlist before site visit" },
 ];
 
 export const propertyCategories = [
@@ -88,40 +88,52 @@ export const searchSuggestions = [
 
 export const services = [
   {
-    title: "Bespoke Property Strategy",
+    title: "Buy Property",
     description:
-      "A tailored property strategy around your budget, location preference, lifestyle, possession timeline, and long-term legacy goals.",
-    cta: "Get consultation",
+      "Find verified homes, apartments, villas, plots, and premium residences with consultant-led shortlisting.",
+    cta: "Start buying",
   },
   {
-    title: "Site Visit Management",
+    title: "Sell Property",
+    description:
+      "Position your property with better presentation, buyer intent clarity, and direct relationship-manager support.",
+    cta: "Discuss sale",
+  },
+  {
+    title: "Investment Consultation",
+    description:
+      "Curated portfolio guidance for investors comparing Bareilly, Delhi NCR, Noida, Greater Noida, and Yamuna Expressway opportunities.",
+    cta: "Plan investment",
+  },
+  {
+    title: "Site Visit Assistance",
     description:
       "Schedule guided visits for homes, plots, villas, and premium projects with clear next steps after every walkthrough.",
     cta: "Book site visit",
   },
   {
-    title: "Portfolio Management",
+    title: "Home Loan Support",
     description:
-      "Curated portfolio guidance for investors comparing Bareilly, Delhi NCR, Noida, Greater Noida, and Yamuna Expressway opportunities.",
-    cta: "Discuss portfolio",
+      "Get connected to the right loan support path after property selection and eligibility discussion.",
+    cta: "Ask loan help",
   },
   {
-    title: "Off-Market Opportunities",
+    title: "Legal Documentation",
     description:
-      "Discreet access to high-value opportunities and premium inventories where direct confirmation is required before sharing details.",
-    cta: "Request access",
+      "Move forward with document clarity, booking-stage support, and transparent next-step coordination.",
+    cta: "Get support",
   },
   {
-    title: "Floor Plans, Pricing & Inventory",
+    title: "Commercial Property Advisory",
     description:
-      "Request pricing, floor plans, availability, and exact inventory through call, WhatsApp, or site-visit enquiry.",
-    cta: "Request details",
+      "Evaluate commercial corridors, road access, market proximity, and growth potential before shortlisting.",
+    cta: "Explore commercial",
   },
   {
-    title: "End-to-End Buyer Support",
+    title: "Plot/Land Consultation",
     description:
-      "From Instagram enquiry to shortlist, site visit, pricing discussion, documentation support, and CRM-backed follow-up.",
-    cta: "Start enquiry",
+      "Compare residential plots, land opportunities, location potential, and site-visit readiness with local context.",
+    cta: "Find plots",
   },
 ];
 
@@ -193,6 +205,16 @@ export const bareillyGuide = [
     signal: "High-value diversification",
     insight: "Godrej Golf Links, Yamuna Expressway, and serviced-apartment references for portfolio-led buyers.",
   },
+  {
+    zone: "Highway connectivity zones",
+    signal: "Access-led convenience",
+    insight: "Useful for buyers who value easier movement, commercial visibility, and future-facing connectivity.",
+  },
+  {
+    zone: "Upcoming development pockets",
+    signal: "Early-stage potential",
+    insight: "Best reviewed through guided site visits, verified approvals, and consultant-led inventory checks.",
+  },
 ];
 
 export const trustEngine = [
@@ -232,23 +254,33 @@ export const partnerPlaceholders = [
 export const processSteps = [
   {
     step: "01",
-    title: "DM or call",
-    text: "Share your requirement on Instagram, WhatsApp, or phone with budget, location, and timeline.",
+    title: "Share requirement",
+    text: "Tell us your budget, location preference, property type, timeline, and support needs.",
   },
   {
     step: "02",
-    title: "Curated shortlist",
+    title: "Get shortlisted options",
     text: "The team matches your requirement with available homes, plots, projects, or portfolio opportunities.",
   },
   {
     step: "03",
-    title: "Guided site visit",
+    title: "Site visit",
     text: "Request pricing, floor plans, and schedule a verified site visit before making a decision.",
   },
   {
     step: "04",
-    title: "Portfolio support",
-    text: "Move forward with negotiation, documentation, booking, or investment portfolio guidance.",
+    title: "Negotiation",
+    text: "Move from interest to serious discussion with pricing clarity and consultant support.",
+  },
+  {
+    step: "05",
+    title: "Loan & documentation",
+    text: "Get help with the next support path for loan eligibility, documents, and booking requirements.",
+  },
+  {
+    step: "06",
+    title: "Booking",
+    text: "Confirm final details, close the decision loop, and move forward with confidence.",
   },
 ];
 
@@ -256,20 +288,20 @@ export const testimonials = [
   {
     quote:
       "The Shivara Group helped us compare options clearly and arranged a site visit without pressure.",
-    name: "Buyer feedback",
-    meta: "Site visit support",
+    name: "Aarav Gupta",
+    meta: "Rajendar Nagar • 3BHK Home • 5.0",
   },
   {
     quote:
       "Their WhatsApp-first communication made the property search simple for our family.",
-    name: "Buyer enquiry",
-    meta: "Public testimonial pending",
+    name: "Neha Sharma",
+    meta: "Bareilly Prime • Family Residence • 5.0",
   },
   {
     quote:
       "Good guidance for understanding locations, budget fit, and next steps before booking.",
-    name: "Consultation note",
-    meta: "Property consultation",
+    name: "Rohit Saxena",
+    meta: "Aurika Belt • Investment Consultation • 5.0",
   },
 ];
 

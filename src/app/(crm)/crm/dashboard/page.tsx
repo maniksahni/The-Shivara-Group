@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { Users, UserCheck, Calendar, CheckSquare, Building2, TrendingUp, DollarSign, Sparkles, Phone, MessageCircle } from "lucide-react";
+import { Users, UserCheck, Calendar, CheckSquare, Building2, TrendingUp, DollarSign, Sparkles, Phone, MessageCircle, PlusCircle, Flame, ClipboardList } from "lucide-react";
 
 import { getServerSession } from "@/lib/auth";
 import { getDailyOperations, getDashboardStats } from "@/features/dashboard/actions";
@@ -127,6 +127,27 @@ export default async function DashboardPage() {
           <p className="mt-1 font-semibold text-white">{new Date().toLocaleDateString("en-IN", { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' })}</p>
         </div>
         </div>
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-4">
+        {[
+          { title: "Quick Add Lead", text: "Capture a fresh enquiry", href: "/crm/leads", icon: PlusCircle, tone: "bg-[#F4B400] text-[#081120]" },
+          { title: "Add Property", text: "List fresh inventory", href: "/crm/properties", icon: Building2, tone: "bg-blue-500/15 text-blue-200 ring-1 ring-blue-400/20" },
+          { title: "Hot Follow-ups", text: `${stats.pendingFollowUps} due now`, href: "/crm/leads", icon: Flame, tone: "bg-red-500/15 text-red-200 ring-1 ring-red-400/20" },
+          { title: "Visit Calendar", text: "Plan today’s movement", href: "/crm/calendar", icon: ClipboardList, tone: "bg-emerald-500/15 text-emerald-200 ring-1 ring-emerald-400/20" },
+        ].map((action) => (
+          <Link
+            key={action.title}
+            href={action.href}
+            className="group rounded-[22px] border border-white/10 bg-[#162032]/80 p-4 shadow-xl shadow-black/15 transition duration-300 hover:-translate-y-1 hover:border-[#F4B400]/35"
+          >
+            <div className={`flex h-11 w-11 items-center justify-center rounded-2xl ${action.tone}`}>
+              <action.icon className="h-5 w-5" />
+            </div>
+            <h2 className="mt-4 text-base font-black text-white">{action.title}</h2>
+            <p className="mt-1 text-sm text-gray-400">{action.text}</p>
+          </Link>
+        ))}
       </div>
 
       {/* Stats Cards Grid */}

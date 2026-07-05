@@ -14,6 +14,7 @@ import {
   Sparkles,
   Star,
   TrendingUp,
+  Users,
 } from "lucide-react";
 import {
   Eyebrow,
@@ -27,14 +28,17 @@ import {
   credibilityCards,
   fallbackProperties,
   faqs,
+  bareillyGuide,
   investmentHighlights,
   partnerPlaceholders,
+  propertyMatchSteps,
   processSteps,
   publicStats,
   searchSuggestions,
   services,
   siteConfig,
   testimonials,
+  trustEngine,
   trustHighlights,
 } from "@/components/website/site-data";
 
@@ -48,7 +52,7 @@ const interiorImage =
 export default function HomePage() {
   return (
     <main className="bg-[#F8F5EE]">
-      <section className="relative overflow-hidden bg-[#081120] px-4 pb-24 pt-24 text-white sm:min-h-[100svh] sm:px-8 sm:pb-12 sm:pt-28 lg:px-12">
+      <section className="relative overflow-hidden bg-[#081120] px-4 pb-14 pt-20 text-white sm:min-h-[100svh] sm:px-8 sm:pb-12 sm:pt-28 lg:px-12">
         <div
           className="absolute inset-0 opacity-50"
           style={{
@@ -66,19 +70,19 @@ export default function HomePage() {
             <h1 className="max-w-[8.9ch] text-balance font-[family-name:var(--font-playfair)] text-[clamp(2.85rem,13.2vw,3.55rem)] font-semibold leading-[0.96] tracking-[-0.045em] sm:max-w-none sm:text-[clamp(4.6rem,8vw,7.8rem)] sm:leading-[0.92] sm:tracking-[-0.075em]">
               Defining legacies, one address at a time.
             </h1>
-            <p className="mt-4 max-w-[31rem] text-[15px] leading-7 text-white/72 sm:mt-7 sm:max-w-2xl sm:text-xl sm:leading-8">
+            <p className="mt-3 max-w-[31rem] text-[15px] leading-7 text-white/72 sm:mt-7 sm:max-w-2xl sm:text-xl sm:leading-8">
               Bareilly homes, Aurika plots, Delhi NCR portfolios, and off-market opportunities —
               curated with pricing, floor plans, and site visits available on direct request.
             </p>
 
-            <div className="mt-5 grid w-full max-w-[28rem] grid-cols-1 gap-2.5 sm:mt-9 sm:flex sm:max-w-none sm:flex-row sm:gap-3">
+            <div className="mt-4 grid w-full max-w-[28rem] grid-cols-1 gap-2.5 sm:mt-9 sm:flex sm:max-w-none sm:flex-row sm:gap-3">
               <LuxuryButton href="/properties" className="w-full sm:w-auto">Explore Properties</LuxuryButton>
               <LuxuryButton href="/contact#site-visit" variant="outline" className="w-full sm:w-auto">
                 Book Site Visit
               </LuxuryButton>
             </div>
 
-            <div className="mt-5 w-full max-w-[28rem] overflow-hidden rounded-[1.5rem] border border-white/12 bg-white/[0.075] p-2 shadow-[0_24px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl sm:mt-8 sm:max-w-2xl sm:rounded-[1.75rem] sm:p-3">
+            <div className="mt-4 w-full max-w-[28rem] overflow-hidden rounded-[1.5rem] border border-white/12 bg-white/[0.075] p-2 shadow-[0_24px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl sm:mt-8 sm:max-w-2xl sm:rounded-[1.75rem] sm:p-3">
               <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
                 <div className="flex min-h-14 min-w-0 flex-1 items-center gap-3 rounded-2xl bg-white px-4 text-[#081120]">
                   <Search className="h-5 w-5 shrink-0 text-[#9B7A19]" />
@@ -107,7 +111,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-2 gap-2 sm:mt-10 sm:grid-cols-4 sm:gap-3">
+            <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-10 sm:grid-cols-4 sm:gap-3">
               {publicStats.map((stat) => (
                 <div
                   key={stat.label}
@@ -181,7 +185,7 @@ export default function HomePage() {
 
       <GoldDivider />
 
-      <SectionShell className="bg-[#081120] py-6 text-white sm:py-8">
+      <SectionShell className="bg-[#081120] py-5 text-white sm:py-8">
         <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-3 lg:grid-cols-6">
           {trustHighlights.map((item) => (
             <div
@@ -192,6 +196,57 @@ export default function HomePage() {
               <span className="text-sm font-semibold text-white/74">{item}</span>
             </div>
           ))}
+        </div>
+      </SectionShell>
+
+      <SectionShell className="bg-[#F8F5EE]">
+        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+          <SectionHeader
+            eyebrow="Property Match Finder"
+            title="Tell us the requirement. We shortlist like consultants."
+            description="A guided quiz-style experience helps Instagram visitors move from vague browsing to a clear call or WhatsApp consultation."
+          />
+          <div className="rounded-[1.75rem] border border-[#081120]/8 bg-white p-4 shadow-[0_24px_70px_rgba(8,17,32,0.08)] sm:rounded-[2.4rem] sm:p-6">
+            <div className="grid gap-3 sm:grid-cols-2">
+              {propertyMatchSteps.map((step, index) => (
+                <div key={step.question} className="rounded-[1.35rem] bg-[#F8F5EE] p-4 sm:rounded-[1.75rem] sm:p-5">
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#081120] text-xs font-black text-[#F5D67B]">
+                      {index + 1}
+                    </span>
+                    <h3 className="text-base font-black text-[#081120]">{step.question}</h3>
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {step.options.map((option) => (
+                      <span
+                        key={option}
+                        className="rounded-full border border-[#081120]/8 bg-white px-3 py-2 text-[11px] font-black uppercase tracking-[0.11em] text-[#4B5563]"
+                      >
+                        {option}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 grid gap-3 rounded-[1.35rem] bg-[#081120] p-4 text-white sm:mt-5 sm:grid-cols-[1fr_auto] sm:items-center sm:rounded-[1.75rem] sm:p-5">
+              <div>
+                <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#D4AF37]">
+                  Best-fit shortlist
+                </p>
+                <h3 className="mt-1 text-xl font-black">Get matched with the best property options.</h3>
+              </div>
+              <a
+                href={siteConfig.whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#10B981] px-5 text-sm font-black uppercase tracking-[0.12em] text-white"
+              >
+                <MessageCircle className="h-4 w-4" />
+                WhatsApp Consultation
+              </a>
+            </div>
+          </div>
         </div>
       </SectionShell>
 
@@ -309,6 +364,32 @@ export default function HomePage() {
         </div>
       </SectionShell>
 
+      <SectionShell className="bg-[#081120] text-white">
+        <div className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
+          <SectionHeader
+            eyebrow="Bareilly Property Guide"
+            title="Local context, not random listings."
+            description="The Shivara experience positions every enquiry around location fit, lifestyle, investment intent, and site-visit readiness."
+            dark
+          />
+          <div className="grid gap-3 md:grid-cols-2">
+            {bareillyGuide.map((item) => (
+              <div
+                key={item.zone}
+                className="rounded-[1.5rem] border border-white/10 bg-white/[0.055] p-4 shadow-[0_20px_70px_rgba(0,0,0,0.18)] sm:rounded-[2rem] sm:p-5"
+              >
+                <MapPin className="h-5 w-5 text-[#D4AF37]" />
+                <p className="mt-4 text-[11px] font-black uppercase tracking-[0.2em] text-[#F5D67B]">
+                  {item.signal}
+                </p>
+                <h3 className="mt-2 text-xl font-black">{item.zone}</h3>
+                <p className="mt-3 text-sm leading-7 text-white/62">{item.insight}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </SectionShell>
+
       <SectionShell className="bg-white">
         <SectionHeader
           eyebrow="Services"
@@ -370,6 +451,38 @@ export default function HomePage() {
                 <p className="mt-3 text-sm leading-7 text-[#4B5563]">{item.text}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </SectionShell>
+
+      <SectionShell className="bg-white">
+        <div className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-center">
+          <div className="overflow-hidden rounded-[2rem] bg-[#081120] p-5 text-white shadow-[0_28px_90px_rgba(8,17,32,0.18)] sm:rounded-[2.5rem] sm:p-8">
+            <div
+              className="mb-5 h-56 rounded-[1.5rem] bg-cover bg-center sm:h-72"
+              style={{ backgroundImage: `linear-gradient(180deg,rgba(8,17,32,0.02),rgba(8,17,32,0.58)),url(${villaImage})` }}
+            />
+            <p className="text-[11px] font-black uppercase tracking-[0.28em] text-[#D4AF37]">
+              Trust Engine
+            </p>
+            <h2 className="mt-3 font-[family-name:var(--font-playfair)] text-4xl font-semibold leading-tight sm:text-5xl">
+              Every step should feel verified, guided, and human.
+            </h2>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {trustEngine.map((item) => (
+              <div key={item} className="rounded-[1.45rem] border border-[#081120]/8 bg-[#F8F5EE] p-4 sm:rounded-[1.75rem] sm:p-5">
+                <ShieldCheck className="h-6 w-6 text-[#10B981]" />
+                <p className="mt-4 text-base font-black text-[#081120]">{item}</p>
+              </div>
+            ))}
+            <a
+              href={siteConfig.phoneHref}
+              className="rounded-[1.45rem] bg-[#D4AF37] p-4 text-[#081120] shadow-[0_20px_50px_rgba(212,175,55,0.22)] sm:rounded-[1.75rem] sm:p-5"
+            >
+              <Users className="h-6 w-6" />
+              <p className="mt-4 text-base font-black">Talk to a dedicated consultant</p>
+            </a>
           </div>
         </div>
       </SectionShell>

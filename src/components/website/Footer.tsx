@@ -154,8 +154,8 @@ export default function Footer() {
           <div className="flex flex-col justify-between gap-3 text-xs text-white/42 sm:flex-row">
             <p>© {year} The Shivara Group. All rights reserved.</p>
             <p>
-              Pricing, availability, office address, loan partners and ratings should be manually
-              verified before final publication.
+              Pricing, availability, loan support and visit slots are confirmed directly before
+              booking.
             </p>
           </div>
         </div>

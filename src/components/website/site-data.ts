@@ -153,6 +153,57 @@ export const credibilityCards = [
   },
 ];
 
+export const propertyMatchSteps = [
+  {
+    question: "Budget comfort",
+    options: ["₹50L–₹1Cr", "₹1Cr–₹3Cr", "₹3Cr+", "Price on request"],
+  },
+  {
+    question: "Preferred zone",
+    options: ["Rajendar Nagar", "Aurika", "Bareilly prime", "Delhi NCR"],
+  },
+  {
+    question: "Property intent",
+    options: ["Family home", "Plot investment", "Rental income", "Portfolio growth"],
+  },
+  {
+    question: "Move timeline",
+    options: ["Immediate", "30–60 days", "3–6 months", "Exploring"],
+  },
+];
+
+export const bareillyGuide = [
+  {
+    zone: "Rajendar Nagar",
+    signal: "Family-first living",
+    insight: "Strong for ready-to-move 3BHK homes, settled neighbourhood comfort, and daily convenience.",
+  },
+  {
+    zone: "Aurika belt",
+    signal: "Premium growth corridor",
+    insight: "Public Shivara content highlights residences, plots, villas, and commercial-zone positioning.",
+  },
+  {
+    zone: "Pilibhit Road / prime Bareilly",
+    signal: "Independent luxury",
+    insight: "Useful for buyers comparing kothis, villas, larger built-up homes, and private site visits.",
+  },
+  {
+    zone: "Delhi NCR portfolio",
+    signal: "High-value diversification",
+    insight: "Godrej Golf Links, Yamuna Expressway, and serviced-apartment references for portfolio-led buyers.",
+  },
+];
+
+export const trustEngine = [
+  "Requirement-first consultation",
+  "Shortlisted options, not random spam",
+  "Guided site visits",
+  "Pricing and inventory confirmation",
+  "Loan and documentation support path",
+  "Dedicated consultant follow-up",
+];
+
 export const investmentHighlights = [
   {
     title: "Bareilly luxury homes",

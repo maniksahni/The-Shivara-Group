@@ -6,6 +6,7 @@ import { getServerSession } from "@/lib/auth";
 import { getDashboardStats } from "@/features/leads/actions";
 import { getAgentStats } from "@/features/agents/actions";
 import ReportCharts from "@/components/crm/reports/ReportCharts";
+import prisma from "@/lib/prisma";
 
 export const revalidate = 0; // Fetch fresh data
 
@@ -41,16 +42,28 @@ export default async function ReportsPage() {
   const closedLeads = stats.closedLeads;
   const conversionRate = totalLeads > 0 ? ((closedLeads / totalLeads) * 100).toFixed(1) : "0.0";
 
-  // Re-format source data for table rendering
+  const sourceClosedRaw = await prisma.lead.groupBy({
+    by: ["source"],
+    where: {
+      status: "CLOSED",
+      ...(session.user.role === "ADMIN" ? {} : { assignedToId: session.user.id }),
+    },
+    _count: { source: true },
+  }).catch(() => []);
+
+  const closedBySource = Object.fromEntries(
+    sourceClosedRaw.map((row) => [row.source, row._count.source]),
+  );
+
+  // Re-format source data for table rendering using real conversion data.
   const sourcesTable = Object.entries(stats.leadsBySource).map(([source, count]) => {
-    // Dummy conversion calculations for breakdown visualization
     const countNum = Number(count) || 0;
-    const estimatedClosed = Math.round(countNum * 0.15); // dummy estimation for reports visual
-    const rate = countNum > 0 ? ((estimatedClosed / countNum) * 100).toFixed(1) : "0.0";
+    const closed = closedBySource[source] ?? 0;
+    const rate = countNum > 0 ? ((closed / countNum) * 100).toFixed(1) : "0.0";
     return {
       source,
       total: countNum,
-      closed: estimatedClosed,
+      closed,
       rate,
     };
   }).sort((a, b) => b.total - a.total);

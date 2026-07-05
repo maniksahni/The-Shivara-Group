@@ -174,7 +174,7 @@ export const investmentHighlights = [
 export const partnerPlaceholders = [
   "Home loan guidance available on request",
   "Documentation support after property selection",
-  "Google reviews and client feedback coming soon",
+  "Instagram-led portfolio highlights available",
   "Private consultations available by appointment",
 ];
 

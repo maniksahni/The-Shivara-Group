@@ -13,6 +13,7 @@
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import prisma from '@/lib/prisma'
+import { getServerSession } from '@/lib/auth'
 import { Prisma, PropertyType } from '@prisma/client'
 
 // ---------------------------------------------------------------------------
@@ -58,6 +59,20 @@ function toStringArray(value: Prisma.JsonValue): string[] {
   return Array.isArray(value)
     ? value.filter((item): item is string => typeof item === 'string')
     : []
+}
+
+async function requireAdmin() {
+  const session = await getServerSession()
+
+  if (!session?.user?.id) {
+    return { success: false as const, error: 'Unauthorized. Please sign in again.' }
+  }
+
+  if (session.user.role !== 'ADMIN') {
+    return { success: false as const, error: 'Only admins can manage properties.' }
+  }
+
+  return { success: true as const, user: session.user }
 }
 
 // ---------------------------------------------------------------------------
@@ -145,6 +160,9 @@ export async function createProperty(
   data: CreatePropertyInput,
 ): Promise<ActionResult<{ id: string }>> {
   try {
+    const session = await requireAdmin()
+    if (!session.success) return session
+
     const validated = createPropertySchema.parse(data)
 
     const property = await prisma.property.create({
@@ -189,6 +207,9 @@ export async function updateProperty(
   data: UpdatePropertyInput,
 ): Promise<ActionResult<{ id: string }>> {
   try {
+    const session = await requireAdmin()
+    if (!session.success) return session
+
     const validated = updatePropertySchema.parse(data)
 
     const existing = await prisma.property.findUnique({ where: { id }, select: { id: true } })
@@ -231,6 +252,9 @@ export async function togglePropertyActive(
   id: string,
 ): Promise<ActionResult<{ id: string; isActive: boolean }>> {
   try {
+    const session = await requireAdmin()
+    if (!session.success) return session
+
     const existing = await prisma.property.findUnique({
       where: { id },
       select: { id: true, isActive: true },
@@ -267,6 +291,9 @@ export async function togglePropertyFeatured(
   id: string,
 ): Promise<ActionResult<{ id: string; isFeatured: boolean }>> {
   try {
+    const session = await requireAdmin()
+    if (!session.success) return session
+
     const existing = await prisma.property.findUnique({
       where: { id },
       select: { id: true, isFeatured: true },
@@ -300,6 +327,9 @@ export async function togglePropertyFeatured(
  */
 export async function deleteProperty(id: string): Promise<ActionResult<undefined>> {
   try {
+    const session = await requireAdmin()
+    if (!session.success) return session
+
     const existing = await prisma.property.findUnique({ where: { id }, select: { id: true } })
     if (!existing) {
       return { success: false, error: 'Property not found.' }

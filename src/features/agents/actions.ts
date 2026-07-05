@@ -17,6 +17,7 @@ import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 import prisma from '@/lib/prisma'
+import { getServerSession } from '@/lib/auth'
 import type { Prisma } from '@prisma/client'
 
 // ---------------------------------------------------------------------------
@@ -82,6 +83,20 @@ export interface AgentPerformanceStat {
 type ActionResult<T = undefined> =
   | { success: true; data: T }
   | { success: false; error: string }
+
+async function requireAdmin() {
+  const session = await getServerSession()
+
+  if (!session?.user?.id) {
+    return { success: false as const, error: 'Unauthorized. Please sign in again.' }
+  }
+
+  if (session.user.role !== 'ADMIN') {
+    return { success: false as const, error: 'Only admins can manage agents.' }
+  }
+
+  return { success: true as const, user: session.user }
+}
 
 // ---------------------------------------------------------------------------
 // getAgents
@@ -190,6 +205,9 @@ export async function createAgent(
   data: CreateAgentInput,
 ): Promise<ActionResult<{ id: string }>> {
   try {
+    const session = await requireAdmin()
+    if (!session.success) return session
+
     const validated = createAgentSchema.parse(data)
 
     // Check for email uniqueness before attempting to insert
@@ -242,6 +260,9 @@ export async function updateAgent(
   data: UpdateAgentInput,
 ): Promise<ActionResult<{ id: string }>> {
   try {
+    const session = await requireAdmin()
+    if (!session.success) return session
+
     const validated = updateAgentSchema.parse(data)
 
     const existing = await prisma.user.findUnique({ where: { id }, select: { id: true, email: true } })
@@ -304,6 +325,9 @@ export async function toggleAgentActive(
   id: string,
 ): Promise<ActionResult<{ id: string; isActive: boolean }>> {
   try {
+    const session = await requireAdmin()
+    if (!session.success) return session
+
     const existing = await prisma.user.findUnique({
       where: { id },
       select: { id: true, isActive: true },

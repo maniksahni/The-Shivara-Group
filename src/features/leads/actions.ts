@@ -173,6 +173,9 @@ export async function createLead(
   data: CreateLeadInput,
 ): Promise<ActionResult<{ id: string }>> {
   try {
+    const session = await requireCrmUser()
+    if (!session.success) return session
+
     const validated = createLeadSchema.parse(data)
 
     const lead = await prisma.$transaction(async (tx) => {
@@ -229,6 +232,9 @@ export async function updateLead(
   data: UpdateLeadInput,
 ): Promise<ActionResult<{ id: string }>> {
   try {
+    const session = await requireCrmUser()
+    if (!session.success) return session
+
     const validated = updateLeadSchema.parse(data)
 
     const existing = await prisma.lead.findUnique({ where: { id } })
@@ -506,6 +512,9 @@ export async function bulkAssignLeads(
  */
 export async function deleteLead(id: string): Promise<ActionResult<undefined>> {
   try {
+    const session = await requireCrmUser()
+    if (!session.success) return session
+
     const existing = await prisma.lead.findUnique({ where: { id }, select: { id: true } })
     if (!existing) {
       return { success: false, error: 'Lead not found.' }

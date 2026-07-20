@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CalendarDays, MessageCircle, Phone } from "lucide-react";
+import { MessageCircle, Phone, Sparkles } from "lucide-react";
 import Footer from "@/components/website/Footer";
 import FloatingPropertyMatchCTA from "@/components/website/FloatingPropertyMatchCTA";
 import Navbar from "@/components/website/Navbar";
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
 export default function WebsiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <ToastProvider>
-      <div className="min-h-[100dvh] overflow-x-hidden bg-[#F8F5EE] text-[#081120] antialiased">
+      <div className="min-h-[100dvh] overflow-x-hidden bg-[#F8F5EE] pb-[calc(5.25rem+env(safe-area-inset-bottom))] text-[#081120] antialiased md:pb-0">
         <Navbar />
         {children}
         <Footer />
@@ -68,10 +68,10 @@ export default function WebsiteLayout({ children }: { children: React.ReactNode 
         </a>
         </div>
 
-        <div className="fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-50 grid grid-cols-3 gap-1.5 rounded-[1.25rem] border border-white/20 bg-[#081120]/94 p-1.5 shadow-[0_18px_48px_rgba(0,0,0,0.26)] backdrop-blur-xl md:hidden">
+        <div className="fixed inset-x-3 bottom-[calc(0.65rem+env(safe-area-inset-bottom))] z-50 grid grid-cols-3 gap-1.5 rounded-[1.35rem] border border-white/20 bg-[#081120]/94 p-1.5 shadow-[0_18px_48px_rgba(0,0,0,0.30)] backdrop-blur-xl md:hidden">
         <a
           href={siteConfig.phoneHref}
-          className="flex min-h-11 items-center justify-center gap-1 rounded-2xl bg-white/8 text-xs font-black text-white"
+          className="flex min-h-12 items-center justify-center gap-1 rounded-2xl bg-white/8 text-xs font-black text-white active:scale-[0.98]"
         >
           <Phone className="h-4 w-4 text-[#D4AF37]" />
           Call
@@ -80,17 +80,17 @@ export default function WebsiteLayout({ children }: { children: React.ReactNode 
           href={siteConfig.whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex min-h-11 items-center justify-center gap-1 rounded-2xl bg-[#10B981] text-xs font-black text-white"
+          className="flex min-h-12 items-center justify-center gap-1 rounded-2xl bg-[#10B981] text-xs font-black text-white shadow-[0_10px_24px_rgba(16,185,129,0.22)] active:scale-[0.98]"
         >
           <MessageCircle className="h-4 w-4" />
           WhatsApp
         </a>
         <Link
-          href="/contact#site-visit"
-          className="flex min-h-11 items-center justify-center gap-1 rounded-2xl bg-[#D4AF37] text-xs font-black text-[#081120]"
+          href="/#property-match-finder"
+          className="flex min-h-12 items-center justify-center gap-1 rounded-2xl bg-[#D4AF37] text-xs font-black text-[#081120] shadow-[0_10px_24px_rgba(212,175,55,0.24)] active:scale-[0.98]"
         >
-          <CalendarDays className="h-4 w-4" />
-          Visit
+          <Sparkles className="h-4 w-4" />
+          Find
         </Link>
         </div>
       </div>

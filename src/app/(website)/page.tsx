@@ -54,7 +54,7 @@ const interiorImage =
 export default function HomePage() {
   return (
     <main className="bg-[#F8F5EE]">
-      <section className="relative overflow-hidden bg-[#081120] px-4 pb-10 pt-20 text-white sm:min-h-[100svh] sm:px-8 sm:pb-12 sm:pt-28 lg:px-12">
+      <section className="relative min-h-[92svh] overflow-hidden bg-[#081120] px-4 pb-7 pt-[5.25rem] text-white sm:min-h-[100svh] sm:px-8 sm:pb-12 sm:pt-28 lg:px-12">
         <div
           className="absolute inset-0 opacity-50"
           style={{
@@ -66,13 +66,13 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(212,175,55,0.26),transparent_34%),radial-gradient(circle_at_78%_18%,rgba(16,185,129,0.18),transparent_30%)]" />
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#081120] to-transparent" />
 
-        <div className="relative mx-auto grid w-full max-w-7xl min-w-0 items-center gap-8 sm:min-h-[calc(100svh-8rem)] lg:grid-cols-[1.08fr_0.92fr]">
+        <div className="relative mx-auto grid w-full max-w-7xl min-w-0 items-center gap-5 sm:min-h-[calc(100svh-8rem)] sm:gap-8 lg:grid-cols-[1.08fr_0.92fr]">
           <div className="w-full min-w-0 max-w-3xl">
             <Eyebrow dark>{siteConfig.tagline}</Eyebrow>
-            <h1 className="max-w-[12ch] text-balance font-[family-name:var(--font-playfair)] text-[clamp(2.35rem,10.5vw,3.05rem)] font-semibold leading-[1.02] tracking-[-0.04em] sm:max-w-none sm:text-[clamp(4.6rem,8vw,7.8rem)] sm:leading-[0.92] sm:tracking-[-0.075em]">
+            <h1 className="max-w-[13ch] text-balance font-[family-name:var(--font-playfair)] text-[clamp(2.55rem,11.5vw,3.65rem)] font-semibold leading-[0.94] tracking-[-0.055em] sm:max-w-none sm:text-[clamp(4.6rem,8vw,7.8rem)] sm:leading-[0.92] sm:tracking-[-0.075em]">
               Find your perfect property with Bareilly&apos;s trusted real estate experts.
             </h1>
-            <p className="mt-3 max-w-[31rem] text-[15px] leading-7 text-white/72 sm:mt-7 sm:max-w-2xl sm:text-xl sm:leading-8">
+            <p className="mt-3 max-w-[31rem] text-[15px] leading-6 text-white/76 sm:mt-7 sm:max-w-2xl sm:text-xl sm:leading-8">
               A luxury guided property journey for verified Bareilly homes, commercial spaces,
               investment plots, site visits, loan support, and documentation assistance.
             </p>
@@ -80,7 +80,7 @@ export default function HomePage() {
             <div className="mt-4 grid w-full max-w-[28rem] grid-cols-2 gap-2 sm:mt-9 sm:flex sm:max-w-none sm:flex-row sm:gap-3">
               <LuxuryButton href="/properties" className="col-span-2 w-full sm:w-auto">Explore Properties</LuxuryButton>
               <LuxuryButton href="/#property-match-finder" variant="outline" className="w-full px-3 text-[10px] tracking-[0.06em] sm:w-auto sm:px-6 sm:text-sm sm:tracking-[0.16em]">
-                Get Free Consultation
+                Find Match
               </LuxuryButton>
               <a
                 href={siteConfig.whatsappHref}
@@ -89,7 +89,7 @@ export default function HomePage() {
                 className="inline-flex min-h-12 max-w-full items-center justify-center gap-2 rounded-full bg-[#10B981] px-3 text-center text-[11px] font-black uppercase tracking-[0.08em] text-white shadow-[0_18px_45px_rgba(16,185,129,0.24)] transition-all duration-300 hover:-translate-y-0.5 sm:px-6 sm:text-sm sm:tracking-[0.16em]"
               >
                 <MessageCircle className="h-4 w-4" />
-                WhatsApp Now
+                WhatsApp
               </a>
             </div>
 
@@ -130,12 +130,12 @@ export default function HomePage() {
               {publicStats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="min-w-[8.4rem] snap-start rounded-2xl border border-white/10 bg-white/[0.055] p-3 backdrop-blur sm:min-w-0 sm:rounded-3xl sm:p-4"
+                  className="min-w-[7.65rem] snap-start rounded-2xl border border-white/10 bg-white/[0.055] p-3 backdrop-blur sm:min-w-0 sm:rounded-3xl sm:p-4"
                 >
-                  <p className="font-[family-name:var(--font-playfair)] text-2xl font-semibold text-[#F5D67B] sm:text-3xl">
+                  <p className="font-[family-name:var(--font-playfair)] text-[1.55rem] font-semibold leading-none text-[#F5D67B] sm:text-3xl">
                     {stat.value}
                   </p>
-                  <p className="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-white/72">
+                  <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white/72 sm:text-xs sm:tracking-[0.14em]">
                     {stat.label}
                   </p>
                 </div>

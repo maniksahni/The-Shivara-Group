@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { PropertyType } from "@prisma/client";
-import { Bath, BedDouble, Heart, MapPin, MessageCircle, Phone, Ruler, Search, Sparkles } from "lucide-react";
+import { Bath, BedDouble, CalendarDays, Heart, MapPin, MessageCircle, Phone, Ruler, Search, Sparkles } from "lucide-react";
 import ClientEnquiryModal from "./ClientEnquiryModal";
 import { siteConfig, type PublicProperty } from "@/components/website/site-data";
 
@@ -66,7 +66,7 @@ export default function ClientPropertiesGrid({
 
   return (
     <div className="space-y-8">
-      <div className="rounded-[2rem] border border-[#081120]/8 bg-white p-4 shadow-[0_24px_70px_rgba(8,17,32,0.07)] sm:p-5">
+      <div className="rounded-[1.6rem] border border-[#081120]/8 bg-white p-3.5 shadow-[0_24px_70px_rgba(8,17,32,0.07)] sm:rounded-[2rem] sm:p-5">
         <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
           <div className="relative">
             <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#9B7A19]" />
@@ -75,7 +75,7 @@ export default function ClientPropertiesGrid({
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
               placeholder="Search project, location, category..."
-              className="min-h-14 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] pl-12 pr-4 text-sm font-semibold outline-none transition placeholder:text-[#6B7280]/70 focus:border-[#D4AF37] focus:bg-white focus:ring-4 focus:ring-[#D4AF37]/14"
+              className="min-h-13 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] pl-12 pr-4 text-sm font-semibold outline-none transition placeholder:text-[#6B7280]/70 focus:border-[#D4AF37] focus:bg-white focus:ring-4 focus:ring-[#D4AF37]/14 sm:min-h-14"
             />
           </div>
           <div className="premium-scrollbar flex gap-2 overflow-x-auto pb-1 lg:pb-0">
@@ -97,12 +97,12 @@ export default function ClientPropertiesGrid({
         </div>
       </div>
 
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-end justify-between gap-4">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.24em] text-[#9B7A19]">
             {filteredProperties.length} properties found
           </p>
-          <h2 className="mt-1 font-[family-name:var(--font-playfair)] text-3xl font-semibold text-[#081120]">
+          <h2 className="mt-1 font-[family-name:var(--font-playfair)] text-[2rem] font-semibold leading-none tracking-[-0.035em] text-[#081120] sm:text-3xl">
             Curated opportunities
           </h2>
         </div>
@@ -138,18 +138,18 @@ export default function ClientPropertiesGrid({
           </button>
         </div>
       ) : (
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {filteredProperties.map((property, index) => {
             const image = property.images[0] || propertyImages[index % propertyImages.length];
             const isSaved = savedIds.has(property.id);
             return (
               <article
                 key={property.id}
-                className="group overflow-hidden rounded-[2.2rem] border border-[#081120]/8 bg-white shadow-[0_24px_70px_rgba(8,17,32,0.07)] transition duration-500 hover:-translate-y-2 hover:shadow-[0_32px_90px_rgba(8,17,32,0.16)]"
+                className="group overflow-hidden rounded-[1.75rem] border border-[#081120]/8 bg-white shadow-[0_20px_58px_rgba(8,17,32,0.08)] transition duration-500 hover:-translate-y-2 hover:shadow-[0_32px_90px_rgba(8,17,32,0.16)] sm:rounded-[2.2rem]"
               >
                 <Link href={`/properties/${property.id}`} className="block">
                   <div
-                    className="relative h-72 overflow-hidden bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.02]"
+                    className="relative h-64 overflow-hidden bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.02] sm:h-72"
                     style={{
                       backgroundImage: `linear-gradient(180deg,rgba(8,17,32,0.02),rgba(8,17,32,0.68)),url(${image})`,
                     }}
@@ -180,30 +180,30 @@ export default function ClientPropertiesGrid({
                       <p className="text-sm font-black uppercase tracking-[0.2em] text-[#F5D67B]">
                         {property.price}
                       </p>
-                      <h3 className="mt-2 font-[family-name:var(--font-playfair)] text-3xl font-semibold leading-tight">
+                      <h3 className="mt-2 line-clamp-2 font-[family-name:var(--font-playfair)] text-[1.75rem] font-semibold leading-[1.02] tracking-[-0.035em] sm:text-3xl">
                         {property.title}
                       </h3>
                     </div>
                   </div>
                 </Link>
 
-                <div className="p-6">
+                <div className="p-4 sm:p-6">
                   <p className="flex items-center gap-2 text-sm font-bold text-[#4B5563]">
                     <MapPin className="h-4 w-4 text-[#D4AF37]" />
                     {property.location}
                   </p>
 
-                  <div className="mt-5 grid grid-cols-1 gap-2 min-[420px]:grid-cols-3">
+                  <div className="mt-4 grid grid-cols-3 gap-2">
                     <Fact icon={<BedDouble className="h-4 w-4" />} value={property.bedrooms ? `${property.bedrooms} Beds` : "On request"} />
                     <Fact icon={<Bath className="h-4 w-4" />} value={property.bathrooms ? `${property.bathrooms} Baths` : "Verified"} />
                     <Fact icon={<Ruler className="h-4 w-4" />} value={property.area || "Area TBC"} />
                   </div>
 
-                  <p className="mt-5 line-clamp-3 text-sm leading-7 text-[#4B5563]">
+                  <p className="mt-4 line-clamp-3 text-sm leading-6 text-[#4B5563] sm:leading-7">
                     {property.description}
                   </p>
 
-                  <div className="mt-5 flex flex-wrap gap-2">
+                  <div className="mt-4 flex flex-wrap gap-2">
                     {property.amenities.slice(0, 3).map((amenity) => (
                       <span
                         key={amenity}
@@ -214,20 +214,20 @@ export default function ClientPropertiesGrid({
                     ))}
                   </div>
 
-                  <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-[1fr_auto_auto]">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedProperty(property)}
-                      className="col-span-2 min-h-12 rounded-full bg-[#081120] px-4 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-[#D4AF37] hover:text-[#081120] sm:col-span-1"
+                  <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-[1fr_auto_auto]">
+                    <Link
+                      href={`/properties/${property.id}`}
+                      className="col-span-2 flex min-h-12 items-center justify-center rounded-full bg-[#081120] px-4 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-[#D4AF37] hover:text-[#081120] sm:col-span-1"
                     >
-                      Quick Enquiry
-                    </button>
+                      View Details
+                    </Link>
                     <a
                       href={siteConfig.phoneHref}
-                      className="flex h-12 w-full items-center justify-center rounded-full bg-[#F8F5EE] text-[#081120] sm:w-12"
+                      className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#F8F5EE] text-xs font-black text-[#081120] sm:w-12"
                       aria-label="Call"
                     >
                       <Phone className="h-5 w-5" />
+                      <span className="sm:hidden">Call</span>
                     </a>
                     <a
                       href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(
@@ -235,11 +235,20 @@ export default function ClientPropertiesGrid({
                       )}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex h-12 w-full items-center justify-center rounded-full bg-[#10B981] text-white sm:w-12"
+                      className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#10B981] text-xs font-black text-white sm:w-12"
                       aria-label="WhatsApp"
                     >
                       <MessageCircle className="h-5 w-5" />
+                      <span className="sm:hidden">WhatsApp</span>
                     </a>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedProperty(property)}
+                      className="col-span-2 flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#D4AF37]/45 bg-[#FFF9E8] px-4 text-xs font-black uppercase tracking-[0.12em] text-[#081120] transition hover:bg-[#D4AF37]"
+                    >
+                      <CalendarDays className="h-4 w-4" />
+                      Book Site Visit
+                    </button>
                   </div>
                 </div>
               </article>

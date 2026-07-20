@@ -133,7 +133,7 @@ export default function FloatingEnquiryCard() {
             </select>
           </label>
 
-          <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+          <div className="grid grid-cols-1 gap-2.5 min-[390px]:grid-cols-2 sm:gap-3">
             <label>
               <span className="mb-1.5 block text-[10px] font-black uppercase tracking-[0.14em] text-[#6B7280] sm:mb-2 sm:text-[11px] sm:tracking-[0.16em]">
                 Budget
@@ -162,7 +162,7 @@ export default function FloatingEnquiryCard() {
             </label>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
+          <div className="grid grid-cols-1 gap-2.5 min-[390px]:grid-cols-2 sm:gap-3">
             <label>
               <span className="mb-1.5 block text-[10px] font-black uppercase tracking-[0.14em] text-[#6B7280] sm:mb-2 sm:text-[11px] sm:tracking-[0.16em]">
                 Name

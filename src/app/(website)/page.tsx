@@ -29,6 +29,7 @@ import PropertyMatchFinder from "@/components/website/PropertyMatchFinder";
 import {
   categoryShowcase,
   credibilityCards,
+  conversionTrustCards,
   fallbackProperties,
   faqs,
   bareillyGuide,
@@ -52,8 +53,25 @@ const interiorImage =
   "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80";
 
 export default function HomePage() {
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqs.slice(0, 6).map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  };
+
   return (
     <main className="bg-[#F8F5EE]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <section className="relative overflow-hidden bg-[#081120] px-4 pb-8 pt-[5.1rem] text-white sm:min-h-[100svh] sm:px-8 sm:pb-12 sm:pt-28 lg:px-12">
         <div
           className="absolute inset-0 opacity-50"
@@ -210,6 +228,20 @@ export default function HomePage() {
       </SectionShell>
 
       <SectionShell className="bg-[#F8F5EE]">
+        <div className="mb-6 grid gap-3 sm:mb-10 sm:grid-cols-2 lg:grid-cols-4">
+          {conversionTrustCards.map((card) => (
+            <div
+              key={card.title}
+              className="touch-lift rounded-[1.5rem] border border-[#081120]/8 bg-white p-4 shadow-[0_18px_50px_rgba(8,17,32,0.05)] sm:rounded-[1.85rem] sm:p-5"
+            >
+              <ShieldCheck className="h-5 w-5 text-[#10B981]" />
+              <h2 className="mt-3 text-sm font-black uppercase tracking-[0.14em] text-[#081120]">
+                {card.title}
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-[#4B5563]">{card.text}</p>
+            </div>
+          ))}
+        </div>
         <PropertyMatchFinder />
       </SectionShell>
 

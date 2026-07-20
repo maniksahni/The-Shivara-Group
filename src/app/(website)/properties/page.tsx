@@ -12,9 +12,18 @@ import {
 import { SectionShell } from "@/components/website/LuxurySection";
 
 export const metadata: Metadata = {
-  title: "Properties",
+  title: "Properties in Bareilly | The Shivara Group",
   description:
-    "Explore premium apartments, villas, plots, commercial spaces, and verified property opportunities from The Shivara Group.",
+    "Explore verified residential, commercial, plot, and investment properties in Bareilly. Book site visits and get expert guidance from The Shivara Group.",
+  alternates: {
+    canonical: "/properties",
+  },
+  openGraph: {
+    title: "Properties in Bareilly | The Shivara Group",
+    description:
+      "Explore verified residential, commercial, plot, and investment properties in Bareilly with WhatsApp enquiries and site visit booking.",
+    type: "website",
+  },
 };
 
 export const revalidate = 0;
@@ -81,8 +90,9 @@ export default async function PropertiesPage() {
             </h1>
             <div>
               <p className="text-base leading-7 text-white/70 sm:text-lg sm:leading-8">
-                Explore verified public highlights and active inventory with filters for property
-                type, budget comfort, location, and site-visit readiness.
+                Explore verified residential properties in Bareilly, commercial properties,
+                plots, and investment opportunities with filters for budget, location, and
+                site-visit readiness.
               </p>
               <div className="mt-5 grid grid-cols-2 gap-2">
                 <a href="#properties-list" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#D4AF37] px-4 text-xs font-black uppercase tracking-[0.12em] text-[#081120]">

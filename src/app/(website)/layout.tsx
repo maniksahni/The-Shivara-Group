@@ -31,6 +31,7 @@ export const metadata: Metadata = {
     siteName: "The Shivara Group",
     locale: "en_IN",
     type: "website",
+    url: "/",
   },
 };
 
@@ -90,7 +91,7 @@ export default function WebsiteLayout({ children }: { children: React.ReactNode 
           className="flex min-h-12 items-center justify-center gap-1 rounded-2xl bg-[#D4AF37] text-xs font-black text-[#081120] shadow-[0_10px_24px_rgba(212,175,55,0.24)] active:scale-[0.98]"
         >
           <Sparkles className="h-4 w-4" />
-          Find
+          Find Property
         </Link>
         </div>
       </div>

@@ -14,9 +14,18 @@ import {
 } from "@/components/website/site-data";
 
 export const metadata: Metadata = {
-  title: "About The Shivara Group",
+  title: "About The Shivara Group | Property Consultants in Bareilly",
   description:
-    "Learn about The Shivara Group's premium real estate guidance across Bareilly and Delhi NCR.",
+    "Learn about The Shivara Group's premium real estate guidance, verified property shortlisting, site visit support, and buyer consultation across Bareilly and Delhi NCR.",
+  alternates: {
+    canonical: "/about",
+  },
+  openGraph: {
+    title: "About The Shivara Group | Property Consultants in Bareilly",
+    description:
+      "Premium Bareilly real estate consultation with verified shortlists, WhatsApp-first guidance, and site visit support.",
+    type: "website",
+  },
 };
 
 const heroImage =

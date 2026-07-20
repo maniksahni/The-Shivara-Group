@@ -178,18 +178,29 @@ export default function ClientPropertiesGrid({
           <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-[#4B5563]">
             Try another category or send your requirement. The team can manually shortlist options.
           </p>
-          <button
-            type="button"
-            onClick={() => {
-              setSearchQuery("");
-              setSelectedType("ALL");
-              setSelectedBudget("All Budgets");
-              setSelectedLocation("All Locations");
-            }}
-            className="mt-6 min-h-12 rounded-full bg-[#081120] px-6 text-sm font-black uppercase tracking-[0.14em] text-white"
-          >
-            Reset filters
-          </button>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2 sm:justify-center">
+            <button
+              type="button"
+              onClick={() => {
+                setSearchQuery("");
+                setSelectedType("ALL");
+                setSelectedBudget("All Budgets");
+                setSelectedLocation("All Locations");
+              }}
+              className="min-h-12 rounded-full bg-[#081120] px-6 text-sm font-black uppercase tracking-[0.14em] text-white"
+            >
+              Reset filters
+            </button>
+            <a
+              href={siteConfig.whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#10B981] px-6 text-sm font-black uppercase tracking-[0.14em] text-white"
+            >
+              <MessageCircle className="h-4 w-4" />
+              WhatsApp requirement
+            </a>
+          </div>
         </div>
       ) : (
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">

@@ -4,9 +4,18 @@ import { LuxuryButton, SectionHeader, SectionShell } from "@/components/website/
 import { processSteps, services, siteConfig } from "@/components/website/site-data";
 
 export const metadata: Metadata = {
-  title: "Services",
+  title: "Real Estate Services in Bareilly",
   description:
-    "Explore The Shivara Group's property consultation, site visit, home loan assistance, and buyer support services.",
+    "Explore The Shivara Group's real estate services in Bareilly including property consultation, site visits, home loan assistance, documentation support, residential, commercial, plots, and investment guidance.",
+  alternates: {
+    canonical: "/services",
+  },
+  openGraph: {
+    title: "Real Estate Services in Bareilly | The Shivara Group",
+    description:
+      "Premium property consultation, site visit assistance, home loan support, and documentation guidance in Bareilly.",
+    type: "website",
+  },
 };
 
 const icons = [Home, CalendarCheck, MapPinned, Banknote, Building2, KeyRound];

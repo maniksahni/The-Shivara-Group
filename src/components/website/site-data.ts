@@ -11,7 +11,7 @@ export const siteConfig = {
   phoneHref: "tel:+917060788407",
   whatsapp: "917060788407",
   whatsappHref:
-    "https://wa.me/917060788407?text=Hi%20The%20Shivara%20Group%2C%20I%20want%20to%20book%20a%20property%20consultation.",
+    "https://wa.me/917060788407?text=Hi%20Shivara%20Group%2C%20I%20am%20interested%20in%20property%20options%20in%20Bareilly.%20Please%20share%20details.",
   instagram: "https://www.instagram.com/theshivaragroup",
   instagramHandle: "@theshivaragroup",
   founderInstagram: "https://www.instagram.com/the_shivamsahani",
@@ -37,6 +37,25 @@ export const publicStats = [
   { value: "6+", label: "property categories", note: "Homes, villas, plots & portfolios" },
   { value: "2", label: "priority markets", note: "Bareilly + Delhi NCR" },
   { value: "100%", label: "guided discovery", note: "Shortlist before site visit" },
+];
+
+export const conversionTrustCards = [
+  {
+    title: "Verified Properties",
+    text: "Listings are shortlisted with manual pricing, inventory, and visit-slot confirmation before serious booking conversations.",
+  },
+  {
+    title: "Local Bareilly Expertise",
+    text: "Guidance around residential properties, commercial corridors, plots, and investment opportunities in Bareilly.",
+  },
+  {
+    title: "Site Visit Assistance",
+    text: "Move from Instagram browsing to a confirmed visit with a dedicated consultant and clear next steps.",
+  },
+  {
+    title: "Loan & Documentation Support",
+    text: "After shortlisting, the team can help you understand loan, paperwork, and booking-stage requirements.",
+  },
 ];
 
 export const propertyCategories = [

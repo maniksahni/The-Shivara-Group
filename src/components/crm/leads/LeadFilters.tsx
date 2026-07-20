@@ -3,7 +3,7 @@
  *
  * Filter Bar — Client Component
  *
- * Provides debounced search, status/source/priority/agent dropdowns,
+ * Provides debounced search, status/source/priority dropdowns,
  * date range inputs, and a "Clear Filters" button. All filters update
  * URL search params using useRouter + useSearchParams without full page reload.
  */
@@ -114,8 +114,6 @@ function Chevron() {
 // ---------------------------------------------------------------------------
 
 export default function LeadFilters({
-  agents,
-  isAdmin,
   currentFilters,
 }: LeadFiltersProps) {
   const router = useRouter()
@@ -127,7 +125,6 @@ export default function LeadFilters({
   const [status, setStatus] = useState(currentFilters.status ?? '')
   const [source, setSource] = useState(currentFilters.source ?? '')
   const [priority, setPriority] = useState(currentFilters.priority ?? '')
-  const [assignedToId, setAssignedToId] = useState(currentFilters.assignedToId ?? '')
   const [dateFrom, setDateFrom] = useState(currentFilters.dateFrom ?? '')
   const [dateTo, setDateTo] = useState(currentFilters.dateTo ?? '')
 
@@ -150,7 +147,6 @@ export default function LeadFilters({
         status,
         source,
         priority,
-        assignedToId,
         dateFrom,
         dateTo,
         ...overrides,
@@ -169,7 +165,7 @@ export default function LeadFilters({
 
       return params.toString()
     },
-    [search, status, source, priority, assignedToId, dateFrom, dateTo, searchParams],
+    [search, status, source, priority, dateFrom, dateTo, searchParams],
   )
 
   // ---- Push updated params to router ----
@@ -216,11 +212,6 @@ export default function LeadFilters({
     navigate({ priority: e.target.value })
   }
 
-  const handleAgent = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setAssignedToId(e.target.value)
-    navigate({ assignedToId: e.target.value })
-  }
-
   const handleDateFrom = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDateFrom(e.target.value)
     navigate({ dateFrom: e.target.value })
@@ -233,7 +224,7 @@ export default function LeadFilters({
 
   // ---- Clear all filters ----
   const hasFilters = Boolean(
-    search || status || source || priority || assignedToId || dateFrom || dateTo,
+    search || status || source || priority || dateFrom || dateTo,
   )
 
   const clearFilters = () => {
@@ -241,7 +232,6 @@ export default function LeadFilters({
     setStatus('')
     setSource('')
     setPriority('')
-    setAssignedToId('')
     setDateFrom('')
     setDateTo('')
 
@@ -347,30 +337,6 @@ export default function LeadFilters({
             <Chevron />
           </div>
 
-          {/* Agent — admin only */}
-          {isAdmin && (
-            <div className="relative md:w-auto">
-              <select
-                value={assignedToId}
-                onChange={handleAgent}
-                className={selectClass}
-                aria-label="Filter by assigned agent"
-              >
-                <option value="" className="bg-slate-800">
-                  All Agents
-                </option>
-                <option value="unassigned" className="bg-slate-800">
-                  Unassigned
-                </option>
-                {agents.map((a) => (
-                  <option key={a.id} value={a.id} className="bg-slate-800">
-                    {a.name}
-                  </option>
-                ))}
-              </select>
-              <Chevron />
-            </div>
-          )}
         </div>
 
         {/* ── Row 2: Date range + clear ── */}

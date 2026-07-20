@@ -181,7 +181,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
         onClose={handleClose}
         eyebrow="Lead workspace"
         title={isEditMode ? "Edit Lead Information" : "Create New Lead"}
-        description="Capture enquiry details, assignment, and the next follow-up in one clean flow."
+        description="Capture enquiry details, priority, and the next follow-up in one clean flow."
         footer={
           <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
             <button
@@ -362,20 +362,6 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                 </div>
 
                 <div className="mt-4 grid grid-cols-1 gap-4">
-                  <div>
-                    <label className={labelClass}>Assign Sales Agent</label>
-                    <select
-                      {...register("assignedToId")}
-                      className={fieldClass}
-                    >
-                      <option value="">Select Agent</option>
-                      {agents.map((agent) => (
-                        <option key={agent.id} value={agent.id}>
-                          {agent.name} ({agent.email})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
                   <div>
                     <label className={labelClass}>Follow-up Date & Time</label>
                     <input

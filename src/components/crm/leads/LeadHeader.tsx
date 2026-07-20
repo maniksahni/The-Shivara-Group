@@ -2,9 +2,9 @@
 
 import React, { useState } from "react";
 import { LeadStatus, Priority } from "@prisma/client";
-import { updateLeadStatus, assignLead } from "@/features/leads/actions";
+import { updateLeadStatus } from "@/features/leads/actions";
 import { cn, getLeadSourceColor } from "@/lib/utils";
-import { Edit2, Phone, Mail, CalendarDays, UserRound } from "lucide-react";
+import { Edit2, Phone, Mail, CalendarDays } from "lucide-react";
 import { useToast } from "@/components/ui/toast";
 import AddLeadModal from "./AddLeadModal";
 
@@ -18,11 +18,10 @@ interface LeadHeaderProps {
 const STATUSES = Object.values(LeadStatus);
 const PRIORITIES = Object.values(Priority);
 
-export default function LeadHeader({ lead, agents, currentUserId, isAdmin }: LeadHeaderProps) {
+export default function LeadHeader({ lead, agents, currentUserId }: LeadHeaderProps) {
   const { toast } = useToast();
   const [status, setStatus] = useState<LeadStatus>(lead.status);
   const [priority, setPriority] = useState<Priority>(lead.priority);
-  const [agentId, setAgentId] = useState<string>(lead.assignedToId || "");
 
   const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = e.target.value as LeadStatus;
@@ -40,29 +39,6 @@ export default function LeadHeader({ lead, agents, currentUserId, isAdmin }: Lea
       toast({
         title: "Update Failed",
         description: err.message || "Failed to update lead status.",
-        type: "error",
-      });
-    }
-  };
-
-  const handleAssignChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newAgentId = e.target.value;
-    setAgentId(newAgentId);
-    try {
-      const res = await assignLead(lead.id, newAgentId || null, currentUserId);
-      if (!res.success) throw new Error(res.error);
-      toast({
-        title: "Agent Reassigned",
-        description: newAgentId
-          ? `Lead assigned to ${agents.find((a) => a.id === newAgentId)?.name}.`
-          : "Lead unassigned.",
-        type: "success",
-      });
-    } catch (err: any) {
-      setAgentId(lead.assignedToId || "");
-      toast({
-        title: "Assignment Failed",
-        description: err.message || "Failed to reassign agent.",
         type: "error",
       });
     }
@@ -107,8 +83,8 @@ export default function LeadHeader({ lead, agents, currentUserId, isAdmin }: Lea
           </div>
         </div>
 
-        {/* CRM Quick Filters / Assign Block */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 lg:min-w-[520px]">
+        {/* CRM Quick Actions */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:min-w-[360px]">
           {/* Status Dropdown */}
           <div className="flex flex-col">
             <span className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1">Status</span>
@@ -120,27 +96,6 @@ export default function LeadHeader({ lead, agents, currentUserId, isAdmin }: Lea
               {STATUSES.map((s) => (
                 <option key={s} value={s}>
                   {s.replace(/_/g, " ")}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Assignment Dropdown */}
-          <div className="flex flex-col">
-            <span className="mb-1 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-              <UserRound className="h-3 w-3" />
-              Assigned Agent
-            </span>
-            <select
-              value={agentId}
-              onChange={handleAssignChange}
-              disabled={!isAdmin}
-              className="min-h-11 cursor-pointer rounded-2xl border border-white/10 bg-[#111827]/80 px-3 py-2 text-xs font-bold text-white outline-none transition focus:border-[#F4B400]/70 disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              <option value="">Unassigned</option>
-              {agents.map((agent) => (
-                <option key={agent.id} value={agent.id}>
-                  {agent.name}
                 </option>
               ))}
             </select>

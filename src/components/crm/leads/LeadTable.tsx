@@ -31,9 +31,7 @@ import {
   Phone,
   Mail,
   MessageCircle,
-  UserCircle,
   Plus,
-  UserPlus,
   CalendarClock,
   ArrowRight,
   SearchX,
@@ -42,7 +40,7 @@ import { toast } from 'sonner'
 
 import { StatusBadge, SourceBadge, PriorityBadge } from '@/components/ui/badge'
 import CRMConfirmDialog from '@/components/crm/CRMConfirmDialog'
-import { bulkAssignLeads, deleteLead, updateLeadStatus } from '@/features/leads/actions'
+import { deleteLead, updateLeadStatus } from '@/features/leads/actions'
 import { formatDate, getInitials } from '@/lib/utils'
 
 // ---------------------------------------------------------------------------
@@ -275,7 +273,7 @@ function ActionMenu({ lead, onEdit, onStatusChange, onDelete }: ActionMenuProps)
 // LeadTable Component
 // ---------------------------------------------------------------------------
 
-export default function LeadTable({ leads, agents, isAdmin, currentUserId }: LeadTableProps) {
+export default function LeadTable({ leads, currentUserId }: LeadTableProps) {
   const router = useRouter()
   const [, startTransition] = useTransition()
 
@@ -289,8 +287,6 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
 
   // ── Bulk selection ──
   const [selected, setSelected] = useState<Set<string>>(new Set())
-  const [bulkAgentId, setBulkAgentId] = useState('')
-  const [bulkAssigning, setBulkAssigning] = useState(false)
   const allSelected = paginated.length > 0 && paginated.every((l) => selected.has(l.id))
 
   const toggleAll = () => {
@@ -362,27 +358,6 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
     toast.info('Export is handled from the ExportButton in the page header.')
   }
 
-  const handleBulkAssign = async () => {
-    if (!bulkAgentId) {
-      toast.error('Select an agent first.')
-      return
-    }
-
-    setBulkAssigning(true)
-    const result = await bulkAssignLeads(Array.from(selected), bulkAgentId, currentUserId)
-    setBulkAssigning(false)
-
-    if (result.success) {
-      const agentName = agents.find((agent) => agent.id === bulkAgentId)?.name ?? 'selected agent'
-      toast.success(`${result.data.count} lead${result.data.count === 1 ? '' : 's'} assigned to ${agentName}.`)
-      setSelected(new Set())
-      setBulkAgentId('')
-      startTransition(() => router.refresh())
-    } else {
-      toast.error(result.error)
-    }
-  }
-
   // ---------------------------------------------------------------------------
   // Empty state
   // ---------------------------------------------------------------------------
@@ -434,36 +409,6 @@ export default function LeadTable({ leads, agents, isAdmin, currentUserId }: Lea
             {selected.size} lead{selected.size > 1 ? 's' : ''} selected
           </span>
           <div className="flex flex-wrap items-center justify-end gap-2">
-            {isAdmin && (
-              <>
-                <select
-                  value={bulkAgentId}
-                  onChange={(event) => setBulkAgentId(event.target.value)}
-                  className="min-w-[180px] rounded-lg border border-[#C9A84C]/40 bg-slate-900 px-3 py-1.5 text-xs font-medium text-white outline-none focus:border-[#C9A84C]"
-                  aria-label="Assign selected leads to agent"
-                >
-                  <option value="">Assign/Reassign to...</option>
-                  {agents.map((agent) => (
-                    <option key={agent.id} value={agent.id}>
-                      {agent.name}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  type="button"
-                  onClick={handleBulkAssign}
-                  disabled={bulkAssigning || !bulkAgentId}
-                  className={[
-                    'flex items-center gap-2 rounded-lg border border-[#C9A84C]/50',
-                    'bg-[#F4B400] px-3 py-1.5 text-xs font-bold text-slate-950',
-                    'hover:bg-[#b8963e] disabled:cursor-not-allowed disabled:opacity-50 transition-colors duration-150',
-                  ].join(' ')}
-                >
-                  <UserPlus className="h-3.5 w-3.5" />
-                  {bulkAssigning ? 'Assigning…' : 'Assign Leads'}
-                </button>
-              </>
-            )}
             <button
               type="button"
               onClick={handleExportSelected}

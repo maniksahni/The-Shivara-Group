@@ -54,7 +54,7 @@ const interiorImage =
 export default function HomePage() {
   return (
     <main className="bg-[#F8F5EE]">
-      <section className="relative min-h-[92svh] overflow-hidden bg-[#081120] px-4 pb-7 pt-[5.25rem] text-white sm:min-h-[100svh] sm:px-8 sm:pb-12 sm:pt-28 lg:px-12">
+      <section className="relative overflow-hidden bg-[#081120] px-4 pb-8 pt-[5.1rem] text-white sm:min-h-[100svh] sm:px-8 sm:pb-12 sm:pt-28 lg:px-12">
         <div
           className="absolute inset-0 opacity-50"
           style={{
@@ -109,28 +109,31 @@ export default function HomePage() {
               </a>
             </div>
 
-            <div className="mt-4 hidden w-full max-w-[28rem] overflow-hidden rounded-[1.5rem] border border-white/12 bg-white/[0.075] p-2 shadow-[0_24px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl sm:mt-8 sm:block sm:max-w-2xl sm:rounded-[1.75rem] sm:p-3">
+            <div className="mt-4 hidden w-full max-w-[28rem] overflow-hidden rounded-[1.35rem] border border-white/12 bg-white/[0.075] p-2 shadow-[0_24px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl sm:mt-8 sm:block sm:max-w-2xl sm:rounded-[1.75rem] sm:p-3">
               <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
-                <div className="flex min-h-14 min-w-0 flex-1 items-center gap-3 rounded-2xl bg-white px-4 text-[#081120]">
+                <Link
+                  href="/properties"
+                  className="flex min-h-13 min-w-0 flex-1 items-center gap-3 rounded-2xl bg-white px-4 text-[#081120] active:scale-[0.99] sm:min-h-14"
+                >
                   <Search className="h-5 w-5 shrink-0 text-[#9B7A19]" />
                   <span className="min-w-0 truncate text-sm font-bold text-[#4B5563]">
-                    Search by project, location, villa, plot...
+                    Search location, villa, plot...
                   </span>
-                </div>
+                </Link>
                 <Link
                   href="/#property-match-finder"
-                  className="inline-flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] px-5 text-xs font-black uppercase tracking-[0.12em] text-[#081120] transition hover:bg-[#F5D67B] sm:text-sm sm:tracking-[0.14em]"
+                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] px-5 text-xs font-black uppercase tracking-[0.12em] text-[#081120] transition hover:bg-[#F5D67B] sm:min-h-14 sm:text-sm sm:tracking-[0.14em]"
                 >
                   Find Match
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
               </div>
-              <div className="mt-2 flex gap-2 overflow-x-auto pb-1 sm:mt-3">
+              <div className="premium-scrollbar mt-2 flex gap-2 overflow-x-auto pb-1 sm:mt-3">
                 {searchSuggestions.map((item) => (
                   <Link
                     key={item}
                     href={`/properties?q=${encodeURIComponent(item)}`}
-                    className="shrink-0 rounded-full border border-white/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-[0.12em] text-white/70 transition hover:border-[#D4AF37]/60 hover:text-[#F5D67B]"
+                    className="shrink-0 rounded-full border border-white/10 bg-white/[0.035] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.11em] text-white/70 transition hover:border-[#D4AF37]/60 hover:text-[#F5D67B] sm:text-[11px] sm:tracking-[0.12em]"
                   >
                     {item}
                   </Link>
@@ -138,11 +141,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            <div className="mt-4 w-full max-w-[30rem] lg:hidden">
-              <FloatingEnquiryCard />
-            </div>
-
-            <div className="premium-scrollbar mt-3 flex snap-x gap-2 overflow-x-auto pb-1 sm:mt-10 sm:grid sm:grid-cols-4 sm:gap-3 sm:overflow-visible sm:pb-0">
+            <div className="premium-scrollbar mt-3 hidden snap-x gap-2 overflow-x-auto pb-1 sm:mt-10 sm:grid sm:grid-cols-4 sm:gap-3 sm:overflow-visible sm:pb-0">
               {publicStats.map((stat) => (
                 <div
                   key={stat.label}

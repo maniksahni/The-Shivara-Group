@@ -27,7 +27,7 @@ const lobbyImage =
 export default function AboutPage() {
   return (
     <main className="bg-[#F8F5EE]">
-      <section className="relative overflow-hidden bg-[#081120] px-5 pb-20 pt-32 text-white sm:px-8 lg:px-12 lg:pt-40">
+      <section className="relative overflow-hidden bg-[#081120] px-4 pb-14 pt-[5.8rem] text-white sm:px-8 sm:pb-20 sm:pt-32 lg:px-12 lg:pt-40">
         <div
           className="absolute inset-0 opacity-42"
           style={{
@@ -38,17 +38,24 @@ export default function AboutPage() {
         />
         <div className="relative mx-auto max-w-7xl">
           <Eyebrow dark>About the brand</Eyebrow>
-          <div className="grid gap-10 lg:grid-cols-[1fr_0.82fr] lg:items-end">
+          <div className="grid gap-7 lg:grid-cols-[1fr_0.82fr] lg:items-end">
             <div>
-              <h1 className="font-[family-name:var(--font-playfair)] text-[2.55rem] font-semibold leading-[0.98] tracking-[-0.045em] sm:text-7xl sm:tracking-[-0.06em] lg:text-8xl">
+              <h1 className="font-[family-name:var(--font-playfair)] text-[2.7rem] font-semibold leading-[0.94] tracking-[-0.055em] sm:text-7xl sm:tracking-[-0.06em] lg:text-8xl">
                 Premium property guidance, built around trust.
               </h1>
-              <p className="mt-7 max-w-2xl text-lg leading-8 text-white/68">
+              <p className="mt-5 max-w-2xl text-base leading-7 text-white/72 sm:mt-7 sm:text-lg sm:leading-8">
                 The Shivara Group helps buyers and investors move from interest to site
                 visit with cleaner conversations, curated options, and transparent next steps.
               </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {["Bareilly local expertise", "WhatsApp-first guidance", "Site-visit-led decisions"].map((item) => (
+                  <span key={item} className="rounded-full border border-white/10 bg-white/[0.065] px-3 py-2 text-[11px] font-black uppercase tracking-[0.12em] text-white/76">
+                    {item}
+                  </span>
+                ))}
+              </div>
             </div>
-            <div className="rounded-[2rem] border border-white/12 bg-white/[0.065] p-6 backdrop-blur">
+            <div className="touch-lift rounded-[1.75rem] border border-white/12 bg-white/[0.065] p-5 backdrop-blur sm:rounded-[2rem] sm:p-6">
               <p className="text-sm font-black uppercase tracking-[0.22em] text-[#D4AF37]">
                 Primary market focus
               </p>
@@ -65,7 +72,7 @@ export default function AboutPage() {
       </section>
 
       <SectionShell>
-        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+        <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
           <div
             className="min-h-[320px] rounded-[2rem] bg-cover bg-center shadow-[0_30px_90px_rgba(8,17,32,0.16)] sm:min-h-[520px] sm:rounded-[2.5rem]"
             style={{ backgroundImage: `url(${lobbyImage})` }}
@@ -99,7 +106,7 @@ export default function AboutPage() {
                   text: "A brand language built for high-value property decisions.",
                 },
               ].map((item) => (
-                <div key={item.title} className="rounded-[1.75rem] border border-[#081120]/8 bg-white p-5">
+              <div key={item.title} className="touch-lift rounded-[1.75rem] border border-[#081120]/8 bg-white p-5 shadow-[0_18px_50px_rgba(8,17,32,0.05)]">
                   <item.icon className="mb-5 h-7 w-7 text-[#D4AF37]" />
                   <h3 className="text-lg font-bold text-[#081120]">{item.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-[#4B5563]">{item.text}</p>
@@ -118,7 +125,7 @@ export default function AboutPage() {
         />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {publicStats.map((stat) => (
-            <div key={stat.label} className="rounded-[2rem] bg-[#081120] p-6 text-white">
+            <div key={stat.label} className="touch-lift rounded-[2rem] bg-[#081120] p-6 text-white">
               <p className="font-[family-name:var(--font-playfair)] text-5xl font-semibold text-[#F5D67B]">
                 {stat.value}
               </p>
@@ -141,7 +148,7 @@ export default function AboutPage() {
           />
           <div className="grid gap-4">
             {processSteps.map((step) => (
-              <div key={step.step} className="rounded-[2rem] border border-white/10 bg-white/[0.05] p-6">
+              <div key={step.step} className="touch-lift rounded-[2rem] border border-white/10 bg-white/[0.05] p-6">
                 <p className="text-sm font-black uppercase tracking-[0.3em] text-[#D4AF37]">
                   {step.step}
                 </p>

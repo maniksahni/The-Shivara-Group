@@ -222,7 +222,7 @@ export function MatchSuccessScreen({
     <motion.div
       initial={{ opacity: 0, scale: 0.96, y: 16 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      className="rounded-[1.75rem] border border-[#10B981]/25 bg-[#081120] p-5 text-white shadow-[0_28px_90px_rgba(8,17,32,0.22)] sm:rounded-[2.4rem] sm:p-8"
+      className="rounded-[1.6rem] border border-[#10B981]/25 bg-[#081120] p-5 text-white shadow-[0_28px_90px_rgba(8,17,32,0.22)] sm:rounded-[2.4rem] sm:p-8"
     >
       <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#10B981] text-white shadow-[0_18px_45px_rgba(16,185,129,0.28)]">
         <CheckCircle2 className="h-8 w-8" />
@@ -404,16 +404,16 @@ export default function PropertyMatchFinder({
   return (
     <section
       id="property-match-finder"
-      className={`relative scroll-mt-24 overflow-hidden rounded-[2rem] border border-[#081120]/8 bg-white p-3 shadow-[0_30px_100px_rgba(8,17,32,0.1)] sm:rounded-[3rem] sm:p-5 ${className}`}
+      className={`relative scroll-mt-24 overflow-hidden rounded-[1.8rem] border border-[#081120]/8 bg-white p-2.5 shadow-[0_30px_100px_rgba(8,17,32,0.1)] sm:rounded-[3rem] sm:p-5 ${className}`}
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(212,175,55,0.18),transparent_32%),radial-gradient(circle_at_88%_18%,rgba(16,185,129,0.12),transparent_30%)]" />
       <div className="relative grid gap-4 lg:grid-cols-[0.76fr_1.24fr] lg:gap-5">
-        <aside className="rounded-[1.6rem] bg-[#081120] p-5 text-white sm:rounded-[2.4rem] sm:p-7">
+        <aside className="rounded-[1.45rem] bg-[#081120] p-4 text-white sm:rounded-[2.4rem] sm:p-7">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-[#F5D67B]">
             <Sparkles className="h-3.5 w-3.5" />
             Signature experience
           </div>
-          <h2 className="mt-5 font-[family-name:var(--font-playfair)] text-4xl font-semibold leading-[0.98] tracking-[-0.045em] sm:text-5xl">
+          <h2 className="mt-4 font-[family-name:var(--font-playfair)] text-[2.25rem] font-semibold leading-[0.98] tracking-[-0.045em] sm:mt-5 sm:text-5xl">
             Property Match Finder
           </h2>
           <p className="mt-4 text-sm leading-7 text-white/66">
@@ -506,7 +506,7 @@ export default function PropertyMatchFinder({
                 </p>
               )}
 
-              <div className="sticky bottom-[calc(0.5rem+env(safe-area-inset-bottom))] z-10 mt-4 grid gap-2 rounded-2xl border border-[#081120]/8 bg-white/92 p-2 shadow-[0_18px_46px_rgba(8,17,32,0.14)] backdrop-blur sm:static sm:flex sm:items-center sm:justify-between sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
+              <div className="sticky bottom-[calc(5.7rem+env(safe-area-inset-bottom))] z-10 mt-4 grid gap-2 rounded-2xl border border-[#081120]/8 bg-white/92 p-2 shadow-[0_18px_46px_rgba(8,17,32,0.14)] backdrop-blur sm:static sm:flex sm:items-center sm:justify-between sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
                 <button
                   type="button"
                   onClick={goBack}

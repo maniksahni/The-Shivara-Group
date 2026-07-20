@@ -24,6 +24,10 @@ const filterTabs = [
   { value: PropertyType.FARMHOUSE, label: "Farmhouse" },
 ];
 
+const budgetTabs = ["All Budgets", "Under 25 Lakh", "25–50 Lakh", "50 Lakh–1 Cr", "1 Cr+", "Contact for pricing"];
+
+const locationTabs = ["All Locations", "Bareilly", "Rajendar Nagar", "Aurika", "Delhi NCR"];
+
 export default function ClientPropertiesGrid({
   initialProperties,
 }: {
@@ -35,6 +39,8 @@ export default function ClientPropertiesGrid({
   const [selectedType, setSelectedType] = useState(
     initialType && filterTabs.some((tab) => tab.value === initialType) ? initialType : "ALL",
   );
+  const [selectedBudget, setSelectedBudget] = useState("All Budgets");
+  const [selectedLocation, setSelectedLocation] = useState("All Locations");
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [selectedProperty, setSelectedProperty] = useState<PublicProperty | null>(null);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
@@ -43,14 +49,26 @@ export default function ClientPropertiesGrid({
     const query = searchQuery.trim().toLowerCase();
     return initialProperties.filter((property) => {
       const matchesType = selectedType === "ALL" || property.type === selectedType;
+      const price = property.price.toLowerCase();
+      const matchesBudget =
+        selectedBudget === "All Budgets" ||
+        (selectedBudget === "Contact for pricing"
+          ? price.includes("contact") || price.includes("request")
+          : price.includes(selectedBudget.toLowerCase().replace("–", "–")) ||
+            property.description.toLowerCase().includes(selectedBudget.toLowerCase()));
+      const matchesLocation =
+        selectedLocation === "All Locations" ||
+        property.location.toLowerCase().includes(selectedLocation.toLowerCase()) ||
+        property.title.toLowerCase().includes(selectedLocation.toLowerCase()) ||
+        property.description.toLowerCase().includes(selectedLocation.toLowerCase());
       const matchesSearch =
         !query ||
         property.title.toLowerCase().includes(query) ||
         property.location.toLowerCase().includes(query) ||
         property.description.toLowerCase().includes(query);
-      return matchesType && matchesSearch;
+      return matchesType && matchesBudget && matchesLocation && matchesSearch;
     });
-  }, [initialProperties, searchQuery, selectedType]);
+  }, [initialProperties, searchQuery, selectedBudget, selectedLocation, selectedType]);
 
   const toggleSaved = (id: string) => {
     setSavedIds((current) => {
@@ -95,6 +113,40 @@ export default function ClientPropertiesGrid({
             ))}
           </div>
         </div>
+        <div className="mt-3 grid gap-3 lg:grid-cols-2">
+          <div className="premium-scrollbar flex gap-2 overflow-x-auto pb-1">
+            {budgetTabs.map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setSelectedBudget(tab)}
+                className={`min-h-10 shrink-0 rounded-full px-3 text-[11px] font-black uppercase tracking-[0.12em] transition ${
+                  selectedBudget === tab
+                    ? "bg-[#D4AF37] text-[#081120]"
+                    : "bg-[#F8F5EE] text-[#4B5563] hover:bg-[#081120] hover:text-white"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+          <div className="premium-scrollbar flex gap-2 overflow-x-auto pb-1 lg:justify-end">
+            {locationTabs.map((tab) => (
+              <button
+                key={tab}
+                type="button"
+                onClick={() => setSelectedLocation(tab)}
+                className={`min-h-10 shrink-0 rounded-full px-3 text-[11px] font-black uppercase tracking-[0.12em] transition ${
+                  selectedLocation === tab
+                    ? "bg-[#081120] text-white"
+                    : "bg-[#F8F5EE] text-[#4B5563] hover:bg-[#D4AF37] hover:text-[#081120]"
+                }`}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
       <div className="flex items-end justify-between gap-4">
@@ -119,7 +171,7 @@ export default function ClientPropertiesGrid({
 
       {filteredProperties.length === 0 ? (
         <div className="rounded-[2.4rem] border border-[#081120]/8 bg-white p-10 text-center shadow-[0_24px_70px_rgba(8,17,32,0.07)]">
-          <Search className="mx-auto h-12 w-12 text-[#D4AF37]" />
+            <Search className="mx-auto h-12 w-12 text-[#D4AF37]" />
           <h3 className="mt-5 font-[family-name:var(--font-playfair)] text-3xl font-semibold">
             No matching properties found.
           </h3>
@@ -131,6 +183,8 @@ export default function ClientPropertiesGrid({
             onClick={() => {
               setSearchQuery("");
               setSelectedType("ALL");
+              setSelectedBudget("All Budgets");
+              setSelectedLocation("All Locations");
             }}
             className="mt-6 min-h-12 rounded-full bg-[#081120] px-6 text-sm font-black uppercase tracking-[0.14em] text-white"
           >

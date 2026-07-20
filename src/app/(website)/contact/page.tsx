@@ -109,19 +109,32 @@ export default function ContactPage() {
 
   return (
     <main className="bg-[#F8F5EE]">
-      <section className="bg-[#081120] px-5 pb-16 pt-32 text-white sm:px-8 lg:px-12 lg:pt-40">
+      <section className="relative overflow-hidden bg-[#081120] px-4 pb-12 pt-[5.8rem] text-white sm:px-8 sm:pb-16 sm:pt-32 lg:px-12 lg:pt-40">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_10%,rgba(212,175,55,0.22),transparent_32%),radial-gradient(circle_at_80%_20%,rgba(16,185,129,0.12),transparent_26%)]" />
         <div className="mx-auto max-w-7xl">
-          <p className="text-xs font-black uppercase tracking-[0.34em] text-[#D4AF37]">
+          <p className="relative inline-flex rounded-full border border-[#D4AF37]/20 bg-white/[0.06] px-3 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-[#D4AF37] backdrop-blur sm:text-xs sm:tracking-[0.34em]">
             Contact & site visits
           </p>
-          <div className="mt-5 grid gap-8 lg:grid-cols-[1fr_0.75fr] lg:items-end">
-            <h1 className="font-[family-name:var(--font-playfair)] text-[2.55rem] font-semibold leading-[0.98] tracking-[-0.045em] sm:text-7xl sm:tracking-[-0.06em] lg:text-8xl">
+          <div className="relative mt-5 grid gap-7 lg:grid-cols-[1fr_0.75fr] lg:items-end">
+            <h1 className="font-[family-name:var(--font-playfair)] text-[2.7rem] font-semibold leading-[0.94] tracking-[-0.055em] sm:text-7xl sm:tracking-[-0.06em] lg:text-8xl">
               Start with a call. Continue with confidence.
             </h1>
-            <p className="text-lg leading-8 text-white/66">
-              Send an enquiry, book a site visit, or connect instantly on WhatsApp. Every form
-              submission creates a lead for the CRM team to follow up.
-            </p>
+            <div>
+              <p className="text-base leading-7 text-white/70 sm:text-lg sm:leading-8">
+                Send an enquiry, book a site visit, or connect instantly on WhatsApp. Every form
+                submission creates a lead for the CRM team to follow up.
+              </p>
+              <div className="mt-5 grid grid-cols-2 gap-2">
+                <a href={siteConfig.phoneHref} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#D4AF37] text-xs font-black uppercase tracking-[0.12em] text-[#081120]">
+                  <Phone className="h-4 w-4" />
+                  Call Now
+                </a>
+                <a href={siteConfig.whatsappHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#10B981] text-xs font-black uppercase tracking-[0.12em] text-white">
+                  <MessageCircle className="h-4 w-4" />
+                  WhatsApp
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -170,7 +183,7 @@ export default function ContactPage() {
                 text: "Please call or WhatsApp for the fastest response",
               },
             ].map((item) => (
-              <div key={item.title} className="rounded-[2rem] border border-[#081120]/8 bg-white p-5 shadow-[0_18px_50px_rgba(8,17,32,0.05)]">
+              <div key={item.title} className="touch-lift rounded-[1.75rem] border border-[#081120]/8 bg-white p-5 shadow-[0_18px_50px_rgba(8,17,32,0.05)] sm:rounded-[2rem]">
                 <div className="flex gap-4">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#F8F5EE] text-[#9B7A19]">
                     <item.icon className="h-5 w-5" />
@@ -194,7 +207,7 @@ export default function ContactPage() {
               </div>
             ))}
 
-            <div className="rounded-[2rem] bg-[#081120] p-6 text-white">
+            <div className="touch-lift rounded-[2rem] bg-[#081120] p-6 text-white">
               <p className="text-xs font-black uppercase tracking-[0.24em] text-[#D4AF37]">
                 Instant help
               </p>
@@ -237,7 +250,7 @@ export default function ContactPage() {
             </div>
           </aside>
 
-          <div id="site-visit" className="rounded-[2.4rem] border border-[#081120]/8 bg-white p-5 shadow-[0_28px_90px_rgba(8,17,32,0.1)] sm:p-8">
+          <div id="site-visit" className="rounded-[1.9rem] border border-[#081120]/8 bg-white p-4 shadow-[0_28px_90px_rgba(8,17,32,0.1)] sm:rounded-[2.4rem] sm:p-8">
             <div className="mb-6 grid grid-cols-2 gap-2 rounded-2xl bg-[#F8F5EE] p-2">
               <button
                 type="button"
@@ -267,7 +280,7 @@ export default function ContactPage() {
               <p className="text-xs font-black uppercase tracking-[0.28em] text-[#9B7A19]">
                 {activeTab === "visit" ? "Private site visit request" : "Buyer enquiry"}
               </p>
-              <h2 className="mt-2 font-[family-name:var(--font-playfair)] text-4xl font-semibold tracking-[-0.04em] text-[#081120]">
+              <h2 className="mt-2 font-[family-name:var(--font-playfair)] text-3xl font-semibold tracking-[-0.04em] text-[#081120] sm:text-4xl">
                 {activeTab === "visit" ? "Choose a preferred visit slot." : "Tell us what you are looking for."}
               </h2>
             </div>

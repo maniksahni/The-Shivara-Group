@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BadgeCheck, Building2, MapPinned, Sparkles } from "lucide-react";
+import { BadgeCheck, Building2, MapPinned, MessageCircle, Search, Sparkles } from "lucide-react";
 import { isDatabaseConfigured, prisma } from "@/lib/prisma";
 import ClientPropertiesGrid from "./ClientPropertiesGrid";
 import PropertyMatchFinder from "@/components/website/PropertyMatchFinder";
@@ -69,20 +69,32 @@ export default async function PropertiesPage() {
 
   return (
     <main className="bg-[#F8F5EE]">
-      <section className="relative overflow-hidden bg-[#081120] px-5 pb-16 pt-32 text-white sm:px-8 lg:px-12 lg:pt-40">
+      <section className="relative overflow-hidden bg-[#081120] px-4 pb-12 pt-[5.8rem] text-white sm:px-8 sm:pb-16 sm:pt-32 lg:px-12 lg:pt-40">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(212,175,55,0.22),transparent_34%),radial-gradient(circle_at_80%_10%,rgba(16,185,129,0.14),transparent_28%)]" />
         <div className="relative mx-auto max-w-7xl">
-          <p className="text-xs font-black uppercase tracking-[0.34em] text-[#D4AF37]">
+          <p className="inline-flex rounded-full border border-[#D4AF37]/20 bg-white/[0.06] px-3 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-[#D4AF37] backdrop-blur sm:text-xs sm:tracking-[0.34em]">
             Verified catalog
           </p>
-          <div className="mt-5 grid gap-8 lg:grid-cols-[1fr_0.74fr] lg:items-end">
-            <h1 className="font-[family-name:var(--font-playfair)] text-[2.55rem] font-semibold leading-[0.98] tracking-[-0.045em] sm:text-7xl sm:tracking-[-0.06em] lg:text-8xl">
+          <div className="mt-5 grid gap-7 lg:grid-cols-[1fr_0.74fr] lg:items-end">
+            <h1 className="font-[family-name:var(--font-playfair)] text-[2.7rem] font-semibold leading-[0.94] tracking-[-0.055em] sm:text-7xl sm:tracking-[-0.06em] lg:text-8xl">
               Premium properties, curated for serious buyers.
             </h1>
-            <p className="text-lg leading-8 text-white/66">
-              Explore public highlights and active CRM inventory. Pricing and final availability
-              should be confirmed directly with The Shivara Group.
-            </p>
+            <div>
+              <p className="text-base leading-7 text-white/70 sm:text-lg sm:leading-8">
+                Explore verified public highlights and active inventory with filters for property
+                type, budget comfort, location, and site-visit readiness.
+              </p>
+              <div className="mt-5 grid grid-cols-2 gap-2">
+                <a href="#properties-list" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#D4AF37] px-4 text-xs font-black uppercase tracking-[0.12em] text-[#081120]">
+                  <Search className="h-4 w-4" />
+                  Search
+                </a>
+                <a href="https://wa.me/917060788407?text=Hi%20The%20Shivara%20Group%2C%20please%20help%20me%20shortlist%20properties." target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#10B981] px-4 text-xs font-black uppercase tracking-[0.12em] text-white">
+                  <MessageCircle className="h-4 w-4" />
+                  WhatsApp
+                </a>
+              </div>
+            </div>
           </div>
           <div className="mt-10 grid gap-3 sm:grid-cols-3">
             {[
@@ -102,7 +114,7 @@ export default async function PropertiesPage() {
         </div>
       </section>
 
-      <section className="px-5 py-10 pb-28 sm:px-8 lg:px-12 lg:py-16">
+      <section id="properties-list" className="px-4 py-10 pb-28 sm:px-8 lg:px-12 lg:py-16">
         <div className="mx-auto max-w-7xl space-y-10">
           <PropertyMatchFinder compact />
           <ClientPropertiesGrid initialProperties={properties} />

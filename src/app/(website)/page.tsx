@@ -67,20 +67,36 @@ export default function HomePage() {
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#081120] to-transparent" />
 
         <div className="relative mx-auto grid w-full max-w-7xl min-w-0 items-center gap-5 sm:min-h-[calc(100svh-8rem)] sm:gap-8 lg:grid-cols-[1.08fr_0.92fr]">
-          <div className="w-full min-w-0 max-w-3xl">
+          <div className="w-full min-w-0 max-w-3xl animate-hero-rise">
+            <div className="mb-3 inline-flex max-w-full items-center gap-2 rounded-full border border-[#D4AF37]/24 bg-white/[0.07] px-3 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-[#F5D67B] shadow-[0_18px_60px_rgba(0,0,0,0.16)] backdrop-blur-xl sm:mb-5 sm:px-4 sm:text-xs sm:tracking-[0.26em]">
+              <Sparkles className="h-3.5 w-3.5 shrink-0" />
+              <span className="truncate">Premium real estate in Bareilly</span>
+            </div>
             <Eyebrow dark>{siteConfig.tagline}</Eyebrow>
             <h1 className="max-w-[13ch] text-balance font-[family-name:var(--font-playfair)] text-[clamp(2.55rem,11.5vw,3.65rem)] font-semibold leading-[0.94] tracking-[-0.055em] sm:max-w-none sm:text-[clamp(4.6rem,8vw,7.8rem)] sm:leading-[0.92] sm:tracking-[-0.075em]">
-              Find your perfect property with Bareilly&apos;s trusted real estate experts.
+              Find Your Perfect Property With Bareilly&apos;s Trusted Real Estate Experts.
             </h1>
             <p className="mt-3 max-w-[31rem] text-[15px] leading-6 text-white/76 sm:mt-7 sm:max-w-2xl sm:text-xl sm:leading-8">
-              A luxury guided property journey for verified Bareilly homes, commercial spaces,
-              investment plots, site visits, loan support, and documentation assistance.
+              Discover verified residential, commercial, and investment properties with expert
+              guidance, site visits, loan support, and complete documentation assistance.
             </p>
+
+            <div className="mt-4 flex flex-wrap gap-2 sm:mt-6">
+              {["Verified properties", "Site visit support", "Loan assistance"].map((item) => (
+                <span
+                  key={item}
+                  className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.065] px-3 text-[11px] font-bold text-white/78 backdrop-blur"
+                >
+                  <CheckCircle2 className="h-3.5 w-3.5 text-[#10B981]" />
+                  {item}
+                </span>
+              ))}
+            </div>
 
             <div className="mt-4 grid w-full max-w-[28rem] grid-cols-2 gap-2 sm:mt-9 sm:flex sm:max-w-none sm:flex-row sm:gap-3">
               <LuxuryButton href="/properties" className="col-span-2 w-full sm:w-auto">Explore Properties</LuxuryButton>
               <LuxuryButton href="/#property-match-finder" variant="outline" className="w-full px-3 text-[10px] tracking-[0.06em] sm:w-auto sm:px-6 sm:text-sm sm:tracking-[0.16em]">
-                Find Match
+                Free Consultation
               </LuxuryButton>
               <a
                 href={siteConfig.whatsappHref}
@@ -130,7 +146,7 @@ export default function HomePage() {
               {publicStats.map((stat) => (
                 <div
                   key={stat.label}
-                  className="min-w-[7.65rem] snap-start rounded-2xl border border-white/10 bg-white/[0.055] p-3 backdrop-blur sm:min-w-0 sm:rounded-3xl sm:p-4"
+                  className="touch-lift min-w-[7.65rem] snap-start rounded-2xl border border-white/10 bg-white/[0.055] p-3 backdrop-blur sm:min-w-0 sm:rounded-3xl sm:p-4"
                 >
                   <p className="font-[family-name:var(--font-playfair)] text-[1.55rem] font-semibold leading-none text-[#F5D67B] sm:text-3xl">
                     {stat.value}
@@ -143,7 +159,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="relative hidden lg:block">
+          <div className="relative hidden animate-hero-rise lg:block" style={{ animationDelay: "120ms" }}>
             <div className="absolute -left-16 top-8 z-10 w-[420px]">
               <FloatingEnquiryCard />
             </div>
@@ -185,7 +201,7 @@ export default function HomePage() {
           {trustHighlights.map((item) => (
             <div
               key={item}
-              className="flex items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.045] p-3.5 sm:p-4"
+              className="touch-lift flex items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.045] p-3.5 sm:p-4"
             >
               <BadgeCheck className="h-5 w-5 shrink-0 text-[#D4AF37]" />
               <span className="text-sm font-semibold text-white/74">{item}</span>
@@ -225,7 +241,7 @@ export default function HomePage() {
           {fallbackProperties.slice(0, 3).map((property, index) => (
             <article
               key={property.id}
-              className="group w-[86vw] shrink-0 snap-center overflow-hidden rounded-[1.6rem] border border-[#081120]/8 bg-white shadow-[0_24px_70px_rgba(8,17,32,0.08)] transition duration-500 hover:-translate-y-2 hover:shadow-[0_32px_90px_rgba(8,17,32,0.16)] sm:w-[420px] sm:rounded-[2rem] md:w-auto"
+              className="touch-lift group w-[86vw] shrink-0 snap-center overflow-hidden rounded-[1.6rem] border border-[#081120]/8 bg-white shadow-[0_24px_70px_rgba(8,17,32,0.08)] transition duration-500 hover:shadow-[0_32px_90px_rgba(8,17,32,0.16)] sm:w-[420px] sm:rounded-[2rem] md:w-auto"
             >
               <Link href={`/properties/${property.id}`} className="block">
                 <div
@@ -273,19 +289,20 @@ export default function HomePage() {
                     </span>
                   ))}
                 </div>
-                <div className="mt-5 grid grid-cols-[1fr_auto_auto] gap-2">
+                <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-[1fr_auto_auto]">
                   <Link
                     href={`/properties/${property.id}`}
-                    className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#081120] px-4 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:bg-[#D4AF37] hover:text-[#081120]"
+                    className="col-span-2 inline-flex min-h-11 items-center justify-center rounded-full bg-[#081120] px-4 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:bg-[#D4AF37] hover:text-[#081120] sm:col-span-1"
                   >
                     View Details
                   </Link>
                   <a
                     href={siteConfig.phoneHref}
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#F8F5EE] text-[#081120]"
+                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-[#F8F5EE] text-xs font-black text-[#081120] sm:w-11"
                     aria-label={`Call for ${property.title}`}
                   >
                     <Phone className="h-4 w-4" />
+                    <span className="sm:hidden">Call</span>
                   </a>
                   <a
                     href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(
@@ -293,10 +310,11 @@ export default function HomePage() {
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#10B981] text-white"
+                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-[#10B981] text-xs font-black text-white sm:w-11"
                     aria-label={`WhatsApp for ${property.title}`}
                   >
                     <MessageCircle className="h-4 w-4" />
+                    <span className="sm:hidden">WhatsApp</span>
                   </a>
                 </div>
               </div>
@@ -317,7 +335,7 @@ export default function HomePage() {
             <Link
               key={category.title}
               href={category.href}
-              className="group relative min-h-[260px] overflow-hidden rounded-[1.6rem] bg-[#081120] shadow-[0_24px_70px_rgba(8,17,32,0.12)] sm:min-h-[420px] sm:rounded-[2.2rem]"
+              className="touch-lift group relative min-h-[260px] overflow-hidden rounded-[1.6rem] bg-[#081120] shadow-[0_24px_70px_rgba(8,17,32,0.12)] sm:min-h-[420px] sm:rounded-[2.2rem]"
             >
               <div
                 className="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-110"
@@ -355,7 +373,7 @@ export default function HomePage() {
             {bareillyGuide.map((item) => (
               <div
                 key={item.zone}
-                className="rounded-[1.5rem] border border-white/10 bg-white/[0.055] p-4 shadow-[0_20px_70px_rgba(0,0,0,0.18)] sm:rounded-[2rem] sm:p-5"
+                className="touch-lift rounded-[1.5rem] border border-white/10 bg-white/[0.055] p-4 shadow-[0_20px_70px_rgba(0,0,0,0.18)] sm:rounded-[2rem] sm:p-5"
               >
                 <MapPin className="h-5 w-5 text-[#D4AF37]" />
                 <p className="mt-4 text-[11px] font-black uppercase tracking-[0.2em] text-[#F5D67B]">
@@ -380,7 +398,7 @@ export default function HomePage() {
           {services.map((service, index) => (
             <div
               key={service.title}
-              className="group rounded-[1.6rem] border border-[#081120]/8 bg-[#F8F5EE] p-4 transition duration-300 hover:-translate-y-1 hover:bg-[#081120] hover:text-white sm:rounded-[2rem] sm:p-6"
+              className="touch-lift group rounded-[1.6rem] border border-[#081120]/8 bg-[#F8F5EE] p-4 transition duration-300 hover:bg-[#081120] hover:text-white sm:rounded-[2rem] sm:p-6"
             >
               <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#D4AF37] text-[#081120] sm:mb-8 sm:h-12 sm:w-12">
                 {index % 3 === 0 ? (

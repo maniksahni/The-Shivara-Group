@@ -82,6 +82,11 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
     }
   }, [isEditMode, searchParams]);
 
+  const defaultAssignedAgentId =
+    lead?.assignedToId && agents.some((agent) => agent.id === lead.assignedToId)
+      ? lead.assignedToId
+      : agents[0]?.id || "";
+
   // Initialize Form
   const {
     register,
@@ -101,7 +106,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
       source: lead?.source || LeadSource.WEBSITE,
       status: lead?.status || LeadStatus.NEW,
       priority: lead?.priority || Priority.MEDIUM,
-      assignedToId: lead?.assignedToId || "",
+      assignedToId: defaultAssignedAgentId,
       followUpDate: toDateTimeLocalValue(lead?.followUpDate),
     },
   });

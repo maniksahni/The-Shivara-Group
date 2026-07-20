@@ -19,6 +19,11 @@ import bcrypt from 'bcryptjs'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/auth'
 import type { Prisma } from '@prisma/client'
+import {
+  getPrimarySalesAgentWhere,
+  isPrimarySalesAgent,
+  PRIMARY_SALES_AGENT_DISPLAY_NAME,
+} from '@/lib/crm-agent-policy'
 
 // ---------------------------------------------------------------------------
 // Zod validation schemas
@@ -109,6 +114,10 @@ async function requireAdmin() {
 export async function getAgents(): Promise<ActionResult<SafeAgent[]>> {
   try {
     const agents = await prisma.user.findMany({
+      where: {
+        isActive: true,
+        ...getPrimarySalesAgentWhere(),
+      },
       orderBy: { name: 'asc' },
       select: {
         id: true,
@@ -209,6 +218,12 @@ export async function createAgent(
     if (!session.success) return session
 
     const validated = createAgentSchema.parse(data)
+    if (validated.role === 'AGENT' && !isPrimarySalesAgent(validated)) {
+      return {
+        success: false,
+        error: `Only ${PRIMARY_SALES_AGENT_DISPLAY_NAME} can be created as a sales agent.`,
+      }
+    }
 
     // Check for email uniqueness before attempting to insert
     const existing = await prisma.user.findUnique({
@@ -265,9 +280,26 @@ export async function updateAgent(
 
     const validated = updateAgentSchema.parse(data)
 
-    const existing = await prisma.user.findUnique({ where: { id }, select: { id: true, email: true } })
+    const existing = await prisma.user.findUnique({
+      where: { id },
+      select: { id: true, email: true, name: true, role: true },
+    })
     if (!existing) {
       return { success: false, error: 'Agent not found.' }
+    }
+
+    if ((validated.role ?? existing.role) === 'AGENT') {
+      const proposedAgent = {
+        name: validated.name ?? existing.name,
+        email: validated.email ?? existing.email,
+      }
+
+      if (!isPrimarySalesAgent(proposedAgent)) {
+        return {
+          success: false,
+          error: `Only ${PRIMARY_SALES_AGENT_DISPLAY_NAME} can remain active as a sales agent.`,
+        }
+      }
     }
 
     // Email uniqueness check only when email is being changed
@@ -370,7 +402,10 @@ export async function getAgentStats(): Promise<ActionResult<AgentPerformanceStat
   try {
     // Fetch all agents (active only for stats — adjust if needed)
     const agents = await prisma.user.findMany({
-      where: { isActive: true },
+      where: {
+        isActive: true,
+        ...getPrimarySalesAgentWhere(),
+      },
       orderBy: { name: 'asc' },
       select: { id: true, name: true, email: true, phone: true },
     })

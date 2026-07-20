@@ -18,6 +18,10 @@ import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/auth'
 import { LeadSource, LeadStatus, Priority, PropertyType, Prisma, SiteVisitStatus } from '@prisma/client'
+import {
+  getPrimarySalesAgentWhere,
+  PRIMARY_SALES_AGENT_DISPLAY_NAME,
+} from '@/lib/crm-agent-policy'
 
 // ---------------------------------------------------------------------------
 // Zod schemas for validation
@@ -162,6 +166,28 @@ async function requireCrmUser() {
   return { success: true as const, user: session.user }
 }
 
+async function getAssignableSalesAgent(agentId: string | null | undefined) {
+  if (!agentId) return { success: true as const, agent: null }
+
+  const agent = await prisma.user.findFirst({
+    where: {
+      id: agentId,
+      isActive: true,
+      ...getPrimarySalesAgentWhere(),
+    },
+    select: { id: true, name: true },
+  })
+
+  if (!agent) {
+    return {
+      success: false as const,
+      error: `Leads can only be assigned to ${PRIMARY_SALES_AGENT_DISPLAY_NAME}.`,
+    }
+  }
+
+  return { success: true as const, agent }
+}
+
 // ---------------------------------------------------------------------------
 // createLead
 // ---------------------------------------------------------------------------
@@ -177,6 +203,8 @@ export async function createLead(
     if (!session.success) return session
 
     const validated = createLeadSchema.parse(data)
+    const assignedAgentResult = await getAssignableSalesAgent(validated.assignedToId)
+    if (!assignedAgentResult.success) return assignedAgentResult
 
     const lead = await prisma.$transaction(async (tx) => {
       const newLead = await tx.lead.create({
@@ -190,7 +218,7 @@ export async function createLead(
           propertyType: validated.propertyType ?? null,
           source: validated.source,
           priority: validated.priority ?? 'MEDIUM',
-          assignedToId: validated.assignedToId ?? null,
+          assignedToId: assignedAgentResult.agent?.id ?? null,
           status: validated.status ?? 'NEW',
           followUpDate: parseOptionalDateTime(validated.followUpDate),
         },
@@ -201,7 +229,7 @@ export async function createLead(
         leadId: newLead.id,
         action: 'Lead created',
         description: `Lead created via CRM. Source: ${validated.source}`,
-        performedById: validated.assignedToId || undefined,
+        performedById: assignedAgentResult.agent?.id,
       })
 
       return newLead
@@ -236,6 +264,11 @@ export async function updateLead(
     if (!session.success) return session
 
     const validated = updateLeadSchema.parse(data)
+    const assignedAgentResult =
+      validated.assignedToId === undefined
+        ? { success: true as const, agent: undefined }
+        : await getAssignableSalesAgent(validated.assignedToId)
+    if (!assignedAgentResult.success) return assignedAgentResult
 
     const existing = await prisma.lead.findUnique({ where: { id } })
     if (!existing) {
@@ -255,7 +288,10 @@ export async function updateLead(
           propertyType: validated.propertyType,
           source: validated.source,
           priority: validated.priority,
-          assignedToId: validated.assignedToId === undefined ? undefined : validated.assignedToId || null,
+          assignedToId:
+            assignedAgentResult.agent === undefined
+              ? undefined
+              : assignedAgentResult.agent?.id ?? null,
           status: validated.status,
           followUpDate:
             validated.followUpDate === undefined
@@ -364,16 +400,9 @@ export async function assignLead(
       return { success: false, error: 'Only admins can assign or reassign leads.' }
     }
 
-    const agent = agentId
-      ? await prisma.user.findFirst({
-          where: { id: agentId, isActive: true },
-          select: { id: true, name: true },
-        })
-      : null
-
-    if (agentId && !agent) {
-      return { success: false, error: 'Agent not found.' }
-    }
+    const assignedAgentResult = await getAssignableSalesAgent(agentId)
+    if (!assignedAgentResult.success) return assignedAgentResult
+    const agent = assignedAgentResult.agent
 
     const existing = await prisma.lead.findUnique({
       where: { id: leadId },
@@ -387,8 +416,8 @@ export async function assignLead(
       const updated = await tx.lead.update({
         where: { id: leadId },
         data: {
-          assignedToId: agentId,
-          status: agentId && existing.status === 'NEW' ? 'ASSIGNED' : existing.status,
+          assignedToId: agent?.id ?? null,
+          status: agent && existing.status === 'NEW' ? 'ASSIGNED' : existing.status,
           updatedAt: new Date(),
         },
         select: { id: true },
@@ -403,7 +432,7 @@ export async function assignLead(
         description: `Lead reassigned from ${previousAgent} to ${nextAgent}`,
         performedById: currentUserId ?? session.user.id,
         oldValue: existing.assignedToId ?? undefined,
-        newValue: agentId ?? undefined,
+        newValue: agent?.id ?? undefined,
       })
 
       return updated
@@ -444,13 +473,10 @@ export async function bulkAssignLeads(
       return { success: false, error: 'Select at least one lead.' }
     }
 
-    const agent = await prisma.user.findFirst({
-      where: { id: agentId, isActive: true },
-      select: { id: true, name: true },
-    })
-    if (!agent) {
-      return { success: false, error: 'Agent not found.' }
-    }
+    const assignedAgentResult = await getAssignableSalesAgent(agentId)
+    if (!assignedAgentResult.success) return assignedAgentResult
+    if (!assignedAgentResult.agent) return { success: false, error: 'Agent not found.' }
+    const agent = assignedAgentResult.agent
 
     const result = await prisma.$transaction(async (tx) => {
       const leads = await tx.lead.findMany({

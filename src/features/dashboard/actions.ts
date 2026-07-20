@@ -15,6 +15,7 @@
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/auth'
 import type { DashboardStats, LeadWithAgent } from '@/types'
+import { getPrimarySalesAgentWhere } from '@/lib/crm-agent-policy'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
@@ -419,7 +420,10 @@ export async function getDailyOperations(): Promise<DailyOperationsData> {
     }),
     isAdmin
       ? prisma.user.findMany({
-          where: { isActive: true },
+          where: {
+            isActive: true,
+            ...getPrimarySalesAgentWhere(),
+          },
           select: { id: true, name: true, email: true, phone: true },
           orderBy: { name: 'asc' },
         })

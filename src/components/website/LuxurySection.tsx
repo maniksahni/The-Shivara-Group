@@ -62,7 +62,7 @@ export function SectionShell({
   id?: string;
 }) {
   return (
-    <section id={id} className={`relative px-4 py-7 sm:px-8 sm:py-14 lg:px-12 lg:py-24 ${className}`}>
+    <section id={id} className={`relative px-4 py-5 sm:px-8 sm:py-14 lg:px-12 lg:py-24 ${className}`}>
       <div className="mx-auto max-w-7xl">{children}</div>
     </section>
   );
@@ -82,12 +82,12 @@ export function SectionHeader({
   align?: "left" | "center";
 }) {
   return (
-    <div className={`mb-7 max-w-3xl sm:mb-10 ${align === "center" ? "mx-auto text-center" : ""}`}>
+    <div className={`mb-5 max-w-3xl sm:mb-10 ${align === "center" ? "mx-auto text-center" : ""}`}>
       <div className={align === "center" ? "flex justify-center" : ""}>
         <Eyebrow dark={dark}>{eyebrow}</Eyebrow>
       </div>
       <h2
-        className={`font-[family-name:var(--font-playfair)] text-[2.05rem] font-semibold leading-[1.04] tracking-[-0.035em] sm:text-5xl sm:tracking-[-0.04em] lg:text-6xl ${
+        className={`font-[family-name:var(--font-playfair)] text-[1.92rem] font-semibold leading-[1.03] tracking-[-0.04em] sm:text-5xl sm:tracking-[-0.04em] lg:text-6xl ${
           dark ? "text-white" : "text-[#081120]"
         }`}
       >
@@ -95,7 +95,7 @@ export function SectionHeader({
       </h2>
       {description && (
         <p
-          className={`mt-3 text-[15px] leading-7 sm:mt-5 sm:text-lg sm:leading-8 ${
+          className={`mt-2.5 text-[14px] leading-6 sm:mt-5 sm:text-lg sm:leading-8 ${
             dark ? "text-white/68" : "text-[#4B5563]"
           }`}
         >

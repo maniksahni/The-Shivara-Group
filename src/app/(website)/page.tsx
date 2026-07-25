@@ -227,8 +227,8 @@ export default function HomePage() {
         </div>
       </SectionShell>
 
-      <SectionShell className="bg-[#F8F5EE] py-5 sm:py-14">
-        <div className="mb-6 grid gap-3 sm:mb-10 sm:grid-cols-2 lg:grid-cols-4">
+      <SectionShell className="bg-[#F8F5EE] py-4 sm:py-14">
+        <div className="mb-4 grid gap-2.5 sm:mb-10 sm:grid-cols-2 lg:grid-cols-4">
           {conversionTrustCards.map((card) => (
             <div
               key={card.title}
@@ -245,7 +245,7 @@ export default function HomePage() {
         <PropertyMatchFinder />
       </SectionShell>
 
-      <SectionShell id="curated">
+      <SectionShell id="curated" className="pt-3 sm:pt-14">
         <div className="grid gap-6 lg:grid-cols-[0.88fr_1.12fr] lg:items-end">
           <SectionHeader
             eyebrow="Curated inventory"

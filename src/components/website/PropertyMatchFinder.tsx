@@ -404,11 +404,11 @@ export default function PropertyMatchFinder({
   return (
     <section
       id="property-match-finder"
-      className={`relative scroll-mt-24 overflow-hidden rounded-[1.45rem] border border-[#081120]/8 bg-white p-1.5 shadow-[0_24px_70px_rgba(8,17,32,0.08)] sm:scroll-mt-28 sm:rounded-[3rem] sm:p-5 sm:shadow-[0_30px_100px_rgba(8,17,32,0.1)] ${className}`}
+      className={`relative scroll-mt-24 overflow-hidden rounded-[1.45rem] border border-[#081120]/8 bg-white p-1 shadow-[0_18px_48px_rgba(8,17,32,0.075)] sm:scroll-mt-28 sm:rounded-[3rem] sm:p-5 sm:shadow-[0_30px_100px_rgba(8,17,32,0.1)] ${className}`}
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(212,175,55,0.18),transparent_32%),radial-gradient(circle_at_88%_18%,rgba(16,185,129,0.12),transparent_30%)]" />
-      <div className="relative grid gap-2.5 sm:gap-4 lg:grid-cols-[0.76fr_1.24fr] lg:gap-5">
-        <aside className="rounded-[1.25rem] bg-[linear-gradient(145deg,#081120,#101d31_62%,#13243d)] p-3 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:rounded-[2.4rem] sm:p-7">
+      <div className="relative grid gap-2 sm:gap-4 lg:grid-cols-[0.76fr_1.24fr] lg:gap-5">
+        <aside className="rounded-[1.2rem] bg-[linear-gradient(145deg,#081120,#101d31_62%,#13243d)] p-3 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:rounded-[2.4rem] sm:p-7">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-[#F5D67B]">
             <Sparkles className="h-3.5 w-3.5" />
             Signature experience
@@ -506,7 +506,7 @@ export default function PropertyMatchFinder({
                 </p>
               )}
 
-              <div className="sticky bottom-[calc(4.55rem+env(safe-area-inset-bottom))] z-[60] mt-2 grid grid-cols-2 gap-2 rounded-2xl border border-[#081120]/8 bg-white/94 p-1.5 shadow-[0_14px_34px_rgba(8,17,32,0.10)] backdrop-blur sm:static sm:flex sm:items-center sm:justify-between sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
+              <div className="mt-2 grid grid-cols-2 gap-2 rounded-2xl border border-[#081120]/8 bg-white/94 p-1.5 shadow-[0_10px_26px_rgba(8,17,32,0.08)] backdrop-blur sm:mt-4 sm:flex sm:items-center sm:justify-between sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
                 <button
                   type="button"
                   onClick={goBack}

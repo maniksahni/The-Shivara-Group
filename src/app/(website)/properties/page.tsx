@@ -78,23 +78,23 @@ export default async function PropertiesPage() {
 
   return (
     <main className="bg-[#F8F5EE]">
-      <section className="relative overflow-hidden bg-[#081120] px-4 pb-12 pt-[5.8rem] text-white sm:px-8 sm:pb-16 sm:pt-32 lg:px-12 lg:pt-40">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(212,175,55,0.22),transparent_34%),radial-gradient(circle_at_80%_10%,rgba(16,185,129,0.14),transparent_28%)]" />
+      <section className="relative overflow-hidden bg-[#081120] px-4 pb-7 pt-[5.2rem] text-white sm:px-8 sm:pb-16 sm:pt-32 lg:px-12 lg:pt-40">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_12%,rgba(212,175,55,0.24),transparent_34%),radial-gradient(circle_at_80%_10%,rgba(16,185,129,0.14),transparent_28%),linear-gradient(180deg,rgba(8,17,32,0.12),#081120)]" />
         <div className="relative mx-auto max-w-7xl">
           <p className="inline-flex rounded-full border border-[#D4AF37]/20 bg-white/[0.06] px-3 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-[#D4AF37] backdrop-blur sm:text-xs sm:tracking-[0.34em]">
             Verified catalog
           </p>
-          <div className="mt-5 grid gap-7 lg:grid-cols-[1fr_0.74fr] lg:items-end">
-            <h1 className="font-[family-name:var(--font-playfair)] text-[2.7rem] font-semibold leading-[0.94] tracking-[-0.055em] sm:text-7xl sm:tracking-[-0.06em] lg:text-8xl">
+          <div className="mt-4 grid gap-5 lg:grid-cols-[1fr_0.74fr] lg:items-end">
+            <h1 className="font-[family-name:var(--font-playfair)] text-[2.35rem] font-semibold leading-[0.94] tracking-[-0.055em] sm:text-7xl sm:tracking-[-0.06em] lg:text-8xl">
               Premium properties, curated for serious buyers.
             </h1>
             <div>
-              <p className="text-base leading-7 text-white/70 sm:text-lg sm:leading-8">
+              <p className="text-[15px] leading-6 text-white/70 sm:text-lg sm:leading-8">
                 Explore verified residential properties in Bareilly, commercial properties,
                 plots, and investment opportunities with filters for budget, location, and
                 site-visit readiness.
               </p>
-              <div className="mt-5 grid grid-cols-2 gap-2">
+              <div className="mt-4 grid grid-cols-2 gap-2">
                 <a href="#properties-list" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#D4AF37] px-4 text-xs font-black uppercase tracking-[0.12em] text-[#081120]">
                   <Search className="h-4 w-4" />
                   Search
@@ -106,15 +106,15 @@ export default async function PropertiesPage() {
               </div>
             </div>
           </div>
-          <div className="mt-10 grid gap-3 sm:grid-cols-3">
+          <div className="premium-scrollbar -mx-4 mt-5 hidden gap-3 overflow-x-auto px-4 pb-1 min-[390px]:flex sm:mx-0 sm:mt-10 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0">
             {[
               ["Verified visibility", "Active public listings only", BadgeCheck],
               ["Guided shortlist", "Compare category, location and visit readiness", MapPinned],
               ["Site visit CTA", "Move from browsing to appointment", Sparkles],
             ].map(([title, text, Icon]) => (
-              <div key={title as string} className="rounded-[1.5rem] border border-white/10 bg-white/[0.055] p-4 backdrop-blur">
+              <div key={title as string} className="min-w-[76vw] rounded-[1.35rem] border border-white/10 bg-white/[0.055] p-4 backdrop-blur sm:min-w-0 sm:rounded-[1.5rem]">
                 <Icon className="h-5 w-5 text-[#D4AF37]" />
-                <h2 className="mt-4 text-sm font-black uppercase tracking-[0.16em] text-white">
+                <h2 className="mt-3 text-sm font-black uppercase tracking-[0.14em] text-white sm:mt-4 sm:tracking-[0.16em]">
                   {title as string}
                 </h2>
                 <p className="mt-2 text-sm leading-6 text-white/58">{text as string}</p>

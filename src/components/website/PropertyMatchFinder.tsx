@@ -138,15 +138,15 @@ export function MatchOptionButton({
     <button
       type="button"
       onClick={onClick}
-      className={`group flex min-h-14 w-full items-center justify-between gap-3 rounded-2xl border px-4 py-3 text-left text-sm font-black transition duration-300 sm:min-h-16 sm:rounded-3xl sm:px-5 ${
+      className={`group flex min-h-11 w-full items-center justify-between gap-3 rounded-2xl border px-4 py-2.5 text-left text-sm font-black transition duration-300 active:scale-[0.99] sm:min-h-16 sm:rounded-3xl sm:px-5 sm:py-3 ${
         selected
-          ? "border-[#D4AF37] bg-[#081120] text-white shadow-[0_18px_46px_rgba(8,17,32,0.22)]"
-          : "border-[#081120]/8 bg-white text-[#081120] hover:-translate-y-0.5 hover:border-[#D4AF37]/50 hover:bg-[#FFF9E8]"
+          ? "border-[#D4AF37] bg-[linear-gradient(135deg,#081120,#13223A)] text-white shadow-[0_18px_46px_rgba(8,17,32,0.22)]"
+          : "border-[#081120]/8 bg-white text-[#081120] shadow-[0_10px_28px_rgba(8,17,32,0.035)] hover:-translate-y-0.5 hover:border-[#D4AF37]/50 hover:bg-[#FFF9E8]"
       }`}
     >
       <span>{label}</span>
       <span
-        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition ${
+        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition sm:h-7 sm:w-7 ${
           selected ? "bg-[#D4AF37] text-[#081120]" : "bg-[#F8F5EE] text-[#9B7A19] group-hover:bg-[#D4AF37]"
         }`}
       >
@@ -171,28 +171,28 @@ export function MatchStepCard({
   return (
     <motion.div
       key={step.id}
-      initial={{ opacity: 0, x: 28, scale: 0.98 }}
+      initial={{ opacity: 1, x: 0, scale: 1 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
-      exit={{ opacity: 0, x: -28, scale: 0.98 }}
+      exit={{ opacity: 0, x: -16, scale: 0.99 }}
       transition={{ duration: 0.28, ease: "easeOut" }}
-      className="rounded-[1.75rem] border border-[#081120]/8 bg-[#F8F5EE] p-4 shadow-[0_24px_70px_rgba(8,17,32,0.06)] sm:rounded-[2.4rem] sm:p-6"
+      className="rounded-[1.35rem] border border-[#081120]/8 bg-[#F8F5EE] p-3 shadow-[0_18px_50px_rgba(8,17,32,0.06)] sm:rounded-[2.4rem] sm:p-6 sm:shadow-[0_24px_70px_rgba(8,17,32,0.06)]"
     >
-      <div className="mb-5 flex items-start gap-4">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#D4AF37] text-[#081120] shadow-[0_14px_34px_rgba(212,175,55,0.25)]">
-          <Icon className="h-6 w-6" />
+      <div className="mb-2.5 flex items-start gap-3 sm:mb-5 sm:gap-4">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#D4AF37] text-[#081120] shadow-[0_14px_34px_rgba(212,175,55,0.25)] sm:h-12 sm:w-12">
+          <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
         </div>
         <div>
           <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#9B7A19]">
             {step.eyebrow}
           </p>
-          <h3 className="mt-1 font-[family-name:var(--font-playfair)] text-3xl font-semibold leading-tight tracking-[-0.035em] text-[#081120] sm:text-4xl">
+          <h3 className="mt-1 font-[family-name:var(--font-playfair)] text-[1.45rem] font-semibold leading-tight tracking-[-0.035em] text-[#081120] sm:text-4xl">
             {step.title}
           </h3>
-          <p className="mt-2 text-sm leading-6 text-[#4B5563]">{step.helper}</p>
+          <p className="mt-1.5 text-[13px] leading-5 text-[#4B5563] sm:mt-2 sm:text-sm sm:leading-6">{step.helper}</p>
         </div>
       </div>
 
-      <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-3">
+      <div className="grid gap-1.5 sm:grid-cols-2 sm:gap-3">
         {step.options.map((option) => {
           const selected = Array.isArray(selectedValue)
             ? selectedValue.includes(option)
@@ -404,28 +404,28 @@ export default function PropertyMatchFinder({
   return (
     <section
       id="property-match-finder"
-      className={`relative scroll-mt-24 overflow-hidden rounded-[1.8rem] border border-[#081120]/8 bg-white p-2.5 shadow-[0_30px_100px_rgba(8,17,32,0.1)] sm:rounded-[3rem] sm:p-5 ${className}`}
+      className={`relative scroll-mt-24 overflow-hidden rounded-[1.45rem] border border-[#081120]/8 bg-white p-1.5 shadow-[0_24px_70px_rgba(8,17,32,0.08)] sm:scroll-mt-28 sm:rounded-[3rem] sm:p-5 sm:shadow-[0_30px_100px_rgba(8,17,32,0.1)] ${className}`}
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_10%,rgba(212,175,55,0.18),transparent_32%),radial-gradient(circle_at_88%_18%,rgba(16,185,129,0.12),transparent_30%)]" />
-      <div className="relative grid gap-4 lg:grid-cols-[0.76fr_1.24fr] lg:gap-5">
-        <aside className="rounded-[1.45rem] bg-[#081120] p-4 text-white sm:rounded-[2.4rem] sm:p-7">
+      <div className="relative grid gap-2.5 sm:gap-4 lg:grid-cols-[0.76fr_1.24fr] lg:gap-5">
+        <aside className="rounded-[1.25rem] bg-[linear-gradient(145deg,#081120,#101d31_62%,#13243d)] p-3 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:rounded-[2.4rem] sm:p-7">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-[#F5D67B]">
             <Sparkles className="h-3.5 w-3.5" />
             Signature experience
           </div>
-          <h2 className="mt-4 font-[family-name:var(--font-playfair)] text-[2.25rem] font-semibold leading-[0.98] tracking-[-0.045em] sm:mt-5 sm:text-5xl">
+          <h2 className="mt-2.5 font-[family-name:var(--font-playfair)] text-[1.72rem] font-semibold leading-[0.98] tracking-[-0.045em] sm:mt-5 sm:text-5xl">
             Property Match Finder
           </h2>
-          <p className="mt-4 text-sm leading-7 text-white/66">
+          <p className="mt-2 text-[13px] leading-5 text-white/66 sm:mt-4 sm:text-sm sm:leading-7">
             Answer a few guided questions and Shivara will turn your requirement into a consultant-led shortlist.
           </p>
 
-          <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.055] p-4">
-            <div className="mb-3 flex items-center justify-between text-xs font-black uppercase tracking-[0.18em] text-white/58">
+          <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.055] p-3 sm:mt-6 sm:p-4">
+            <div className="mb-2 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.18em] text-white/58 sm:mb-3 sm:text-xs">
               <span>Progress</span>
               <span className="text-[#F5D67B]">{progress}%</span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-white/10">
+            <div className="h-2 overflow-hidden rounded-full bg-white/10 ring-1 ring-white/5 sm:h-2.5">
               <motion.div
                 className="h-full rounded-full bg-gradient-to-r from-[#D4AF37] to-[#10B981]"
                 animate={{ width: `${submitted ? 100 : progress}%` }}
@@ -435,7 +435,7 @@ export default function PropertyMatchFinder({
           </div>
 
           {!compact && (
-            <div className="mt-5 grid gap-2">
+            <div className="mt-5 hidden gap-2 sm:grid">
               {summary.map((item) => (
                 <div key={item} className="flex items-center gap-2 rounded-2xl bg-white/[0.045] px-3 py-2 text-sm text-white/68">
                   <BadgeCheck className="h-4 w-4 text-[#D4AF37]" />
@@ -450,7 +450,7 @@ export default function PropertyMatchFinder({
           {submitted ? (
             <MatchSuccessScreen name={submittedName} onRestart={restart} />
           ) : (
-            <div className="rounded-[1.6rem] border border-[#081120]/8 bg-white/80 p-3 sm:rounded-[2.4rem] sm:p-5">
+            <div className="rounded-[1.35rem] border border-[#081120]/8 bg-transparent p-0 shadow-none sm:rounded-[2.4rem] sm:bg-white/86 sm:p-5 sm:shadow-[inset_0_1px_0_rgba(255,255,255,0.80)]">
               <AnimatePresence mode="wait">
                 {stepIndex < matchSteps.length ? (
                   <MatchStepCard
@@ -466,20 +466,20 @@ export default function PropertyMatchFinder({
                     animate={{ opacity: 1, x: 0, scale: 1 }}
                     exit={{ opacity: 0, x: -28, scale: 0.98 }}
                     transition={{ duration: 0.28, ease: "easeOut" }}
-                    className="rounded-[1.75rem] border border-[#081120]/8 bg-[#F8F5EE] p-4 shadow-[0_24px_70px_rgba(8,17,32,0.06)] sm:rounded-[2.4rem] sm:p-6"
+                    className="rounded-[1.35rem] border border-[#081120]/8 bg-[#F8F5EE] p-3 shadow-[0_18px_50px_rgba(8,17,32,0.06)] sm:rounded-[2.4rem] sm:p-6 sm:shadow-[0_24px_70px_rgba(8,17,32,0.06)]"
                   >
-                    <div className="mb-5">
+                    <div className="mb-3 sm:mb-5">
                       <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#9B7A19]">
                         Contact details
                       </p>
-                      <h3 className="mt-1 font-[family-name:var(--font-playfair)] text-3xl font-semibold leading-tight tracking-[-0.035em] text-[#081120] sm:text-4xl">
+                      <h3 className="mt-1 font-[family-name:var(--font-playfair)] text-[1.55rem] font-semibold leading-tight tracking-[-0.035em] text-[#081120] sm:text-4xl">
                         Where should our consultant call you?
                       </h3>
-                      <p className="mt-2 text-sm leading-6 text-[#4B5563]">
+                      <p className="mt-1.5 text-[13px] leading-5 text-[#4B5563] sm:mt-2 sm:text-sm sm:leading-6">
                         We’ll save this as a new CRM enquiry and contact you shortly.
                       </p>
                     </div>
-                    <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-3">
                       <Field label="Name" required value={values.name} onChange={(value) => setValues((current) => ({ ...current, name: value }))} placeholder="Your full name" />
                       <Field label="Phone number" required value={values.phone} onChange={(value) => setValues((current) => ({ ...current, phone: value }))} placeholder="10-digit mobile number" inputMode="tel" />
                       <Field label="WhatsApp number" value={values.whatsappNumber} onChange={(value) => setValues((current) => ({ ...current, whatsappNumber: value }))} placeholder="Optional" inputMode="tel" />
@@ -506,12 +506,12 @@ export default function PropertyMatchFinder({
                 </p>
               )}
 
-              <div className="sticky bottom-[calc(5.7rem+env(safe-area-inset-bottom))] z-10 mt-4 grid gap-2 rounded-2xl border border-[#081120]/8 bg-white/92 p-2 shadow-[0_18px_46px_rgba(8,17,32,0.14)] backdrop-blur sm:static sm:flex sm:items-center sm:justify-between sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
+              <div className="sticky bottom-[calc(4.55rem+env(safe-area-inset-bottom))] z-[60] mt-2 grid grid-cols-2 gap-2 rounded-2xl border border-[#081120]/8 bg-white/94 p-1.5 shadow-[0_14px_34px_rgba(8,17,32,0.10)] backdrop-blur sm:static sm:flex sm:items-center sm:justify-between sm:rounded-none sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
                 <button
                   type="button"
                   onClick={goBack}
                   disabled={stepIndex === 0 || submitting}
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-[#081120]/10 px-5 text-sm font-black text-[#4B5563] transition hover:bg-[#F8F5EE] disabled:cursor-not-allowed disabled:opacity-40"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-[#081120]/10 px-4 text-sm font-black text-[#4B5563] transition hover:bg-[#F8F5EE] disabled:cursor-not-allowed disabled:opacity-40 sm:min-h-12 sm:px-5"
                 >
                   <ArrowLeft className="h-4 w-4" />
                   Back
@@ -520,7 +520,7 @@ export default function PropertyMatchFinder({
                   <button
                     type="button"
                     onClick={goNext}
-                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] px-5 text-sm font-black uppercase tracking-[0.12em] text-[#081120] shadow-[0_18px_42px_rgba(212,175,55,0.22)] transition hover:bg-[#F5D67B]"
+                    className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-[#D4AF37] px-4 text-xs font-black uppercase tracking-[0.10em] text-[#081120] shadow-[0_18px_42px_rgba(212,175,55,0.22)] transition hover:bg-[#F5D67B] sm:min-h-12 sm:gap-2 sm:px-5 sm:text-sm sm:tracking-[0.12em]"
                   >
                     Continue
                     <ArrowRight className="h-4 w-4" />
@@ -530,10 +530,11 @@ export default function PropertyMatchFinder({
                     type="button"
                     onClick={submitMatch}
                     disabled={submitting}
-                    className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] px-5 text-sm font-black uppercase tracking-[0.12em] text-[#081120] shadow-[0_18px_42px_rgba(212,175,55,0.22)] transition hover:bg-[#F5D67B] disabled:cursor-not-allowed disabled:opacity-70"
+                    className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-2xl bg-[#D4AF37] px-4 text-[11px] font-black uppercase tracking-[0.08em] text-[#081120] shadow-[0_18px_42px_rgba(212,175,55,0.22)] transition hover:bg-[#F5D67B] disabled:cursor-not-allowed disabled:opacity-70 sm:min-h-12 sm:gap-2 sm:px-5 sm:text-sm sm:tracking-[0.12em]"
                   >
                     {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Phone className="h-4 w-4" />}
-                    Get My Property Suggestions
+                    <span className="hidden min-[380px]:inline">Get My Property Suggestions</span>
+                    <span className="min-[380px]:hidden">Get Suggestions</span>
                   </button>
                 )}
               </div>

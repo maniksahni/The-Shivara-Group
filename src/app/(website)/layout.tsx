@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 export default function WebsiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <ToastProvider>
-      <div className="min-h-[100dvh] overflow-x-hidden bg-[#F8F5EE] pb-[calc(5.25rem+env(safe-area-inset-bottom))] text-[#081120] antialiased md:pb-0">
+      <div className="min-h-[100dvh] overflow-x-hidden bg-[#F8F5EE] pb-[calc(4.55rem+env(safe-area-inset-bottom))] text-[#081120] antialiased md:pb-0">
         <Navbar />
         {children}
         <Footer />
@@ -69,29 +69,30 @@ export default function WebsiteLayout({ children }: { children: React.ReactNode 
         </a>
         </div>
 
-        <div className="fixed inset-x-3 bottom-[calc(0.65rem+env(safe-area-inset-bottom))] z-50 grid grid-cols-3 gap-1.5 rounded-[1.35rem] border border-white/20 bg-[#081120]/94 p-1.5 shadow-[0_18px_48px_rgba(0,0,0,0.30)] backdrop-blur-xl md:hidden">
+        <div className="fixed inset-x-2.5 bottom-[calc(0.45rem+env(safe-area-inset-bottom))] z-50 grid grid-cols-3 gap-1 rounded-[1.15rem] border border-white/20 bg-[#081120]/94 p-1 shadow-[0_14px_38px_rgba(0,0,0,0.28)] backdrop-blur-xl md:hidden">
         <a
           href={siteConfig.phoneHref}
-          className="flex min-h-12 items-center justify-center gap-1 rounded-2xl bg-white/8 text-xs font-black text-white active:scale-[0.98]"
+          className="flex min-h-11 items-center justify-center gap-1 rounded-[0.95rem] bg-white/8 text-[11px] font-black text-white active:scale-[0.98]"
         >
-          <Phone className="h-4 w-4 text-[#D4AF37]" />
+          <Phone className="h-3.5 w-3.5 text-[#D4AF37]" />
           Call
         </a>
         <a
           href={siteConfig.whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex min-h-12 items-center justify-center gap-1 rounded-2xl bg-[#10B981] text-xs font-black text-white shadow-[0_10px_24px_rgba(16,185,129,0.22)] active:scale-[0.98]"
+          className="flex min-h-11 items-center justify-center gap-1 rounded-[0.95rem] bg-[#10B981] text-[11px] font-black text-white shadow-[0_10px_24px_rgba(16,185,129,0.22)] active:scale-[0.98]"
         >
-          <MessageCircle className="h-4 w-4" />
+          <MessageCircle className="h-3.5 w-3.5" />
           WhatsApp
         </a>
         <Link
           href="/#property-match-finder"
-          className="flex min-h-12 items-center justify-center gap-1 rounded-2xl bg-[#D4AF37] text-xs font-black text-[#081120] shadow-[0_10px_24px_rgba(212,175,55,0.24)] active:scale-[0.98]"
+          className="flex min-h-11 items-center justify-center gap-1 rounded-[0.95rem] bg-gradient-to-br from-[#F5D67B] to-[#D4AF37] text-[11px] font-black text-[#081120] shadow-[0_10px_24px_rgba(212,175,55,0.24)] active:scale-[0.98]"
         >
-          <Sparkles className="h-4 w-4" />
-          Find Property
+          <Sparkles className="h-3.5 w-3.5" />
+          <span className="hidden min-[375px]:inline">Find Property</span>
+          <span className="min-[375px]:hidden">Find</span>
         </Link>
         </div>
       </div>

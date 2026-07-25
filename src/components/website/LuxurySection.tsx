@@ -44,7 +44,7 @@ export function LuxuryButton({
   return (
     <Link
       href={href}
-      className={`group inline-flex min-h-12 max-w-full items-center justify-center gap-2 rounded-full px-5 text-center text-xs font-black uppercase tracking-[0.12em] transition-all duration-300 hover:-translate-y-0.5 sm:px-6 sm:text-sm sm:tracking-[0.16em] ${variants[variant]} ${className}`}
+      className={`group inline-flex min-h-12 max-w-full items-center justify-center gap-2 rounded-full px-5 text-center text-xs font-black uppercase tracking-[0.12em] ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-0.5 active:scale-[0.985] sm:px-6 sm:text-sm sm:tracking-[0.16em] ${variants[variant]} ${className}`}
     >
       {children}
       <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -62,7 +62,7 @@ export function SectionShell({
   id?: string;
 }) {
   return (
-    <section id={id} className={`relative px-4 py-10 sm:px-8 sm:py-14 lg:px-12 lg:py-24 ${className}`}>
+    <section id={id} className={`relative px-4 py-7 sm:px-8 sm:py-14 lg:px-12 lg:py-24 ${className}`}>
       <div className="mx-auto max-w-7xl">{children}</div>
     </section>
   );

@@ -72,38 +72,38 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <section className="relative overflow-hidden bg-[#081120] px-4 pb-8 pt-[5.1rem] text-white sm:min-h-[100svh] sm:px-8 sm:pb-12 sm:pt-28 lg:px-12">
+      <section className="relative overflow-hidden bg-[#081120] px-4 pb-5 pt-[4.75rem] text-white sm:min-h-[100svh] sm:px-8 sm:pb-12 sm:pt-28 lg:px-12">
         <div
           className="absolute inset-0 opacity-50"
           style={{
-            backgroundImage: `linear-gradient(90deg, rgba(8,17,32,0.96), rgba(8,17,32,0.78), rgba(8,17,32,0.28)), url(${heroImage})`,
+            backgroundImage: `linear-gradient(180deg, rgba(8,17,32,0.72), rgba(8,17,32,0.76) 38%, rgba(8,17,32,0.94)), linear-gradient(90deg, rgba(8,17,32,0.96), rgba(8,17,32,0.70), rgba(8,17,32,0.34)), url(${heroImage})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
         />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(212,175,55,0.26),transparent_34%),radial-gradient(circle_at_78%_18%,rgba(16,185,129,0.18),transparent_30%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#081120] to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_16%,rgba(245,214,123,0.22),transparent_32%),radial-gradient(circle_at_86%_20%,rgba(16,185,129,0.18),transparent_30%),linear-gradient(180deg,transparent_0%,rgba(8,17,32,0.55)_82%,#081120_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#081120] to-transparent sm:h-40" />
 
         <div className="relative mx-auto grid w-full max-w-7xl min-w-0 items-center gap-5 sm:min-h-[calc(100svh-8rem)] sm:gap-8 lg:grid-cols-[1.08fr_0.92fr]">
           <div className="w-full min-w-0 max-w-3xl animate-hero-rise">
-            <div className="mb-3 inline-flex max-w-full items-center gap-2 rounded-full border border-[#D4AF37]/24 bg-white/[0.07] px-3 py-2 text-[10px] font-black uppercase tracking-[0.18em] text-[#F5D67B] shadow-[0_18px_60px_rgba(0,0,0,0.16)] backdrop-blur-xl sm:mb-5 sm:px-4 sm:text-xs sm:tracking-[0.26em]">
+            <div className="mb-3 inline-flex max-w-full items-center gap-2 rounded-full border border-[#D4AF37]/24 bg-white/[0.075] px-3 py-2 text-[10px] font-black uppercase tracking-[0.16em] text-[#F5D67B] shadow-[0_18px_60px_rgba(0,0,0,0.16)] backdrop-blur-xl sm:mb-5 sm:px-4 sm:text-xs sm:tracking-[0.26em]">
               <Sparkles className="h-3.5 w-3.5 shrink-0" />
               <span className="truncate">Premium real estate in Bareilly</span>
             </div>
             <Eyebrow dark>{siteConfig.tagline}</Eyebrow>
-            <h1 className="max-w-[13ch] text-balance font-[family-name:var(--font-playfair)] text-[clamp(2.55rem,11.5vw,3.65rem)] font-semibold leading-[0.94] tracking-[-0.055em] sm:max-w-none sm:text-[clamp(4.6rem,8vw,7.8rem)] sm:leading-[0.92] sm:tracking-[-0.075em]">
+            <h1 className="max-w-[13.4ch] text-balance font-[family-name:var(--font-playfair)] text-[clamp(2.22rem,10vw,3.25rem)] font-semibold leading-[0.94] tracking-[-0.055em] sm:max-w-none sm:text-[clamp(4.6rem,8vw,7.8rem)] sm:leading-[0.92] sm:tracking-[-0.075em]">
               Find Your Perfect Property With Bareilly&apos;s Trusted Real Estate Experts.
             </h1>
-            <p className="mt-3 max-w-[31rem] text-[15px] leading-6 text-white/76 sm:mt-7 sm:max-w-2xl sm:text-xl sm:leading-8">
+            <p className="mt-2.5 max-w-[31rem] text-[14px] leading-[1.65] text-white/76 sm:mt-7 sm:max-w-2xl sm:text-xl sm:leading-8">
               Discover verified residential, commercial, and investment properties with expert
               guidance, site visits, loan support, and complete documentation assistance.
             </p>
 
-            <div className="mt-4 flex flex-wrap gap-2 sm:mt-6">
+            <div className="mt-3 flex flex-wrap gap-1.5 sm:mt-6 sm:gap-2">
               {["Verified properties", "Site visit support", "Loan assistance"].map((item) => (
                 <span
                   key={item}
-                  className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.065] px-3 text-[11px] font-bold text-white/78 backdrop-blur"
+                  className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.065] px-2.5 text-[10.5px] font-bold text-white/78 backdrop-blur sm:min-h-9 sm:px-3 sm:text-[11px]"
                 >
                   <CheckCircle2 className="h-3.5 w-3.5 text-[#10B981]" />
                   {item}
@@ -111,7 +111,7 @@ export default function HomePage() {
               ))}
             </div>
 
-            <div className="mt-4 grid w-full max-w-[28rem] grid-cols-2 gap-2 sm:mt-9 sm:flex sm:max-w-none sm:flex-row sm:gap-3">
+            <div className="mt-3.5 grid w-full max-w-[28rem] grid-cols-2 gap-2 sm:mt-9 sm:flex sm:max-w-none sm:flex-row sm:gap-3">
               <LuxuryButton href="/properties" className="col-span-2 w-full sm:w-auto">Explore Properties</LuxuryButton>
               <LuxuryButton href="/#property-match-finder" variant="outline" className="w-full px-3 text-[10px] tracking-[0.06em] sm:w-auto sm:px-6 sm:text-sm sm:tracking-[0.16em]">
                 Free Consultation
@@ -213,8 +213,8 @@ export default function HomePage() {
 
       <GoldDivider />
 
-      <SectionShell className="bg-[#081120] py-5 text-white sm:py-8">
-        <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-3 lg:grid-cols-6">
+      <SectionShell className="bg-[#081120] py-3.5 text-white sm:py-8">
+        <div className="grid gap-2 max-sm:[&>*:nth-child(n+4)]:hidden sm:grid-cols-2 sm:gap-3 lg:grid-cols-6">
           {trustHighlights.map((item) => (
             <div
               key={item}
@@ -227,7 +227,7 @@ export default function HomePage() {
         </div>
       </SectionShell>
 
-      <SectionShell className="bg-[#F8F5EE]">
+      <SectionShell className="bg-[#F8F5EE] py-5 sm:py-14">
         <div className="mb-6 grid gap-3 sm:mb-10 sm:grid-cols-2 lg:grid-cols-4">
           {conversionTrustCards.map((card) => (
             <div

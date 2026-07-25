@@ -393,7 +393,7 @@ export default function CRMSidebar() {
         <ul className="grid grid-cols-5 gap-1">
           {navItems
             .filter((item) =>
-              ['/crm/dashboard', '/crm/leads', '/crm/properties', '/crm/calendar', '/crm/profile'].includes(item.href),
+              ['/crm/dashboard', '/crm/leads', '/crm/properties', '/crm/reports', '/crm/profile'].includes(item.href),
             )
             .map((item) => {
               const active = isActive(item.href)

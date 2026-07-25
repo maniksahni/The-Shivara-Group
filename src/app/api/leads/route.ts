@@ -19,6 +19,20 @@ import prisma, { isDatabaseConfigured } from '@/lib/prisma'
 import { getServerSession } from '@/lib/auth'
 import { enquirySchema } from '@/lib/validations'
 
+function parseDateStart(value: string) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return undefined
+  date.setHours(0, 0, 0, 0)
+  return date
+}
+
+function parseDateEnd(value: string) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return undefined
+  date.setHours(23, 59, 59, 999)
+  return date
+}
+
 // ---------------------------------------------------------------------------
 // POST — public enquiry form submission
 // ---------------------------------------------------------------------------
@@ -150,13 +164,15 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
 
     const page = Math.max(1, Number(searchParams.get('page') ?? '1'))
-    const limit = Math.min(100, Math.max(1, Number(searchParams.get('limit') ?? '20')))
+    const requestedLimit = searchParams.get('limit') ?? searchParams.get('pageSize') ?? '20'
+    const limit = Math.min(100, Math.max(1, Number(requestedLimit)))
     const skip = (page - 1) * limit
 
     if (!isDatabaseConfigured) {
       return NextResponse.json(
         {
           success: true,
+          total: 0,
           data: {
             leads: [],
             pagination: {
@@ -180,6 +196,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search') ?? undefined
     const dateFrom = searchParams.get('dateFrom') ?? undefined
     const dateTo = searchParams.get('dateTo') ?? undefined
+    const pendingFollowUps = searchParams.get('pendingFollowUps') === '1'
 
     // ── Build Prisma `where` clause ────────────────────────────────────────
     const where: Prisma.LeadWhereInput = {}
@@ -198,10 +215,17 @@ export async function GET(request: NextRequest) {
     }
 
     if (dateFrom || dateTo) {
+      const start = dateFrom ? parseDateStart(dateFrom) : undefined
+      const end = dateTo ? parseDateEnd(dateTo) : undefined
       where.createdAt = {
-        ...(dateFrom ? { gte: new Date(dateFrom) } : {}),
-        ...(dateTo ? { lte: new Date(dateTo) } : {}),
+        ...(start ? { gte: start } : {}),
+        ...(end ? { lte: end } : {}),
       }
+    }
+
+    if (pendingFollowUps) {
+      where.followUpDate = { lte: new Date() }
+      where.status = { notIn: ['CLOSED', 'LOST'] }
     }
 
     // Non-admin users can only see leads assigned to themselves
@@ -231,6 +255,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(
       {
         success: true,
+        total,
         data: {
           leads,
           pagination: {

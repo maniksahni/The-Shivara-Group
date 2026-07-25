@@ -17,19 +17,24 @@ import { prisma } from '../src/lib/prisma'
 
 const SHIVAM_USER = {
   name: 'Shivam Sahani',
-  email: process.env.CRM_ADMIN_EMAIL || 'admin@shivara.local',
+  email: process.env.CRM_ADMIN_EMAIL?.trim().toLowerCase(),
   phone: null as string | null,
   role: 'ADMIN' as const,
-  password: process.env.SEED_ADMIN_PASSWORD || 'admin123',
+  password: process.env.SEED_ADMIN_PASSWORD,
 }
 
 async function main() {
   console.log('🌱  Starting production-safe Shivara CRM seed …')
 
-  if (!process.env.CRM_ADMIN_EMAIL) {
-    console.warn('⚠️  CRM_ADMIN_EMAIL is not set. Using a placeholder local email for seed.')
+  if (!SHIVAM_USER.email) {
+    throw new Error('CRM_ADMIN_EMAIL is required before seeding.')
   }
 
+  if (!SHIVAM_USER.password || SHIVAM_USER.password.length < 8) {
+    throw new Error('SEED_ADMIN_PASSWORD is required and must be at least 8 characters.')
+  }
+
+  const adminEmail = SHIVAM_USER.email
   const passwordHash = await bcryptjs.hash(SHIVAM_USER.password, 12)
 
   const user = await prisma.$transaction(async (tx) => {
@@ -39,7 +44,7 @@ async function main() {
     await tx.lead.deleteMany()
 
     const shivam = await tx.user.upsert({
-      where: { email: SHIVAM_USER.email },
+      where: { email: adminEmail },
       update: {
         name: SHIVAM_USER.name,
         passwordHash,
@@ -49,7 +54,7 @@ async function main() {
       },
       create: {
         name: SHIVAM_USER.name,
-        email: SHIVAM_USER.email,
+        email: adminEmail,
         passwordHash,
         phone: SHIVAM_USER.phone,
         role: SHIVAM_USER.role,
@@ -59,7 +64,7 @@ async function main() {
 
     await tx.user.deleteMany({
       where: {
-        email: { not: SHIVAM_USER.email },
+        email: { not: adminEmail },
       },
     })
 

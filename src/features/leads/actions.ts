@@ -158,6 +158,20 @@ function parseOptionalDateTime(value: string | null | undefined) {
   return Number.isNaN(date.getTime()) ? null : date
 }
 
+function parseDateStart(value: string) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return undefined
+  date.setHours(0, 0, 0, 0)
+  return date
+}
+
+function parseDateEnd(value: string) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return undefined
+  date.setHours(23, 59, 59, 999)
+  return date
+}
+
 async function requireCrmUser() {
   const session = await getServerSession()
   if (!session?.user?.id) {
@@ -794,9 +808,11 @@ export async function getLeads(filters: LeadFilters = {}) {
     }
 
     if (filters.dateFrom || filters.dateTo) {
+      const start = filters.dateFrom ? parseDateStart(filters.dateFrom) : undefined
+      const end = filters.dateTo ? parseDateEnd(filters.dateTo) : undefined
       where.createdAt = {
-        ...(filters.dateFrom ? { gte: new Date(filters.dateFrom) } : {}),
-        ...(filters.dateTo ? { lte: new Date(filters.dateTo) } : {}),
+        ...(start ? { gte: start } : {}),
+        ...(end ? { lte: end } : {}),
       }
     }
 
@@ -999,9 +1015,11 @@ export async function exportLeads(
     }
 
     if (filters.dateFrom || filters.dateTo) {
+      const start = filters.dateFrom ? parseDateStart(filters.dateFrom) : undefined
+      const end = filters.dateTo ? parseDateEnd(filters.dateTo) : undefined
       where.createdAt = {
-        ...(filters.dateFrom ? { gte: new Date(filters.dateFrom) } : {}),
-        ...(filters.dateTo ? { lte: new Date(filters.dateTo) } : {}),
+        ...(start ? { gte: start } : {}),
+        ...(end ? { lte: end } : {}),
       }
     }
 

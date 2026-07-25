@@ -7,6 +7,7 @@ import {
   partnerPlaceholders,
   fallbackProperties,
   sampleSeedTitles,
+  siteConfig,
   type PublicProperty,
 } from "@/components/website/site-data";
 import { SectionShell } from "@/components/website/LuxurySection";
@@ -99,7 +100,7 @@ export default async function PropertiesPage() {
                   <Search className="h-4 w-4" />
                   Search
                 </a>
-                <a href="https://wa.me/917060788407?text=Hi%20The%20Shivara%20Group%2C%20please%20help%20me%20shortlist%20properties." target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#10B981] px-4 text-xs font-black uppercase tracking-[0.12em] text-white">
+                <a href={siteConfig.whatsappHref} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#10B981] px-4 text-xs font-black uppercase tracking-[0.12em] text-white">
                   <MessageCircle className="h-4 w-4" />
                   WhatsApp
                 </a>

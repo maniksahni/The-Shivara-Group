@@ -109,22 +109,22 @@ export default function ContactPage() {
 
   return (
     <main className="bg-[#F8F5EE]">
-      <section className="relative overflow-hidden bg-[#081120] px-4 pb-12 pt-[5.8rem] text-white sm:px-8 sm:pb-16 sm:pt-32 lg:px-12 lg:pt-40">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_10%,rgba(212,175,55,0.22),transparent_32%),radial-gradient(circle_at_80%_20%,rgba(16,185,129,0.12),transparent_26%)]" />
+      <section className="relative overflow-hidden bg-[#081120] px-4 pb-8 pt-[5.2rem] text-white sm:px-8 sm:pb-16 sm:pt-32 lg:px-12 lg:pt-40">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_8%,rgba(212,175,55,0.24),transparent_32%),radial-gradient(circle_at_80%_20%,rgba(16,185,129,0.12),transparent_26%),linear-gradient(180deg,rgba(8,17,32,0.04),#081120)]" />
         <div className="mx-auto max-w-7xl">
           <p className="relative inline-flex rounded-full border border-[#D4AF37]/20 bg-white/[0.06] px-3 py-2 text-[10px] font-black uppercase tracking-[0.24em] text-[#D4AF37] backdrop-blur sm:text-xs sm:tracking-[0.34em]">
             Contact & site visits
           </p>
-          <div className="relative mt-5 grid gap-7 lg:grid-cols-[1fr_0.75fr] lg:items-end">
-            <h1 className="font-[family-name:var(--font-playfair)] text-[2.7rem] font-semibold leading-[0.94] tracking-[-0.055em] sm:text-7xl sm:tracking-[-0.06em] lg:text-8xl">
+          <div className="relative mt-4 grid gap-5 lg:grid-cols-[1fr_0.75fr] lg:items-end">
+            <h1 className="font-[family-name:var(--font-playfair)] text-[2.35rem] font-semibold leading-[0.94] tracking-[-0.055em] sm:text-7xl sm:tracking-[-0.06em] lg:text-8xl">
               Start with a call. Continue with confidence.
             </h1>
             <div>
-              <p className="text-base leading-7 text-white/70 sm:text-lg sm:leading-8">
+              <p className="text-[15px] leading-6 text-white/70 sm:text-lg sm:leading-8">
                 Send an enquiry, book a site visit, or connect instantly on WhatsApp. Every form
                 submission creates a lead for the CRM team to follow up.
               </p>
-              <div className="mt-5 grid grid-cols-2 gap-2">
+              <div className="mt-4 grid grid-cols-2 gap-2">
                 <a href={siteConfig.phoneHref} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#D4AF37] text-xs font-black uppercase tracking-[0.12em] text-[#081120]">
                   <Phone className="h-4 w-4" />
                   Call Now
@@ -139,15 +139,15 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="px-5 py-10 sm:px-8 lg:px-12">
+      <section className="px-4 py-5 sm:px-8 sm:py-10 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <PropertyMatchFinder compact />
         </div>
       </section>
 
-      <section className="px-5 py-14 pb-28 sm:px-8 lg:px-12 lg:py-20">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr]">
-          <aside className="space-y-4">
+      <section className="px-4 py-8 pb-24 sm:px-8 sm:py-14 sm:pb-28 lg:px-12 lg:py-20">
+        <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.8fr_1.2fr] lg:gap-8">
+          <aside className="space-y-3 sm:space-y-4">
             {[
               {
                 icon: Phone,
@@ -183,7 +183,7 @@ export default function ContactPage() {
                 text: "Please call or WhatsApp for the fastest response",
               },
             ].map((item) => (
-              <div key={item.title} className="touch-lift rounded-[1.75rem] border border-[#081120]/8 bg-white p-5 shadow-[0_18px_50px_rgba(8,17,32,0.05)] sm:rounded-[2rem]">
+              <div key={item.title} className="touch-lift rounded-[1.35rem] border border-[#081120]/8 bg-white p-4 shadow-[0_18px_50px_rgba(8,17,32,0.05)] sm:rounded-[2rem] sm:p-5">
                 <div className="flex gap-4">
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#F8F5EE] text-[#9B7A19]">
                     <item.icon className="h-5 w-5" />
@@ -207,7 +207,7 @@ export default function ContactPage() {
               </div>
             ))}
 
-            <div className="touch-lift rounded-[2rem] bg-[#081120] p-6 text-white">
+            <div className="touch-lift rounded-[1.6rem] bg-[#081120] p-5 text-white sm:rounded-[2rem] sm:p-6">
               <p className="text-xs font-black uppercase tracking-[0.24em] text-[#D4AF37]">
                 Instant help
               </p>
@@ -250,8 +250,8 @@ export default function ContactPage() {
             </div>
           </aside>
 
-          <div id="site-visit" className="rounded-[1.9rem] border border-[#081120]/8 bg-white p-4 shadow-[0_28px_90px_rgba(8,17,32,0.1)] sm:rounded-[2.4rem] sm:p-8">
-            <div className="mb-6 grid grid-cols-2 gap-2 rounded-2xl bg-[#F8F5EE] p-2">
+          <div id="site-visit" className="rounded-[1.55rem] border border-[#081120]/8 bg-white p-3.5 shadow-[0_24px_70px_rgba(8,17,32,0.08)] sm:rounded-[2.4rem] sm:p-8 sm:shadow-[0_28px_90px_rgba(8,17,32,0.1)]">
+            <div className="mb-4 grid grid-cols-2 gap-1.5 rounded-2xl bg-[#F8F5EE] p-1.5 sm:mb-6 sm:gap-2 sm:p-2">
               <button
                 type="button"
                 onClick={() => resetFeedback("enquiry")}
@@ -276,16 +276,16 @@ export default function ContactPage() {
               </button>
             </div>
 
-            <div className="mb-7">
+            <div className="mb-4 sm:mb-7">
               <p className="text-xs font-black uppercase tracking-[0.28em] text-[#9B7A19]">
                 {activeTab === "visit" ? "Private site visit request" : "Buyer enquiry"}
               </p>
-              <h2 className="mt-2 font-[family-name:var(--font-playfair)] text-3xl font-semibold tracking-[-0.04em] text-[#081120] sm:text-4xl">
+              <h2 className="mt-2 font-[family-name:var(--font-playfair)] text-[1.8rem] font-semibold leading-tight tracking-[-0.04em] text-[#081120] sm:text-4xl">
                 {activeTab === "visit" ? "Choose a preferred visit slot." : "Tell us what you are looking for."}
               </h2>
             </div>
 
-            <div className="mb-6 grid gap-3 sm:grid-cols-3">
+            <div className="mb-4 grid gap-2 sm:mb-6 sm:grid-cols-3 sm:gap-3">
               {["CRM lead created", "Consultant follow-up", "Visit confirmation"].map((item) => (
                 <div key={item} className="flex items-center gap-2 rounded-2xl bg-[#F8F5EE] p-3 text-xs font-black uppercase tracking-[0.12em] text-[#4B5563]">
                   <ShieldCheck className="h-4 w-4 shrink-0 text-[#10B981]" />
@@ -330,14 +330,14 @@ export default function ContactPage() {
                 </div>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
                 {error && (
                   <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700">
                     {error}
                   </div>
                 )}
 
-                <div className="grid gap-4 sm:grid-cols-2">
+                <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
                   <Field label="Full name" required>
                     <input value={name} onChange={(event) => setName(event.target.value)} required placeholder="Your name" className={inputClass} />
                   </Field>
@@ -352,7 +352,7 @@ export default function ContactPage() {
                   </Field>
                 </div>
 
-                <div className="grid gap-4 lg:grid-cols-3">
+                <div className="grid gap-3 sm:gap-4 lg:grid-cols-3">
                   <Field label="Property type">
                     <select value={propertyType} onChange={(event) => setPropertyType(event.target.value)} className={inputClass}>
                       <option value="">Any property</option>

@@ -25,8 +25,25 @@ and CRM operations require MySQL.
 The start command synchronizes the Prisma schema with Railway MySQL before
 starting Next.js. Railway supplies `PORT` automatically.
 
+For custom domains, set all public URL variables to the custom domain:
+
+```bash
+NEXTAUTH_URL=https://your-custom-domain.com
+NEXT_PUBLIC_SITE_URL=https://your-custom-domain.com
+SITE_URL=https://your-custom-domain.com
+```
+
+Do not keep these values pointed at the temporary Railway URL after connecting
+a production domain.
+
 Seed a new database once, when required:
 
 ```bash
 pnpm seed
+```
+
+Reset the admin password from the project folder with Railway variables:
+
+```bash
+railway run pnpm admin:reset-password
 ```

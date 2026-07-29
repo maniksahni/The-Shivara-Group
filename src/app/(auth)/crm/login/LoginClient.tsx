@@ -9,9 +9,10 @@
  */
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
-import { Loader2, AlertCircle, ShieldCheck, Mail, LockKeyhole } from 'lucide-react'
+import { Loader2, AlertCircle, ShieldCheck, Mail, LockKeyhole, Home } from 'lucide-react'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CSS luxury art graphic — pure CSS gold circles and lines
@@ -191,7 +192,16 @@ export default function CRMLoginClient() {
      * On mobile: single column (form stacked below branding).
      * On md+: two equal columns side-by-side.
      */
-    <div className="flex min-h-[100dvh] flex-col md:flex-row">
+    <div className="relative flex min-h-[100dvh] flex-col md:flex-row">
+      <Link
+        href="/"
+        className="absolute left-4 top-[calc(0.75rem+env(safe-area-inset-top))] z-30 inline-flex min-h-11 items-center gap-2 rounded-2xl border border-white/12 bg-slate-950/72 px-3.5 text-xs font-black uppercase tracking-[0.12em] text-white shadow-xl backdrop-blur-xl transition hover:border-[#C9A84C]/60 hover:text-[#F0D080] active:scale-[0.98] sm:left-5 sm:top-5"
+        aria-label="Back to main website"
+      >
+        <Home className="h-4 w-4 text-[#C9A84C]" aria-hidden="true" />
+        Home
+      </Link>
+
       {/* ── Left panel — dark navy brand area ─────────────────────────── */}
       <div
         className="relative flex min-h-[34dvh] flex-col items-center justify-center gap-5 overflow-hidden px-6 py-8 md:min-h-screen md:w-1/2 md:gap-8 md:px-8 md:py-12"

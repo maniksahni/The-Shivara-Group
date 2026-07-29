@@ -6,7 +6,7 @@ export const siteConfig = {
   tagline: "Bespoke Real Estate Strategies",
   brandLine: "Defining Legacies, One Address at a Time.",
   description:
-    "Find verified residential, commercial, and investment properties in Bareilly with The Shivara Group. Get expert property consultation, site visits, loan support, and documentation assistance.",
+    "Find verified residential, commercial, and investment properties in Bareilly with The Shivara Group. Get expert property consultation, site visits, pricing clarity, and documentation assistance.",
   phone: "+91 7060788407",
   phoneHref: "tel:+917060788407",
   whatsapp: "917060788407",
@@ -53,8 +53,8 @@ export const conversionTrustCards = [
     text: "Move from Instagram browsing to a confirmed visit with a dedicated consultant and clear next steps.",
   },
   {
-    title: "Loan & Documentation Support",
-    text: "After shortlisting, the team can help you understand loan, paperwork, and booking-stage requirements.",
+    title: "Documentation Support",
+    text: "After shortlisting, the team can help you understand paperwork, verification, and booking-stage requirements.",
   },
 ];
 
@@ -129,12 +129,6 @@ export const services = [
     description:
       "Schedule guided visits for homes, plots, villas, and premium projects with clear next steps after every walkthrough.",
     cta: "Book site visit",
-  },
-  {
-    title: "Home Loan Support",
-    description:
-      "Get connected to the right loan support path after property selection and eligibility discussion.",
-    cta: "Ask loan help",
   },
   {
     title: "Legal Documentation",
@@ -241,7 +235,7 @@ export const trustEngine = [
   "Shortlisted options, not random spam",
   "Guided site visits",
   "Pricing and inventory confirmation",
-  "Loan and documentation support path",
+  "Documentation support path",
   "Dedicated consultant follow-up",
 ];
 
@@ -264,7 +258,6 @@ export const investmentHighlights = [
 ];
 
 export const partnerPlaceholders = [
-  "Home loan guidance available on request",
   "Documentation support after property selection",
   "Instagram-led portfolio highlights available",
   "Private consultations available by appointment",
@@ -293,8 +286,8 @@ export const processSteps = [
   },
   {
     step: "05",
-    title: "Loan & documentation",
-    text: "Get help with the next support path for loan eligibility, documents, and booking requirements.",
+    title: "Documentation",
+    text: "Get help with document clarity, verification steps, and booking requirements.",
   },
   {
     step: "06",
@@ -339,11 +332,6 @@ export const faqs = [
     question: "Which locations do you cover?",
     answer:
       "The official Instagram bio confirms Bareilly and Delhi NCR. Public posts also reference Bareilly, Rajendar Nagar, Noida, Greater Noida, and Yamuna Expressway opportunities.",
-  },
-  {
-    question: "Do you provide home loan assistance?",
-    answer:
-      "The site includes loan assistance as a consultation CTA. Final partners and eligibility checks should be confirmed manually by the business team.",
   },
   {
     question: "Do you handle documentation?",

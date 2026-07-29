@@ -91,7 +91,7 @@ const matchSteps: MatchStep[] = [
     helper: "Choose one or more. We’ll include it in your CRM enquiry.",
     icon: ShieldCheck,
     multi: true,
-    options: ["Site visit", "Loan", "Documentation", "Investment advice", "Price negotiation"],
+    options: ["Site visit", "Documentation", "Investment advice", "Price negotiation", "Booking guidance"],
   },
 ];
 

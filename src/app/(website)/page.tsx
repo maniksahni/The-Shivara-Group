@@ -96,11 +96,11 @@ export default function HomePage() {
             </h1>
             <p className="mt-2.5 max-w-[31rem] text-[14px] leading-[1.65] text-white/76 sm:mt-7 sm:max-w-2xl sm:text-xl sm:leading-8">
               Discover verified residential, commercial, and investment properties with expert
-              guidance, site visits, loan support, and complete documentation assistance.
+              guidance, site visits, pricing clarity, and complete documentation assistance.
             </p>
 
             <div className="mt-3 flex flex-wrap gap-1.5 sm:mt-6 sm:gap-2">
-              {["Verified properties", "Site visit support", "Loan assistance"].map((item) => (
+              {["Verified properties", "Site visit support", "Documentation help"].map((item) => (
                 <span
                   key={item}
                   className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.065] px-2.5 text-[10.5px] font-bold text-white/78 backdrop-blur sm:min-h-9 sm:px-3 sm:text-[11px]"
@@ -520,7 +520,7 @@ export default function HomePage() {
           <SectionHeader
             eyebrow="Property journey"
             title="A smoother path from requirement to final booking."
-            description="Every enquiry is guided through shortlisting, site visits, negotiation, loan support, documentation, and booking clarity."
+            description="Every enquiry is guided through shortlisting, site visits, negotiation, documentation, and booking clarity."
             dark
           />
           <div className="grid gap-4">

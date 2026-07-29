@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Calculator, CheckCircle2, Heart, IndianRupee, MapPinned, Share2, Star, TrendingUp } from "lucide-react";
+import { useState } from "react";
+import { CheckCircle2, FileCheck2, Heart, MapPinned, Share2, Star, TrendingUp } from "lucide-react";
 import type { PublicProperty } from "@/components/website/site-data";
 
 function parsePriceHint(price: string) {
@@ -22,18 +22,6 @@ export default function PropertyExperienceClient({
 }) {
   const [activeImage, setActiveImage] = useState(0);
   const [saved, setSaved] = useState(false);
-  const [loanYears, setLoanYears] = useState(20);
-  const [interestRate, setInterestRate] = useState(8.75);
-  const [downPayment, setDownPayment] = useState(20);
-
-  const priceHint = parsePriceHint(property.price);
-  const loanAmount = priceHint * (1 - downPayment / 100);
-  const monthlyRate = interestRate / 12 / 100;
-  const months = loanYears * 12;
-  const emi = useMemo(() => {
-    if (!monthlyRate) return loanAmount / months;
-    return (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
-  }, [loanAmount, monthlyRate, months]);
 
   const shareProperty = async () => {
     const shareData = {
@@ -107,7 +95,7 @@ export default function PropertyExperienceClient({
                 ["Investment score", "8.7/10", TrendingUp],
                 ["Visit readiness", "High", CheckCircle2],
                 ["Buyer confidence", "Verified", Star],
-                ["Loan signal", "Eligible", IndianRupee],
+                ["Document clarity", "On request", FileCheck2],
               ].map(([label, value, Icon]) => (
                 <div key={label as string} className="rounded-3xl bg-[#F8F5EE] p-4">
                   <Icon className="h-5 w-5 text-[#9B7A19]" />
@@ -122,23 +110,26 @@ export default function PropertyExperienceClient({
 
           <div className="rounded-[2.5rem] bg-[#081120] p-6 text-white shadow-[0_24px_70px_rgba(8,17,32,0.12)]">
             <div className="flex items-center gap-3">
-              <Calculator className="h-6 w-6 text-[#D4AF37]" />
+              <FileCheck2 className="h-6 w-6 text-[#D4AF37]" />
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.24em] text-[#D4AF37]">
-                  Loan EMI estimate
+                  Verification checklist
                 </p>
                 <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-semibold">
-                  ₹{Math.round(emi).toLocaleString("en-IN")} / month
+                  Confirm before booking
                 </h2>
               </div>
             </div>
-            <div className="mt-6 grid gap-4">
-              <Range label="Down payment" value={downPayment} min={10} max={60} suffix="%" onChange={setDownPayment} />
-              <Range label="Interest rate" value={interestRate} min={7} max={12} step={0.25} suffix="%" onChange={setInterestRate} />
-              <Range label="Tenure" value={loanYears} min={5} max={30} suffix=" yrs" onChange={setLoanYears} />
+            <div className="mt-6 grid gap-3">
+              {["Current pricing", "Inventory status", "Property documents", "Site visit slot"].map((item) => (
+                <div key={item} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.055] p-4">
+                  <CheckCircle2 className="h-5 w-5 text-[#10B981]" />
+                  <span className="font-bold text-white/82">{item}</span>
+                </div>
+              ))}
             </div>
             <p className="mt-4 text-xs leading-5 text-white/46">
-              EMI is an estimate only. Final loan terms depend on bank eligibility and verified pricing.
+              Final pricing, documents, availability, and visit details should be confirmed directly with The Shivara Group team.
             </p>
           </div>
 
@@ -158,44 +149,5 @@ export default function PropertyExperienceClient({
         </div>
       </div>
     </section>
-  );
-}
-
-function Range({
-  label,
-  value,
-  min,
-  max,
-  step = 1,
-  suffix,
-  onChange,
-}: {
-  label: string;
-  value: number;
-  min: number;
-  max: number;
-  step?: number;
-  suffix: string;
-  onChange: (value: number) => void;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-2 flex justify-between text-xs font-black uppercase tracking-[0.16em] text-white/58">
-        {label}
-        <span className="text-[#F5D67B]">
-          {value}
-          {suffix}
-        </span>
-      </span>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        onChange={(event) => onChange(Number(event.target.value))}
-        className="w-full accent-[#D4AF37]"
-      />
-    </label>
   );
 }

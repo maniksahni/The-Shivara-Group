@@ -143,7 +143,7 @@ export default async function PropertiesPage() {
             </h2>
             <p className="mt-5 text-sm leading-8 text-[#4B5563]">
               This catalog is designed for premium discovery. Final pricing, official inventory,
-              payment plans, maps, and loan support should be confirmed by The Shivara Group team.
+              payment plans, maps, and documentation support should be confirmed by The Shivara Group team.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">

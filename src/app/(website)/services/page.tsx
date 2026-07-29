@@ -1,24 +1,24 @@
 import type { Metadata } from "next";
-import { Banknote, Building2, CalendarCheck, CheckCircle2, Home, KeyRound, MapPinned } from "lucide-react";
+import { Building2, CalendarCheck, CheckCircle2, FileCheck2, Home, KeyRound, MapPinned } from "lucide-react";
 import { LuxuryButton, SectionHeader, SectionShell } from "@/components/website/LuxurySection";
 import { processSteps, services, siteConfig } from "@/components/website/site-data";
 
 export const metadata: Metadata = {
   title: "Real Estate Services in Bareilly",
   description:
-    "Explore The Shivara Group's real estate services in Bareilly including property consultation, site visits, home loan assistance, documentation support, residential, commercial, plots, and investment guidance.",
+    "Explore The Shivara Group's real estate services in Bareilly including property consultation, site visits, documentation support, residential, commercial, plots, and investment guidance.",
   alternates: {
     canonical: "/services",
   },
   openGraph: {
     title: "Real Estate Services in Bareilly | The Shivara Group",
     description:
-      "Premium property consultation, site visit assistance, home loan support, and documentation guidance in Bareilly.",
+      "Premium property consultation, site visit assistance, pricing clarity, and documentation guidance in Bareilly.",
     type: "website",
   },
 };
 
-const icons = [Home, CalendarCheck, MapPinned, Banknote, Building2, KeyRound];
+const icons = [Home, CalendarCheck, MapPinned, FileCheck2, Building2, KeyRound];
 
 export default function ServicesPage() {
   return (
@@ -85,7 +85,6 @@ export default function ServicesPage() {
             "Budget and location matching",
             "Site visit coordination",
             "Follow-up reminders",
-            "Loan assistance request",
             "Property comparison support",
             "WhatsApp-first updates",
             "Manual verification before booking",

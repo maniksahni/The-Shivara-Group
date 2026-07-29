@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MessageCircle, Phone, Sparkles } from "lucide-react";
 import Footer from "@/components/website/Footer";
-import FloatingPropertyMatchCTA from "@/components/website/FloatingPropertyMatchCTA";
+import FloatingEnquiryCTA from "@/components/website/FloatingEnquiryCTA";
 import Navbar from "@/components/website/Navbar";
 import { siteConfig } from "@/components/website/site-data";
 import { ToastProvider } from "@/components/ui/toast";
@@ -42,7 +42,7 @@ export default function WebsiteLayout({ children }: { children: React.ReactNode 
         <Navbar />
         {children}
         <Footer />
-        <FloatingPropertyMatchCTA />
+        <FloatingEnquiryCTA />
 
         <div className="fixed bottom-5 right-5 z-50 hidden flex-col gap-3 md:flex">
         <a
@@ -87,12 +87,12 @@ export default function WebsiteLayout({ children }: { children: React.ReactNode 
           WhatsApp
         </a>
         <Link
-          href="/#property-match-finder"
+          href="/#send-enquiry"
           className="flex min-h-11 items-center justify-center gap-1 rounded-[0.9rem] bg-gradient-to-br from-[#F5D67B] to-[#D4AF37] text-[11px] font-black text-[#081120] shadow-[0_10px_24px_rgba(212,175,55,0.24)] active:scale-[0.98]"
         >
           <Sparkles className="h-3.5 w-3.5" />
-          <span className="hidden min-[375px]:inline">Find Property</span>
-          <span className="min-[375px]:hidden">Find</span>
+          <span className="hidden min-[375px]:inline">Enquire</span>
+          <span className="min-[375px]:hidden">Query</span>
         </Link>
         </div>
       </div>

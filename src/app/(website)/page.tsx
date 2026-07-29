@@ -24,8 +24,8 @@ import {
   SectionHeader,
   SectionShell,
 } from "@/components/website/LuxurySection";
+import DirectEnquiryForm from "@/components/website/DirectEnquiryForm";
 import FloatingEnquiryCard from "@/components/website/FloatingEnquiryCard";
-import PropertyMatchFinder from "@/components/website/PropertyMatchFinder";
 import {
   categoryShowcase,
   credibilityCards,
@@ -113,7 +113,7 @@ export default function HomePage() {
 
             <div className="mt-3.5 grid w-full max-w-[28rem] grid-cols-2 gap-2 sm:mt-9 sm:flex sm:max-w-none sm:flex-row sm:gap-3">
               <LuxuryButton href="/properties" className="col-span-2 w-full sm:w-auto">Explore Properties</LuxuryButton>
-              <LuxuryButton href="/#property-match-finder" variant="outline" className="w-full px-3 text-[10px] tracking-[0.06em] sm:w-auto sm:px-6 sm:text-sm sm:tracking-[0.16em]">
+              <LuxuryButton href="/#send-enquiry" variant="outline" className="w-full px-3 text-[10px] tracking-[0.06em] sm:w-auto sm:px-6 sm:text-sm sm:tracking-[0.16em]">
                 Free Consultation
               </LuxuryButton>
               <a
@@ -139,10 +139,10 @@ export default function HomePage() {
                   </span>
                 </Link>
                 <Link
-                  href="/#property-match-finder"
+                  href="/#send-enquiry"
                   className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] px-5 text-xs font-black uppercase tracking-[0.12em] text-[#081120] transition hover:bg-[#F5D67B] sm:min-h-14 sm:text-sm sm:tracking-[0.14em]"
                 >
-                  Find Match
+                  Send Enquiry
                   <ArrowUpRight className="h-4 w-4" />
                 </Link>
               </div>
@@ -242,7 +242,7 @@ export default function HomePage() {
             </div>
           ))}
         </div>
-        <PropertyMatchFinder />
+        <DirectEnquiryForm />
       </SectionShell>
 
       <SectionShell id="curated" className="pt-3 sm:pt-14">

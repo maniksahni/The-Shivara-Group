@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { BadgeCheck, Building2, MapPinned, MessageCircle, Search, Sparkles } from "lucide-react";
 import { isDatabaseConfigured, prisma } from "@/lib/prisma";
 import ClientPropertiesGrid from "./ClientPropertiesGrid";
-import PropertyMatchFinder from "@/components/website/PropertyMatchFinder";
+import DirectEnquiryForm from "@/components/website/DirectEnquiryForm";
 import {
   partnerPlaceholders,
   fallbackProperties,
@@ -127,7 +127,7 @@ export default async function PropertiesPage() {
 
       <section id="properties-list" className="px-4 py-10 pb-28 sm:px-8 lg:px-12 lg:py-16">
         <div className="mx-auto max-w-7xl space-y-10">
-          <PropertyMatchFinder compact />
+          <DirectEnquiryForm compact />
           <ClientPropertiesGrid initialProperties={properties} />
         </div>
       </section>

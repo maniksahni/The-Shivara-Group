@@ -1,19 +1,19 @@
 "use client";
 
-import { Sparkles } from "lucide-react";
+import { Send } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 
-export default function FloatingPropertyMatchCTA() {
+export default function FloatingEnquiryCTA() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const openFinder = () => {
-    const finder = document.getElementById("property-match-finder");
-    if (finder) {
-      finder.scrollIntoView({ behavior: "smooth", block: "start" });
+  const openEnquiry = () => {
+    const enquiry = document.getElementById("send-enquiry");
+    if (enquiry) {
+      enquiry.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
-    router.push("/#property-match-finder");
+    router.push("/#send-enquiry");
   };
 
   if (pathname?.startsWith("/crm")) {
@@ -23,12 +23,12 @@ export default function FloatingPropertyMatchCTA() {
   return (
     <button
       type="button"
-      onClick={openFinder}
+      onClick={openEnquiry}
       className="fixed bottom-5 left-5 z-50 hidden min-h-12 items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#081120]/94 px-5 text-xs font-black uppercase tracking-[0.12em] text-[#F5D67B] shadow-[0_18px_42px_rgba(0,0,0,0.28)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:bg-[#D4AF37] hover:text-[#081120] md:inline-flex"
-      aria-label="Find my property"
+      aria-label="Send a property enquiry"
     >
-      <Sparkles className="h-4 w-4" />
-      Find My Property
+      <Send className="h-4 w-4" />
+      Send Enquiry
     </button>
   );
 }

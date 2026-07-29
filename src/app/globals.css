@@ -211,6 +211,23 @@ main {
   border-radius: 999px;
 }
 
+/*
+ * Public mobile rails remain swipeable but never expose a browser scrollbar.
+ * Safari renders that scrollbar as a detached gold line below the cards.
+ */
+.public-site .premium-scrollbar,
+.public-site .auto-scroll-rail {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.public-site .premium-scrollbar::-webkit-scrollbar,
+.public-site .auto-scroll-rail::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
 /* ─────────────────────────────────────────────
    Gold Gradient Utilities
    ───────────────────────────────────────────── */

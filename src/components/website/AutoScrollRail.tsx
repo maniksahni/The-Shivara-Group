@@ -5,7 +5,7 @@ import { useEffect, useRef, type ReactNode } from "react";
 export default function AutoScrollRail({
   children,
   className = "",
-  interval = 3600,
+  interval = 2000,
   ariaLabel,
 }: {
   children: ReactNode;
@@ -17,7 +17,9 @@ export default function AutoScrollRail({
   const pauseUntilRef = useRef(0);
 
   const pauseAutoScroll = () => {
-    pauseUntilRef.current = Date.now() + 8000;
+    // Let a manual swipe settle, then resume quickly so the rail never feels
+    // stalled on mobile.
+    pauseUntilRef.current = Date.now() + 2500;
   };
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export default function AutoScrollRail({
   return (
     <div
       ref={railRef}
-      className={className}
+      className={`auto-scroll-rail ${className}`}
       aria-label={ariaLabel}
       onPointerDown={pauseAutoScroll}
       onTouchStart={pauseAutoScroll}

@@ -38,7 +38,7 @@ export const metadata: Metadata = {
 export default function WebsiteLayout({ children }: { children: React.ReactNode }) {
   return (
     <ToastProvider>
-      <div className="min-h-[100dvh] overflow-x-hidden bg-[#F8F5EE] pb-[calc(5.9rem+env(safe-area-inset-bottom))] text-[#081120] antialiased md:pb-0">
+      <div className="public-site min-h-[100dvh] overflow-x-hidden bg-[#F8F5EE] pb-[calc(5.9rem+env(safe-area-inset-bottom))] text-[#081120] antialiased md:pb-0">
         <Navbar />
         {children}
         <Footer />

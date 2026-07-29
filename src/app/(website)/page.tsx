@@ -232,7 +232,6 @@ export default function HomePage() {
 
         <AutoScrollRail
           ariaLabel="Featured properties"
-          interval={4200}
           className="premium-scrollbar flex snap-x gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:overflow-visible md:pb-0 xl:grid-cols-3"
         >
           {fallbackProperties.slice(0, 3).map((property, index) => (

@@ -505,6 +505,15 @@ export default function LeadTable({ leads, currentUserId }: LeadTableProps) {
                   <MessageCircle className="h-4 w-4" />
                   WhatsApp
                 </a>
+                <button
+                  type="button"
+                  onClick={() => setDeleteTarget(lead)}
+                  className="col-span-2 flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-red-400/20 bg-red-500/10 text-sm font-black text-red-300 transition active:scale-[0.98]"
+                  aria-label={`Delete ${lead.name}`}
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Delete Lead
+                </button>
               </div>
             </article>
           )

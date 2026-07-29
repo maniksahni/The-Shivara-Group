@@ -5,7 +5,7 @@
  *
  * Features:
  *  - Property image area (first image URL or gold-gradient placeholder)
- *  - Title, type badge, price (gold, large), and location
+ *  - Title, type badge, and location
  *  - Beds / baths / area row when applicable
  *  - Active toggle switch (calls togglePropertyActive server action)
  *  - Featured star toggle (calls togglePropertyFeatured server action)
@@ -56,29 +56,6 @@ const TYPE_CONFIG: Record<
   PLOT:       { label: 'Plot',       bgClass: 'bg-green-900/40',  textClass: 'text-green-300'  },
   COMMERCIAL: { label: 'Commercial', bgClass: 'bg-orange-900/40', textClass: 'text-orange-300' },
   FARMHOUSE:  { label: 'Farmhouse',  bgClass: 'bg-teal-900/40',   textClass: 'text-teal-300'   },
-}
-
-/** Format a price value (number or string) for display. */
-function displayPrice(raw: string | number): string {
-  const value =
-    typeof raw === 'number' ? raw : parseFloat(String(raw).replace(/[^0-9.]/g, ''))
-
-  if (isNaN(value)) return String(raw) // return the original string if not parseable
-
-  const CRORE = 10_000_000
-  const LAKH  = 100_000
-
-  if (value >= CRORE) {
-    const crores = (value / CRORE).toFixed(2).replace(/\.?0+$/, '')
-    return `₹${crores} Cr`
-  }
-
-  if (value >= LAKH) {
-    const lakhs = (value / LAKH).toFixed(2).replace(/\.?0+$/, '')
-    return `₹${lakhs} Lakh`
-  }
-
-  return `₹${value.toLocaleString('en-IN')}`
 }
 
 // ---------------------------------------------------------------------------
@@ -150,8 +127,6 @@ export default function PropertyAdminCard({ property }: PropertyAdminCardProps) 
     Array.isArray(property.images) && property.images.length > 0
       ? property.images[0]
       : null
-
-  const formattedPrice = displayPrice(property.price)
 
   // ── Handlers ──────────────────────────────────────────────────────────────
 
@@ -296,9 +271,6 @@ export default function PropertyAdminCard({ property }: PropertyAdminCardProps) 
               {property.title}
             </h2>
           </div>
-
-          {/* Price */}
-          <p className="text-2xl font-bold text-[#C9A84C]">{formattedPrice}</p>
 
           {/* Location */}
           <div className="flex items-start gap-1.5 text-sm text-slate-400">

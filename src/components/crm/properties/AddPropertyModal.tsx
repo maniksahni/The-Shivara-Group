@@ -55,7 +55,7 @@ export default function AddPropertyModal({ trigger, property }: AddPropertyModal
     defaultValues: {
       title: property?.title ?? "",
       description: property?.description ?? "",
-      price: property?.price ? String(property.price) : "",
+      price: "Contact for pricing",
       location: property?.location ?? "",
       type: (property?.type as PropertyType) ?? PropertyType.APARTMENT,
       bedrooms: property?.bedrooms ?? null,
@@ -93,6 +93,10 @@ export default function AddPropertyModal({ trigger, property }: AddPropertyModal
 
     const formattedData = {
       ...data,
+      // Price is intentionally not collected in the CRM. Keep the existing
+      // required database field non-monetary so customers connect with the
+      // team for current availability and commercial details.
+      price: "Contact for pricing",
       bedrooms: data.bedrooms === undefined || data.bedrooms === null ? null : Number(data.bedrooms),
       bathrooms: data.bathrooms === undefined || data.bathrooms === null ? null : Number(data.bathrooms),
       area: data.area?.trim() || null,
@@ -198,17 +202,6 @@ export default function AddPropertyModal({ trigger, property }: AddPropertyModal
                 <option value={PropertyType.COMMERCIAL}>Commercial</option>
                 <option value={PropertyType.FARMHOUSE}>Farmhouse</option>
               </select>
-            </Field>
-          </FormSection>
-
-          <FormSection icon={<BadgeCheck className="h-4 w-4" />} title="Pricing">
-            <Field label="Price / price tag" error={errors.price?.message} required>
-              <input
-                type="text"
-                {...register("price")}
-                placeholder="e.g. ₹45 Lakh / Contact for pricing"
-                className={fieldClass}
-              />
             </Field>
           </FormSection>
 

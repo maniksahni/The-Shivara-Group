@@ -1,55 +1,25 @@
 "use client";
 
-import { PropertyType } from "@prisma/client";
 import {
   CheckCircle2,
   Loader2,
-  MapPin,
-  MessageCircle,
-  Phone,
   Send,
   Sparkles,
 } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/components/ui/toast";
-import { siteConfig } from "@/components/website/site-data";
 
 type EnquiryValues = {
   name: string;
   phone: string;
-  whatsappNumber: string;
-  propertyType: string;
-  budget: string;
-  preferredLocation: string;
   message: string;
 };
 
 const initialValues: EnquiryValues = {
   name: "",
   phone: "",
-  whatsappNumber: "",
-  propertyType: "",
-  budget: "",
-  preferredLocation: "",
   message: "",
 };
-
-const propertyTypes = [
-  { label: "Select property type", value: "" },
-  { label: "Apartment", value: PropertyType.APARTMENT },
-  { label: "Villa / Kothi", value: PropertyType.VILLA },
-  { label: "Plot / Land", value: PropertyType.PLOT },
-  { label: "Commercial", value: PropertyType.COMMERCIAL },
-  { label: "Farmhouse", value: PropertyType.FARMHOUSE },
-];
-
-const budgetOptions = [
-  "Under 25 Lakh",
-  "25–50 Lakh",
-  "50 Lakh–1 Cr",
-  "1 Cr+",
-  "Not sure",
-];
 
 function normalizePhone(value: string) {
   return value.replace(/\D/g, "");
@@ -78,7 +48,6 @@ export default function DirectEnquiryForm({
     setError("");
 
     const phone = normalizePhone(values.phone);
-    const whatsapp = normalizePhone(values.whatsappNumber);
     if (values.name.trim().length < 2) {
       setError("Please enter your name.");
       return;
@@ -100,11 +69,11 @@ export default function DirectEnquiryForm({
         body: JSON.stringify({
           name: values.name.trim(),
           phone,
-          whatsappNumber: whatsapp || null,
+          whatsappNumber: null,
           email: null,
-          budget: values.budget || null,
-          preferredLocation: values.preferredLocation.trim() || null,
-          propertyType: values.propertyType || null,
+          budget: null,
+          preferredLocation: null,
+          propertyType: null,
           source: "WEBSITE",
           status: "NEW",
           priority: "MEDIUM",
@@ -155,24 +124,9 @@ export default function DirectEnquiryForm({
             Share your requirement directly. No quiz or extra steps—our consultant will review it
             and contact you with relevant options.
           </p>
-          <div className="mt-4 grid grid-cols-2 gap-2 sm:mt-6 lg:grid-cols-1">
-            <a
-              href={siteConfig.phoneHref}
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl border border-white/12 bg-white/[0.06] px-3 text-xs font-black uppercase tracking-[0.1em] text-white transition hover:border-[#D4AF37]/50"
-            >
-              <Phone className="h-4 w-4 text-[#D4AF37]" />
-              Call now
-            </a>
-            <a
-              href={siteConfig.whatsappHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-2xl bg-[#10B981] px-3 text-xs font-black uppercase tracking-[0.1em] text-white"
-            >
-              <MessageCircle className="h-4 w-4" />
-              WhatsApp
-            </a>
-          </div>
+          <p className="mt-4 inline-flex rounded-full border border-white/10 bg-white/[0.05] px-3 py-2 text-[11px] font-bold text-white/66 sm:mt-6">
+            One form · One consultant · Relevant options
+          </p>
         </div>
 
         <form onSubmit={submit} className="min-w-0 p-3.5 sm:p-6 lg:p-8">
@@ -201,36 +155,6 @@ export default function DirectEnquiryForm({
               value={values.phone}
               onChange={(value) => updateValue("phone", value)}
               placeholder="10-digit mobile number"
-              inputMode="tel"
-              autoComplete="tel"
-            />
-            <SelectField
-              label="Property type"
-              value={values.propertyType}
-              onChange={(value) => updateValue("propertyType", value)}
-              options={propertyTypes}
-            />
-            <SelectField
-              label="Budget"
-              value={values.budget}
-              onChange={(value) => updateValue("budget", value)}
-              options={[
-                { label: "Select budget", value: "" },
-                ...budgetOptions.map((option) => ({ label: option, value: option })),
-              ]}
-            />
-            <Field
-              label="Preferred location"
-              value={values.preferredLocation}
-              onChange={(value) => updateValue("preferredLocation", value)}
-              placeholder="Area or location"
-              icon={MapPin}
-            />
-            <Field
-              label="WhatsApp number"
-              value={values.whatsappNumber}
-              onChange={(value) => updateValue("whatsappNumber", value)}
-              placeholder="Optional"
               inputMode="tel"
               autoComplete="tel"
             />
@@ -277,7 +201,6 @@ function Field({
   required = false,
   inputMode,
   autoComplete,
-  icon: Icon,
 }: {
   label: string;
   value: string;
@@ -286,7 +209,6 @@ function Field({
   required?: boolean;
   inputMode?: "tel";
   autoComplete?: string;
-  icon?: typeof MapPin;
 }) {
   return (
     <label className="min-w-0">
@@ -294,7 +216,6 @@ function Field({
         {label} {required && <span className="text-red-500">*</span>}
       </span>
       <div className="relative">
-        {Icon && <Icon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9B7A19]" />}
         <input
           value={value}
           onChange={(event) => onChange(event.target.value)}
@@ -302,40 +223,9 @@ function Field({
           required={required}
           inputMode={inputMode}
           autoComplete={autoComplete}
-          className={`min-h-12 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] pr-4 text-[16px] font-semibold text-[#081120] outline-none transition placeholder:text-[#6B7280]/60 focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/14 sm:text-sm ${Icon ? "pl-10" : "pl-4"}`}
+          className="min-h-12 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] px-4 text-[16px] font-semibold text-[#081120] outline-none transition placeholder:text-[#6B7280]/60 focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/14 sm:text-sm"
         />
       </div>
-    </label>
-  );
-}
-
-function SelectField({
-  label,
-  value,
-  onChange,
-  options,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  options: { label: string; value: string }[];
-}) {
-  return (
-    <label className="min-w-0">
-      <span className="mb-1.5 block text-[10px] font-black uppercase tracking-[0.17em] text-[#6B7280]">
-        {label}
-      </span>
-      <select
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="min-h-12 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] px-4 text-[16px] font-semibold text-[#081120] outline-none transition focus:border-[#D4AF37] focus:ring-4 focus:ring-[#D4AF37]/14 sm:text-sm"
-      >
-        {options.map((option) => (
-          <option key={option.value || option.label} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
     </label>
   );
 }

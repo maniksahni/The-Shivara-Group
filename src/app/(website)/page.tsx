@@ -13,9 +13,6 @@ import {
   Search,
   ShieldCheck,
   Sparkles,
-  Star,
-  TrendingUp,
-  Users,
 } from "lucide-react";
 import {
   Eyebrow,
@@ -28,20 +25,14 @@ import DirectEnquiryForm from "@/components/website/DirectEnquiryForm";
 import FloatingEnquiryCard from "@/components/website/FloatingEnquiryCard";
 import {
   categoryShowcase,
-  credibilityCards,
-  conversionTrustCards,
   fallbackProperties,
   faqs,
   bareillyGuide,
-  investmentHighlights,
-  partnerPlaceholders,
   processSteps,
   publicStats,
   searchSuggestions,
   services,
   siteConfig,
-  testimonials,
-  trustEngine,
   trustHighlights,
 } from "@/components/website/site-data";
 
@@ -49,9 +40,6 @@ const heroImage =
   "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80";
 const villaImage =
   "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=80";
-const interiorImage =
-  "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80";
-
 export default function HomePage() {
   const faqJsonLd = {
     "@context": "https://schema.org",
@@ -213,62 +201,32 @@ export default function HomePage() {
 
       <GoldDivider />
 
-      <SectionShell className="bg-[#081120] py-3.5 text-white sm:py-8">
-        <div className="grid gap-2 max-sm:[&>*:nth-child(n+4)]:hidden sm:grid-cols-2 sm:gap-3 lg:grid-cols-6">
+      <SectionShell className="bg-[#081120] py-2 text-white sm:py-6">
+        <div className="premium-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-3 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-6">
           {trustHighlights.map((item) => (
             <div
               key={item}
-              className="touch-lift flex items-center gap-3 rounded-2xl border border-white/8 bg-white/[0.045] p-3.5 sm:p-4"
+              className="touch-lift flex min-w-[72vw] shrink-0 items-center gap-2 rounded-2xl border border-white/8 bg-white/[0.045] px-3 py-2.5 sm:min-w-0 sm:gap-3 sm:p-4"
             >
-              <BadgeCheck className="h-5 w-5 shrink-0 text-[#D4AF37]" />
-              <span className="text-sm font-semibold text-white/74">{item}</span>
+              <BadgeCheck className="h-4 w-4 shrink-0 text-[#D4AF37] sm:h-5 sm:w-5" />
+              <span className="text-xs font-semibold text-white/74 sm:text-sm">{item}</span>
             </div>
           ))}
         </div>
       </SectionShell>
 
-      <SectionShell className="bg-[#F8F5EE] py-4 sm:py-14">
-        <div className="mb-4 grid gap-2.5 sm:mb-10 sm:grid-cols-2 lg:grid-cols-4">
-          {conversionTrustCards.map((card) => (
-            <div
-              key={card.title}
-              className="touch-lift rounded-[1.5rem] border border-[#081120]/8 bg-white p-4 shadow-[0_18px_50px_rgba(8,17,32,0.05)] sm:rounded-[1.85rem] sm:p-5"
-            >
-              <ShieldCheck className="h-5 w-5 text-[#10B981]" />
-              <h2 className="mt-3 text-sm font-black uppercase tracking-[0.14em] text-[#081120]">
-                {card.title}
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-[#4B5563]">{card.text}</p>
-            </div>
-          ))}
-        </div>
+      <SectionShell className="bg-[#F8F5EE] py-3 sm:py-10">
         <DirectEnquiryForm />
       </SectionShell>
 
-      <SectionShell id="curated" className="pt-3 sm:pt-14">
-        <div className="grid gap-6 lg:grid-cols-[0.88fr_1.12fr] lg:items-end">
-          <SectionHeader
-            eyebrow="Curated inventory"
-            title="A sharper way to discover premium property."
-            description="Property discovery should feel calm, informed, and curated — not chaotic. Start with public highlights, then verify pricing, inventory, and site visits directly with the team."
-          />
-          <div className="rounded-[1.5rem] border border-[#D4AF37]/24 bg-white p-3.5 shadow-[0_24px_70px_rgba(8,17,32,0.08)] sm:rounded-[2rem] sm:p-5">
-            <div
-              className="h-52 rounded-[1.2rem] bg-cover bg-center sm:h-72 sm:rounded-[1.5rem]"
-              style={{ backgroundImage: `url(${interiorImage})` }}
-            />
-            <div className="grid gap-2 pt-3 sm:grid-cols-3 sm:gap-3 sm:pt-4">
-              {["Verified calls", "Site visit slots", "CRM follow-ups"].map((item) => (
-                <div key={item} className="rounded-2xl bg-[#F8F5EE] p-3 text-sm font-bold sm:p-4">
-                  <CheckCircle2 className="mb-1.5 h-5 w-5 text-[#10B981] sm:mb-2" />
-                  {item}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+      <SectionShell id="curated" className="pt-4 sm:pt-12">
+        <SectionHeader
+          eyebrow="Featured properties"
+          title="A focused shortlist, ready to explore."
+          description="Start with selected homes and projects, then confirm pricing, availability, and site visits directly with our team."
+        />
 
-        <div className="premium-scrollbar mt-8 flex snap-x gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:overflow-visible md:pb-0 xl:grid-cols-3">
+        <div className="premium-scrollbar flex snap-x gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:overflow-visible md:pb-0 xl:grid-cols-3">
           {fallbackProperties.slice(0, 3).map((property, index) => (
             <article
               key={property.id}
@@ -361,12 +319,12 @@ export default function HomePage() {
           description="A flagship real estate experience should make categories feel visual, focused, and easy to act on from mobile."
           align="center"
         />
-        <div className="grid gap-4 md:grid-cols-2 md:gap-5 xl:grid-cols-4">
+        <div className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:gap-5 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-4">
           {categoryShowcase.map((category) => (
             <Link
               key={category.title}
               href={category.href}
-              className="touch-lift group relative min-h-[260px] overflow-hidden rounded-[1.6rem] bg-[#081120] shadow-[0_24px_70px_rgba(8,17,32,0.12)] sm:min-h-[420px] sm:rounded-[2.2rem]"
+              className="touch-lift group relative min-h-[300px] w-[82vw] max-w-[340px] shrink-0 snap-center overflow-hidden rounded-[1.6rem] bg-[#081120] shadow-[0_24px_70px_rgba(8,17,32,0.12)] sm:min-h-[380px] sm:rounded-[2.2rem] md:w-auto md:max-w-none xl:min-h-[420px]"
             >
               <div
                 className="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-110"
@@ -375,7 +333,7 @@ export default function HomePage() {
                 }}
               />
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.24),transparent_34%)]" />
-              <div className="relative flex h-full min-h-[260px] flex-col justify-end p-4 text-white sm:min-h-[420px] sm:p-6">
+              <div className="relative flex h-full min-h-[300px] flex-col justify-end p-4 text-white sm:min-h-[380px] sm:p-6 xl:min-h-[420px]">
                 <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-[#F5D67B]">
                   Explore
                 </p>
@@ -400,11 +358,11 @@ export default function HomePage() {
             description="The Shivara experience positions every enquiry around location fit, lifestyle, investment intent, and site-visit readiness."
             dark
           />
-          <div className="grid gap-3 md:grid-cols-2">
-            {bareillyGuide.map((item) => (
+          <div className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0">
+            {bareillyGuide.slice(0, 4).map((item) => (
               <div
                 key={item.zone}
-                className="touch-lift rounded-[1.5rem] border border-white/10 bg-white/[0.055] p-4 shadow-[0_20px_70px_rgba(0,0,0,0.18)] sm:rounded-[2rem] sm:p-5"
+                className="touch-lift w-[82vw] max-w-[340px] shrink-0 snap-center rounded-[1.5rem] border border-white/10 bg-white/[0.055] p-4 shadow-[0_20px_70px_rgba(0,0,0,0.18)] sm:rounded-[2rem] sm:p-5 md:w-auto md:max-w-none"
               >
                 <MapPin className="h-5 w-5 text-[#D4AF37]" />
                 <p className="mt-4 text-[11px] font-black uppercase tracking-[0.2em] text-[#F5D67B]">
@@ -425,11 +383,11 @@ export default function HomePage() {
           description="Every service is designed around a real outcome: shortlist faster, visit confidently, and move forward with verified information."
           align="center"
         />
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {services.map((service, index) => (
+        <div className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:gap-4 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-3">
+          {services.slice(0, 3).map((service, index) => (
             <div
               key={service.title}
-              className="touch-lift group rounded-[1.6rem] border border-[#081120]/8 bg-[#F8F5EE] p-4 transition duration-300 hover:bg-[#081120] hover:text-white sm:rounded-[2rem] sm:p-6"
+              className="touch-lift group w-[82vw] max-w-[340px] shrink-0 snap-center rounded-[1.6rem] border border-[#081120]/8 bg-[#F8F5EE] p-4 transition duration-300 hover:bg-[#081120] hover:text-white sm:rounded-[2rem] sm:p-6 md:w-auto md:max-w-none"
             >
               <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#D4AF37] text-[#081120] sm:mb-8 sm:h-12 sm:w-12">
                 {index % 3 === 0 ? (
@@ -458,142 +416,32 @@ export default function HomePage() {
         </div>
       </SectionShell>
 
-      <SectionShell className="bg-[#F8F5EE]">
-        <div className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
-          <SectionHeader
-            eyebrow="Investment lens"
-            title="Property decisions need a stronger point of view."
-            description="The site now frames opportunities around location, asset type, and use-case clarity — without inventing returns or fake promises."
-          />
-          <div className="grid gap-4 md:grid-cols-3">
-            {investmentHighlights.map((item) => (
-              <div
-                key={item.title}
-                className="rounded-[1.6rem] border border-[#081120]/8 bg-white p-4 shadow-[0_20px_60px_rgba(8,17,32,0.06)] sm:rounded-[2rem] sm:p-6"
-              >
-                <TrendingUp className="h-7 w-7 text-[#9B7A19]" />
-                <p className="mt-5 text-xs font-black uppercase tracking-[0.22em] text-[#9B7A19] sm:mt-8">
-                  {item.metric}
-                </p>
-                <h3 className="mt-2 text-xl font-black text-[#081120]">{item.title}</h3>
-                <p className="mt-3 text-sm leading-7 text-[#4B5563]">{item.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </SectionShell>
-
-      <SectionShell className="bg-white">
-        <div className="grid gap-6 lg:grid-cols-[1fr_1fr] lg:items-center">
-          <div className="overflow-hidden rounded-[2rem] bg-[#081120] p-5 text-white shadow-[0_28px_90px_rgba(8,17,32,0.18)] sm:rounded-[2.5rem] sm:p-8">
-            <div
-              className="mb-5 h-56 rounded-[1.5rem] bg-cover bg-center sm:h-72"
-              style={{ backgroundImage: `linear-gradient(180deg,rgba(8,17,32,0.02),rgba(8,17,32,0.58)),url(${villaImage})` }}
-            />
-            <p className="text-[11px] font-black uppercase tracking-[0.28em] text-[#D4AF37]">
-              Trust Engine
-            </p>
-            <h2 className="mt-3 font-[family-name:var(--font-playfair)] text-4xl font-semibold leading-tight sm:text-5xl">
-              Every step should feel verified, guided, and human.
-            </h2>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {trustEngine.map((item) => (
-              <div key={item} className="rounded-[1.45rem] border border-[#081120]/8 bg-[#F8F5EE] p-4 sm:rounded-[1.75rem] sm:p-5">
-                <ShieldCheck className="h-6 w-6 text-[#10B981]" />
-                <p className="mt-4 text-base font-black text-[#081120]">{item}</p>
-              </div>
-            ))}
-            <a
-              href={siteConfig.phoneHref}
-              className="rounded-[1.45rem] bg-[#D4AF37] p-4 text-[#081120] shadow-[0_20px_50px_rgba(212,175,55,0.22)] sm:rounded-[1.75rem] sm:p-5"
-            >
-              <Users className="h-6 w-6" />
-              <p className="mt-4 text-base font-black">Talk to a dedicated consultant</p>
-            </a>
-          </div>
-        </div>
-      </SectionShell>
-
       <SectionShell className="bg-[#081120] text-white">
-        <div className="grid gap-7 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12">
+        <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-10">
           <SectionHeader
             eyebrow="Property journey"
-            title="A smoother path from requirement to final booking."
-            description="Every enquiry is guided through shortlisting, site visits, negotiation, documentation, and booking clarity."
+            title="From requirement to site visit, without confusion."
+            description="A simple process designed to keep property discovery focused and easy to follow."
             dark
           />
-          <div className="grid gap-4">
-            {processSteps.map((step) => (
+          <div className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0">
+            {processSteps.slice(0, 4).map((step) => (
               <div
                 key={step.step}
-                className="grid gap-3 rounded-[1.6rem] border border-white/10 bg-white/[0.045] p-4 sm:grid-cols-[90px_1fr] sm:gap-4 sm:rounded-[2rem] sm:p-5"
+                className="w-[78vw] max-w-[320px] shrink-0 snap-center rounded-[1.4rem] border border-white/10 bg-white/[0.045] p-4 sm:w-auto sm:max-w-none sm:rounded-[1.7rem] sm:p-5"
               >
-                <div className="font-[family-name:var(--font-playfair)] text-5xl font-semibold text-[#D4AF37]">
+                <div className="font-[family-name:var(--font-playfair)] text-3xl font-semibold text-[#D4AF37]">
                   {step.step}
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-7 text-white/62">{step.text}</p>
-                </div>
+                <h3 className="mt-3 text-lg font-bold">{step.title}</h3>
+                <p className="mt-1.5 text-sm leading-6 text-white/62">{step.text}</p>
               </div>
             ))}
           </div>
         </div>
       </SectionShell>
 
-      <SectionShell>
-        <SectionHeader
-          eyebrow="Trust"
-          title="Designed to build confidence before the first call."
-          description="A premium property journey should feel clear, calm, and easy to verify before a buyer schedules a visit."
-          align="center"
-        />
-        <div className="grid gap-5 lg:grid-cols-3">
-          {testimonials.map((testimonial) => (
-            <div
-              key={testimonial.quote}
-              className="rounded-[1.6rem] border border-[#081120]/8 bg-white p-4 shadow-[0_20px_60px_rgba(8,17,32,0.06)] sm:rounded-[2rem] sm:p-6"
-            >
-              <div className="mb-3 flex gap-1 text-[#D4AF37] sm:mb-5">
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <Star key={index} className="h-4 w-4 fill-current" />
-                ))}
-              </div>
-              <p className="text-base leading-7 text-[#1F2937] sm:text-lg sm:leading-8">“{testimonial.quote}”</p>
-              <p className="mt-4 font-bold text-[#081120] sm:mt-6">{testimonial.name}</p>
-              <p className="text-sm text-[#6B7280]">{testimonial.meta}</p>
-            </div>
-          ))}
-        </div>
-      </SectionShell>
-
-      <SectionShell className="bg-white">
-        <SectionHeader
-          eyebrow="Trust architecture"
-          title="Premium does not mean pretending. It means being clear."
-          description="Customers trust brands that explain the process clearly and make it simple to confirm every important detail."
-          align="center"
-        />
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {credibilityCards.map((card) => (
-            <div key={card.title} className="rounded-[1.6rem] border border-[#081120]/8 bg-[#F8F5EE] p-4 sm:rounded-[2rem] sm:p-6">
-              <BadgeCheck className="h-6 w-6 text-[#10B981]" />
-              <h3 className="mt-4 text-lg font-black text-[#081120] sm:mt-5">{card.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-[#4B5563] sm:mt-3 sm:leading-7">{card.text}</p>
-            </div>
-          ))}
-        </div>
-        <div className="mt-5 grid gap-2.5 rounded-[1.6rem] bg-[#081120] p-4 text-white sm:grid-cols-2 sm:rounded-[2rem] sm:p-5 lg:grid-cols-4">
-          {partnerPlaceholders.map((item) => (
-            <div key={item} className="rounded-2xl border border-white/10 bg-white/[0.055] p-4 text-sm font-bold text-white/68">
-              {item}
-            </div>
-          ))}
-        </div>
-      </SectionShell>
-
-      <SectionShell className="bg-white">
+      <SectionShell className="bg-white pb-28 md:pb-20">
         <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-10">
           <SectionHeader
             eyebrow="FAQ"
@@ -601,7 +449,7 @@ export default function HomePage() {
             description="A polished brand also tells buyers what is verified, what is pending, and what needs direct confirmation."
           />
           <div className="space-y-3">
-            {faqs.map((faq) => (
+            {faqs.slice(0, 5).map((faq) => (
               <details
                 key={faq.question}
                 className="group rounded-2xl border border-[#081120]/8 bg-[#F8F5EE] p-4 open:bg-[#081120] open:text-white sm:rounded-3xl sm:p-5"
@@ -614,42 +462,6 @@ export default function HomePage() {
                 </p>
               </details>
             ))}
-          </div>
-        </div>
-      </SectionShell>
-
-      <SectionShell className="bg-[#F8F5EE] pb-28 md:pb-24">
-        <div className="overflow-hidden rounded-[1.75rem] bg-[#081120] p-5 text-white shadow-[0_30px_100px_rgba(8,17,32,0.22)] sm:rounded-[2.4rem] md:p-12">
-          <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#D4AF37] sm:text-xs sm:tracking-[0.34em]">
-                Conversion first
-              </p>
-              <h2 className="mt-2 font-[family-name:var(--font-playfair)] text-[2rem] font-semibold leading-[1.05] tracking-[-0.04em] sm:mt-3 sm:text-6xl">
-                Tell us your requirement. We’ll find the right property for you.
-              </h2>
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-white/64 sm:mt-5 sm:text-base">
-                Call, WhatsApp, or book a site visit. The CRM will capture your enquiry and
-                help the team follow up properly.
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-              <a
-                href={siteConfig.whatsappHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#10B981] px-6 text-sm font-black uppercase tracking-[0.14em] text-white"
-              >
-                <MessageCircle className="h-4 w-4" />
-                WhatsApp Now
-              </a>
-              <LuxuryButton href="/contact#site-visit" variant="light">
-                Book Free Consultation
-              </LuxuryButton>
-              <LuxuryButton href="/properties" variant="outline">
-                Explore Properties
-              </LuxuryButton>
-            </div>
           </div>
         </div>
       </SectionShell>

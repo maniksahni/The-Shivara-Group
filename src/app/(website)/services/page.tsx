@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Building2, CalendarCheck, CheckCircle2, FileCheck2, Home, KeyRound, MapPinned } from "lucide-react";
+import { Building2, CalendarCheck, FileCheck2, Home, KeyRound, MapPinned } from "lucide-react";
 import { LuxuryButton, SectionHeader, SectionShell } from "@/components/website/LuxurySection";
 import { processSteps, services, siteConfig } from "@/components/website/site-data";
 
@@ -42,27 +42,27 @@ export default function ServicesPage() {
       </section>
 
       <SectionShell>
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:gap-5 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-3">
           {services.map((service, index) => {
             const Icon = icons[index] ?? Home;
             return (
               <div
                 key={service.title}
-                className="touch-lift group rounded-[1.75rem] border border-[#081120]/8 bg-white p-5 shadow-[0_24px_70px_rgba(8,17,32,0.07)] transition hover:bg-[#081120] hover:text-white sm:rounded-[2.2rem] sm:p-7"
+                className="touch-lift group w-[84vw] max-w-[350px] shrink-0 snap-center rounded-[1.75rem] border border-[#081120]/8 bg-white p-5 shadow-[0_24px_70px_rgba(8,17,32,0.07)] transition hover:bg-[#081120] hover:text-white sm:rounded-[2.2rem] sm:p-7 md:w-auto md:max-w-none"
               >
-                <div className="mb-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#D4AF37] text-[#081120]">
+                <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#D4AF37] text-[#081120] sm:mb-8 sm:h-14 sm:w-14">
                   <Icon className="h-6 w-6" />
                 </div>
                 <h2 className="font-[family-name:var(--font-playfair)] text-3xl font-semibold">
                   {service.title}
                 </h2>
-                <p className="mt-4 text-sm leading-7 text-[#4B5563] transition group-hover:text-white/66 sm:min-h-28">
+                <p className="mt-3 text-sm leading-7 text-[#4B5563] transition group-hover:text-white/66 sm:min-h-28 sm:mt-4">
                   {service.description}
                 </p>
                 <LuxuryButton
                   href="/contact"
                   variant={index % 2 === 0 ? "gold" : "navy"}
-                  className="mt-7"
+                  className="mt-5 sm:mt-7"
                 >
                   {service.cta}
                 </LuxuryButton>
@@ -72,45 +72,20 @@ export default function ServicesPage() {
         </div>
       </SectionShell>
 
-      <SectionShell className="bg-white">
-        <SectionHeader
-          eyebrow="What you receive"
-          title="A more premium and organised buying experience."
-          description="The Shivara Group's public website now feeds directly into enquiry and site-visit flows so the CRM can track every lead properly."
-          align="center"
-        />
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {[
-            "Requirement capture",
-            "Budget and location matching",
-            "Site visit coordination",
-            "Follow-up reminders",
-            "Property comparison support",
-            "WhatsApp-first updates",
-            "Manual verification before booking",
-          ].map((item) => (
-            <div key={item} className="flex items-center gap-3 rounded-3xl bg-[#F8F5EE] p-5">
-              <CheckCircle2 className="h-5 w-5 shrink-0 text-[#10B981]" />
-              <span className="font-bold">{item}</span>
-            </div>
-          ))}
-        </div>
-      </SectionShell>
-
       <SectionShell className="bg-[#081120] pb-28 text-white md:pb-24">
         <SectionHeader
           eyebrow="How it works"
           title="Simple, guided, and conversion-focused."
           dark
         />
-        <div className="grid gap-4 lg:grid-cols-4">
-          {processSteps.map((step) => (
-            <div key={step.step} className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-6">
-              <p className="font-[family-name:var(--font-playfair)] text-5xl font-semibold text-[#D4AF37]">
+        <div className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
+          {processSteps.slice(0, 4).map((step) => (
+            <div key={step.step} className="w-[78vw] max-w-[320px] shrink-0 snap-center rounded-[1.5rem] border border-white/10 bg-white/[0.045] p-4 sm:w-auto sm:max-w-none sm:rounded-[1.8rem] sm:p-5">
+              <p className="font-[family-name:var(--font-playfair)] text-3xl font-semibold text-[#D4AF37]">
                 {step.step}
               </p>
-              <h3 className="mt-5 text-xl font-bold">{step.title}</h3>
-              <p className="mt-3 text-sm leading-7 text-white/62">{step.text}</p>
+              <h3 className="mt-3 text-lg font-bold">{step.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-white/62">{step.text}</p>
             </div>
           ))}
         </div>

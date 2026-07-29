@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, MapPin, MessageCircle, Phone, Sparkles } from "lucide-react";
 import { Monogram } from "@/components/website/LuxurySection";
-import { navLinks, propertyCategories, services, siteConfig } from "@/components/website/site-data";
+import { navLinks, services, siteConfig } from "@/components/website/site-data";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -140,17 +140,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 border-t border-white/10 pt-6">
-          <div className="mb-5 flex flex-wrap gap-2">
-            {propertyCategories.map((item) => (
-              <span
-                key={item}
-                className="rounded-full border border-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-white/42"
-              >
-                {item}
-              </span>
-            ))}
-          </div>
+        <div className="mt-10 border-t border-white/10 pt-6 sm:mt-14">
           <div className="flex flex-col justify-between gap-3 text-xs text-white/42 sm:flex-row">
             <p>© {year} The Shivara Group. All rights reserved.</p>
             <p>Pricing, availability, documents and visit slots are confirmed directly before booking.</p>

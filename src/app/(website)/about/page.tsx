@@ -7,7 +7,6 @@ import {
   SectionShell,
 } from "@/components/website/LuxurySection";
 import {
-  processSteps,
   publicStats,
   siteConfig,
   trustHighlights,
@@ -92,7 +91,7 @@ export default function AboutPage() {
               title="Real estate should feel considered, not rushed."
               description="Premium buyers need more than a listing card. They need a trusted team that understands budget, micro-location, lifestyle, documentation confidence, and timing."
             />
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-3 min-[375px]:grid-cols-2 sm:gap-4">
               {[
                 {
                   icon: Compass,
@@ -115,9 +114,9 @@ export default function AboutPage() {
                   text: "A brand language built for high-value property decisions.",
                 },
               ].map((item) => (
-              <div key={item.title} className="touch-lift rounded-[1.75rem] border border-[#081120]/8 bg-white p-5 shadow-[0_18px_50px_rgba(8,17,32,0.05)]">
-                  <item.icon className="mb-5 h-7 w-7 text-[#D4AF37]" />
-                  <h3 className="text-lg font-bold text-[#081120]">{item.title}</h3>
+              <div key={item.title} className="touch-lift rounded-[1.35rem] border border-[#081120]/8 bg-white p-4 shadow-[0_18px_50px_rgba(8,17,32,0.05)] sm:rounded-[1.75rem] sm:p-5">
+                  <item.icon className="mb-3 h-6 w-6 text-[#D4AF37] sm:mb-5 sm:h-7 sm:w-7" />
+                  <h3 className="text-base font-bold text-[#081120] sm:text-lg">{item.title}</h3>
                   <p className="mt-2 text-sm leading-6 text-[#4B5563]">{item.text}</p>
                 </div>
               ))}
@@ -132,10 +131,10 @@ export default function AboutPage() {
           title="Built for buyers coming from Instagram, WhatsApp, calls, and referrals."
           align="center"
         />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
           {publicStats.map((stat) => (
-            <div key={stat.label} className="touch-lift rounded-[2rem] bg-[#081120] p-6 text-white">
-              <p className="font-[family-name:var(--font-playfair)] text-5xl font-semibold text-[#F5D67B]">
+            <div key={stat.label} className="touch-lift w-[72vw] max-w-[290px] shrink-0 snap-center rounded-[1.5rem] bg-[#081120] p-5 text-white sm:w-auto sm:max-w-none sm:rounded-[2rem] sm:p-6">
+              <p className="font-[family-name:var(--font-playfair)] text-4xl font-semibold text-[#F5D67B] sm:text-5xl">
                 {stat.value}
               </p>
               <p className="mt-3 text-sm font-black uppercase tracking-[0.14em] text-white/82">
@@ -147,32 +146,10 @@ export default function AboutPage() {
         </div>
       </SectionShell>
 
-      <SectionShell className="bg-[#081120] text-white">
-        <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr]">
-          <SectionHeader
-            eyebrow="Operating model"
-            title="A premium buyer journey in four clean steps."
-            description="This is the experience the public website now supports: capture, qualify, visit, and close with less friction."
-            dark
-          />
-          <div className="grid gap-4">
-            {processSteps.map((step) => (
-              <div key={step.step} className="touch-lift rounded-[2rem] border border-white/10 bg-white/[0.05] p-6">
-                <p className="text-sm font-black uppercase tracking-[0.3em] text-[#D4AF37]">
-                  {step.step}
-                </p>
-                <h3 className="mt-3 text-2xl font-bold">{step.title}</h3>
-                <p className="mt-2 text-sm leading-7 text-white/62">{step.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </SectionShell>
-
       <SectionShell className="pb-28 md:pb-24">
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="premium-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible md:px-0 md:pb-0">
           {trustHighlights.slice(0, 6).map((item) => (
-            <div key={item} className="flex items-center gap-3 rounded-3xl border border-[#081120]/8 bg-white p-5">
+            <div key={item} className="flex min-w-[72vw] shrink-0 items-center gap-3 rounded-2xl border border-[#081120]/8 bg-white px-4 py-3 md:min-w-0 md:rounded-3xl md:p-5">
               <BadgeCheck className="h-5 w-5 shrink-0 text-[#10B981]" />
               <span className="font-bold text-[#081120]">{item}</span>
             </div>

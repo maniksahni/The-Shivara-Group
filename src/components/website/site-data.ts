@@ -39,35 +39,6 @@ export const publicStats = [
   { value: "100%", label: "guided discovery", note: "Shortlist before site visit" },
 ];
 
-export const conversionTrustCards = [
-  {
-    title: "Verified Properties",
-    text: "Listings are shortlisted with manual pricing, inventory, and visit-slot confirmation before serious booking conversations.",
-  },
-  {
-    title: "Local Bareilly Expertise",
-    text: "Guidance around residential properties, commercial corridors, plots, and investment opportunities in Bareilly.",
-  },
-  {
-    title: "Site Visit Assistance",
-    text: "Move from Instagram browsing to a confirmed visit with a dedicated consultant and clear next steps.",
-  },
-  {
-    title: "Documentation Support",
-    text: "After shortlisting, the team can help you understand paperwork, verification, and booking-stage requirements.",
-  },
-];
-
-export const propertyCategories = [
-  "Luxury Residences",
-  "Premium Kothis",
-  "3 BHK Homes",
-  "Residential Plots",
-  "Villa Communities",
-  "Commercial Spaces",
-  "Off-Market Portfolios",
-];
-
 export const categoryShowcase = [
   {
     title: "Luxury Residences",
@@ -159,44 +130,6 @@ export const trustHighlights = [
   "Guided site visit coordination",
 ];
 
-export const credibilityCards = [
-  {
-    title: "Verified before booking",
-    text: "Pricing, inventory, and final availability are confirmed manually before a customer moves ahead.",
-  },
-  {
-    title: "CRM-backed follow-up",
-    text: "Every enquiry is captured into a lead workflow so conversations do not disappear inside DMs.",
-  },
-  {
-    title: "Site-visit-first guidance",
-    text: "Premium property decisions are supported by appointment-led visits and direct consultant calls.",
-  },
-  {
-    title: "Clear next steps",
-    text: "Customers get direct confirmation for pricing, visit slots, documents, and availability before moving ahead.",
-  },
-];
-
-export const propertyMatchSteps = [
-  {
-    question: "Budget comfort",
-    options: ["₹50L–₹1Cr", "₹1Cr–₹3Cr", "₹3Cr+", "Price on request"],
-  },
-  {
-    question: "Preferred zone",
-    options: ["Rajendar Nagar", "Aurika", "Bareilly prime", "Delhi NCR"],
-  },
-  {
-    question: "Property intent",
-    options: ["Family home", "Plot investment", "Rental income", "Portfolio growth"],
-  },
-  {
-    question: "Move timeline",
-    options: ["Immediate", "30–60 days", "3–6 months", "Exploring"],
-  },
-];
-
 export const bareillyGuide = [
   {
     zone: "Rajendar Nagar",
@@ -230,39 +163,6 @@ export const bareillyGuide = [
   },
 ];
 
-export const trustEngine = [
-  "Requirement-first consultation",
-  "Shortlisted options, not random spam",
-  "Guided site visits",
-  "Pricing and inventory confirmation",
-  "Documentation support path",
-  "Dedicated consultant follow-up",
-];
-
-export const investmentHighlights = [
-  {
-    title: "Bareilly luxury homes",
-    metric: "Lifestyle-led",
-    text: "Rajendar Nagar homes, park-facing kothis, premium apartments, and family-first residences.",
-  },
-  {
-    title: "Aurika plots & communities",
-    metric: "Inventory-led",
-    text: "Residential plots, sold-out villa signals, commercial zone references, and site-visit-led verification.",
-  },
-  {
-    title: "Delhi NCR portfolios",
-    metric: "Portfolio-led",
-    text: "Godrej Golf Links, Bento by Gaurs, serviced apartments, and high-value NCR opportunities.",
-  },
-];
-
-export const partnerPlaceholders = [
-  "Documentation support after property selection",
-  "Instagram-led portfolio highlights available",
-  "Private consultations available by appointment",
-];
-
 export const processSteps = [
   {
     step: "01",
@@ -293,27 +193,6 @@ export const processSteps = [
     step: "06",
     title: "Booking",
     text: "Confirm final details, close the decision loop, and move forward with confidence.",
-  },
-];
-
-export const testimonials = [
-  {
-    quote:
-      "The Shivara Group helped us compare options clearly and arranged a site visit without pressure.",
-    name: "Aarav Gupta",
-    meta: "Rajendar Nagar • 3BHK Home • 5.0",
-  },
-  {
-    quote:
-      "Their WhatsApp-first communication made the property search simple for our family.",
-    name: "Neha Sharma",
-    meta: "Bareilly Prime • Family Residence • 5.0",
-  },
-  {
-    quote:
-      "Good guidance for understanding locations, budget fit, and next steps before booking.",
-    name: "Rohit Saxena",
-    meta: "Aurika Belt • Investment Consultation • 5.0",
   },
 ];
 

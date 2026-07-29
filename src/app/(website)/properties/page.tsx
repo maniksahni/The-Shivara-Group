@@ -1,16 +1,13 @@
 import type { Metadata } from "next";
-import { BadgeCheck, Building2, MapPinned, MessageCircle, Search, Sparkles } from "lucide-react";
+import { MessageCircle, Search } from "lucide-react";
 import { isDatabaseConfigured, prisma } from "@/lib/prisma";
 import ClientPropertiesGrid from "./ClientPropertiesGrid";
-import DirectEnquiryForm from "@/components/website/DirectEnquiryForm";
 import {
-  partnerPlaceholders,
   fallbackProperties,
   sampleSeedTitles,
   siteConfig,
   type PublicProperty,
 } from "@/components/website/site-data";
-import { SectionShell } from "@/components/website/LuxurySection";
 
 export const metadata: Metadata = {
   title: "Properties in Bareilly | The Shivara Group",
@@ -107,55 +104,14 @@ export default async function PropertiesPage() {
               </div>
             </div>
           </div>
-          <div className="premium-scrollbar -mx-4 mt-5 hidden gap-3 overflow-x-auto px-4 pb-1 min-[390px]:flex sm:mx-0 sm:mt-10 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0">
-            {[
-              ["Verified visibility", "Active public listings only", BadgeCheck],
-              ["Guided shortlist", "Compare category, location and visit readiness", MapPinned],
-              ["Site visit CTA", "Move from browsing to appointment", Sparkles],
-            ].map(([title, text, Icon]) => (
-              <div key={title as string} className="min-w-[76vw] rounded-[1.35rem] border border-white/10 bg-white/[0.055] p-4 backdrop-blur sm:min-w-0 sm:rounded-[1.5rem]">
-                <Icon className="h-5 w-5 text-[#D4AF37]" />
-                <h2 className="mt-3 text-sm font-black uppercase tracking-[0.14em] text-white sm:mt-4 sm:tracking-[0.16em]">
-                  {title as string}
-                </h2>
-                <p className="mt-2 text-sm leading-6 text-white/58">{text as string}</p>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 
-      <section id="properties-list" className="px-4 py-10 pb-28 sm:px-8 lg:px-12 lg:py-16">
-        <div className="mx-auto max-w-7xl space-y-10">
-          <DirectEnquiryForm compact />
+      <section id="properties-list" className="px-4 py-6 pb-28 sm:px-8 sm:py-10 lg:px-12 lg:py-14">
+        <div className="mx-auto max-w-7xl">
           <ClientPropertiesGrid initialProperties={properties} />
         </div>
       </section>
-
-      <SectionShell className="bg-white pb-28 md:pb-24">
-        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.3em] text-[#9B7A19]">
-              Verification desk
-            </p>
-            <h2 className="mt-3 font-[family-name:var(--font-playfair)] text-4xl font-semibold tracking-[-0.04em] text-[#081120] sm:text-5xl">
-              Every listing deserves a direct confirmation before booking.
-            </h2>
-            <p className="mt-5 text-sm leading-8 text-[#4B5563]">
-              This catalog is designed for premium discovery. Final pricing, official inventory,
-              payment plans, maps, and documentation support should be confirmed by The Shivara Group team.
-            </p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {partnerPlaceholders.map((item) => (
-              <div key={item} className="rounded-[1.5rem] bg-[#F8F5EE] p-5">
-                <Building2 className="h-5 w-5 text-[#9B7A19]" />
-                <p className="mt-4 text-sm font-black text-[#081120]">{item}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </SectionShell>
     </main>
   );
 }

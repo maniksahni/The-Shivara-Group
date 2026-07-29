@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Calendar, CheckCircle2, Clock, Mail, MapPin, MessageCircle, Phone, Send, ShieldCheck, Sparkles } from "lucide-react";
 import { PropertyType } from "@prisma/client";
 import { LuxuryButton } from "@/components/website/LuxurySection";
-import DirectEnquiryForm from "@/components/website/DirectEnquiryForm";
 import { siteConfig } from "@/components/website/site-data";
 
 function toDateTimeLocalValue(date: Date): string {
@@ -139,13 +138,7 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="px-4 py-5 sm:px-8 sm:py-10 lg:px-12">
-        <div className="mx-auto max-w-7xl">
-          <DirectEnquiryForm compact />
-        </div>
-      </section>
-
-      <section className="px-4 py-8 pb-24 sm:px-8 sm:py-14 sm:pb-28 lg:px-12 lg:py-20">
+      <section className="px-4 py-6 pb-24 sm:px-8 sm:py-12 sm:pb-28 lg:px-12 lg:py-16">
         <div className="mx-auto grid max-w-7xl gap-5 lg:grid-cols-[0.8fr_1.2fr] lg:gap-8">
           <aside className="space-y-3 sm:space-y-4">
             {[

@@ -10,7 +10,7 @@ import {
 } from "@/components/website/site-data";
 
 export const metadata: Metadata = {
-  title: "Properties in Bareilly | The Shivara Group",
+  title: "Properties in Bareilly",
   description:
     "Explore verified residential, commercial, plot, and investment properties in Bareilly. Book site visits and get expert guidance from The Shivara Group.",
   alternates: {

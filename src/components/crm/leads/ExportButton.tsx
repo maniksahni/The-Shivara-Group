@@ -4,7 +4,28 @@ import React, { useState } from "react";
 import { Download, Loader2 } from "lucide-react";
 import { exportLeads } from "@/features/leads/actions";
 import { useToast } from "@/components/ui/toast";
-import * as XLSX from "xlsx";
+
+const CSV_HEADERS = [
+  "Lead ID",
+  "Lead Name",
+  "Phone Number",
+  "WhatsApp",
+  "Email Address",
+  "Budget Range",
+  "Preferred Location",
+  "Property Type",
+  "Source Channel",
+  "Pipeline Status",
+  "Priority Tier",
+  "Assigned Agent",
+  "Follow-up Scheduled",
+  "Created Timestamp",
+] as const;
+
+function escapeCsvCell(value: unknown) {
+  const text = String(value ?? "");
+  return `"${text.replaceAll('"', '""')}"`;
+}
 
 interface ExportButtonProps {
   filters: {
@@ -32,8 +53,7 @@ export default function ExportButton({ filters }: ExportButtonProps) {
 
       const rawData = res.data ?? [];
 
-      // Transform keys into user-friendly uppercase Excel headers
-      const formattedData = rawData.map((row: any) => ({
+      const formattedData = rawData.map((row) => ({
         "Lead ID": row.id,
         "Lead Name": row.name,
         "Phone Number": row.phone,
@@ -52,37 +72,34 @@ export default function ExportButton({ filters }: ExportButtonProps) {
         "Created Timestamp": new Date(row.createdAt).toLocaleString("en-IN"),
       }));
 
-      // Create sheet using xlsx library
-      const worksheet = XLSX.utils.json_to_sheet(formattedData);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Leads Database");
-
-      // Auto-fit column widths
-      const maxColWidth = formattedData.reduce((acc: any, row: any) => {
-        Object.keys(row).forEach((key, colIndex) => {
-          const cellLen = String(row[key] || "").length;
-          const headerLen = key.length;
-          const maxLen = Math.max(cellLen, headerLen) + 3;
-          acc[colIndex] = Math.max(acc[colIndex] || 10, maxLen);
-        });
-        return acc;
-      }, []);
-
-      worksheet["!cols"] = maxColWidth.map((w: number) => ({ w }));
-
-      // Trigger download
-      const filename = `shivara-leads-${new Date().toISOString().slice(0, 10)}.xlsx`;
-      XLSX.writeFile(workbook, filename);
+      // CSV opens cleanly in Excel/Numbers and avoids shipping a vulnerable,
+      // heavyweight spreadsheet parser to every CRM browser.
+      const csv = [
+        CSV_HEADERS.map(escapeCsvCell).join(","),
+        ...formattedData.map((row) =>
+          CSV_HEADERS.map((header) => escapeCsvCell(row[header])).join(","),
+        ),
+      ].join("\r\n");
+      const blob = new Blob([`\uFEFF${csv}`], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = `shivara-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
 
       toast({
         title: "Export Successful",
-        description: `Successfully exported ${rawData.length} leads to Excel worksheet.`,
+        description: `Successfully exported ${rawData.length} leads to an Excel-compatible CSV file.`,
         type: "success",
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       toast({
         title: "Export Failed",
-        description: err.message || "Failed to generate Excel download.",
+        description:
+          err instanceof Error ? err.message : "Failed to generate the leads download.",
         type: "error",
       });
     } finally {
@@ -101,7 +118,7 @@ export default function ExportButton({ filters }: ExportButtonProps) {
       ) : (
         <Download className="h-3.5 w-3.5" />
       )}
-      <span>{loading ? "Exporting..." : "Export Excel"}</span>
+      <span>{loading ? "Exporting..." : "Export Leads"}</span>
     </button>
   );
 }

@@ -15,10 +15,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: "The Shivara Group | Bespoke Real Estate Strategies",
-    template: "%s | The Shivara Group",
-  },
+  title: "The Shivara Group | Bespoke Real Estate Strategies",
   description:
     "The Shivara Group — bespoke real estate strategies for Bareilly and Delhi NCR, including premium homes, plots, villas, off-market opportunities, and portfolio guidance.",
   keywords: [

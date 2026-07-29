@@ -14,7 +14,7 @@ import {
 } from "@/components/website/site-data";
 
 export const metadata: Metadata = {
-  title: "About The Shivara Group | Property Consultants in Bareilly",
+  title: "About Our Property Consultants in Bareilly",
   description:
     "Learn about The Shivara Group's premium real estate guidance, verified property shortlisting, site visit support, and buyer consultation across Bareilly and Delhi NCR.",
   alternates: {

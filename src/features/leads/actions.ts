@@ -107,6 +107,7 @@ export interface ExportLeadRow {
   status: string
   priority: string
   assignedTo: string | null
+  followUpDate: string | null
   createdAt: string
   lastActivityAt: string | null
 }
@@ -1049,6 +1050,7 @@ export async function exportLeads(
       status: lead.status,
       priority: lead.priority,
       assignedTo: lead.assignedTo?.name ?? null,
+      followUpDate: lead.followUpDate?.toISOString() ?? null,
       createdAt: lead.createdAt.toISOString(),
       lastActivityAt: lead.activities[0]?.createdAt.toISOString() ?? null,
     }))

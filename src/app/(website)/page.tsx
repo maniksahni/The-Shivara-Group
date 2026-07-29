@@ -23,6 +23,7 @@ import {
 } from "@/components/website/LuxurySection";
 import DirectEnquiryForm from "@/components/website/DirectEnquiryForm";
 import FloatingEnquiryCard from "@/components/website/FloatingEnquiryCard";
+import AutoScrollRail from "@/components/website/AutoScrollRail";
 import {
   categoryShowcase,
   fallbackProperties,
@@ -202,7 +203,10 @@ export default function HomePage() {
       <GoldDivider />
 
       <SectionShell className="bg-[#081120] py-2 text-white sm:py-6">
-        <div className="premium-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-3 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-6">
+        <AutoScrollRail
+          ariaLabel="Shivara service highlights"
+          className="premium-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-3 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-6"
+        >
           {trustHighlights.map((item) => (
             <div
               key={item}
@@ -212,7 +216,7 @@ export default function HomePage() {
               <span className="text-xs font-semibold text-white/74 sm:text-sm">{item}</span>
             </div>
           ))}
-        </div>
+        </AutoScrollRail>
       </SectionShell>
 
       <SectionShell className="bg-[#F8F5EE] py-3 sm:py-10">
@@ -226,7 +230,11 @@ export default function HomePage() {
           description="Start with selected homes and projects, then confirm pricing, availability, and site visits directly with our team."
         />
 
-        <div className="premium-scrollbar flex snap-x gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:overflow-visible md:pb-0 xl:grid-cols-3">
+        <AutoScrollRail
+          ariaLabel="Featured properties"
+          interval={4200}
+          className="premium-scrollbar flex snap-x gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:overflow-visible md:pb-0 xl:grid-cols-3"
+        >
           {fallbackProperties.slice(0, 3).map((property, index) => (
             <article
               key={property.id}
@@ -309,7 +317,7 @@ export default function HomePage() {
               </div>
             </article>
           ))}
-        </div>
+        </AutoScrollRail>
       </SectionShell>
 
       <SectionShell className="bg-white">
@@ -319,7 +327,10 @@ export default function HomePage() {
           description="A flagship real estate experience should make categories feel visual, focused, and easy to act on from mobile."
           align="center"
         />
-        <div className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:gap-5 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-4">
+        <AutoScrollRail
+          ariaLabel="Property categories"
+          className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:gap-5 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-4"
+        >
           {categoryShowcase.map((category) => (
             <Link
               key={category.title}
@@ -347,7 +358,7 @@ export default function HomePage() {
               </div>
             </Link>
           ))}
-        </div>
+        </AutoScrollRail>
       </SectionShell>
 
       <SectionShell className="bg-[#081120] text-white">
@@ -358,7 +369,10 @@ export default function HomePage() {
             description="The Shivara experience positions every enquiry around location fit, lifestyle, investment intent, and site-visit readiness."
             dark
           />
-          <div className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0">
+          <AutoScrollRail
+            ariaLabel="Bareilly property locations"
+            className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0"
+          >
             {bareillyGuide.slice(0, 4).map((item) => (
               <div
                 key={item.zone}
@@ -372,7 +386,7 @@ export default function HomePage() {
                 <p className="mt-3 text-sm leading-7 text-white/62">{item.insight}</p>
               </div>
             ))}
-          </div>
+          </AutoScrollRail>
         </div>
       </SectionShell>
 
@@ -383,7 +397,10 @@ export default function HomePage() {
           description="Every service is designed around a real outcome: shortlist faster, visit confidently, and move forward with verified information."
           align="center"
         />
-        <div className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:gap-4 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-3">
+        <AutoScrollRail
+          ariaLabel="Real estate services"
+          className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:gap-4 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-3"
+        >
           {services.slice(0, 3).map((service, index) => (
             <div
               key={service.title}
@@ -413,7 +430,7 @@ export default function HomePage() {
               </Link>
             </div>
           ))}
-        </div>
+        </AutoScrollRail>
       </SectionShell>
 
       <SectionShell className="bg-[#081120] text-white">
@@ -424,7 +441,10 @@ export default function HomePage() {
             description="A simple process designed to keep property discovery focused and easy to follow."
             dark
           />
-          <div className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0">
+          <AutoScrollRail
+            ariaLabel="Property journey steps"
+            className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0"
+          >
             {processSteps.slice(0, 4).map((step) => (
               <div
                 key={step.step}
@@ -437,7 +457,7 @@ export default function HomePage() {
                 <p className="mt-1.5 text-sm leading-6 text-white/62">{step.text}</p>
               </div>
             ))}
-          </div>
+          </AutoScrollRail>
         </div>
       </SectionShell>
 

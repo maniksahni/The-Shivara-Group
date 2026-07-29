@@ -6,6 +6,7 @@ import {
   SectionHeader,
   SectionShell,
 } from "@/components/website/LuxurySection";
+import AutoScrollRail from "@/components/website/AutoScrollRail";
 import {
   publicStats,
   siteConfig,
@@ -131,7 +132,10 @@ export default function AboutPage() {
           title="Built for buyers coming from Instagram, WhatsApp, calls, and referrals."
           align="center"
         />
-        <div className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
+        <AutoScrollRail
+          ariaLabel="Business highlights"
+          className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4"
+        >
           {publicStats.map((stat) => (
             <div key={stat.label} className="touch-lift w-[72vw] max-w-[290px] shrink-0 snap-center rounded-[1.5rem] bg-[#081120] p-5 text-white sm:w-auto sm:max-w-none sm:rounded-[2rem] sm:p-6">
               <p className="font-[family-name:var(--font-playfair)] text-4xl font-semibold text-[#F5D67B] sm:text-5xl">
@@ -143,18 +147,21 @@ export default function AboutPage() {
               <p className="mt-2 text-sm text-white/52">{stat.note}</p>
             </div>
           ))}
-        </div>
+        </AutoScrollRail>
       </SectionShell>
 
       <SectionShell className="pb-28 md:pb-24">
-        <div className="premium-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible md:px-0 md:pb-0">
+        <AutoScrollRail
+          ariaLabel="Service trust highlights"
+          className="premium-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:grid md:grid-cols-3 md:gap-4 md:overflow-visible md:px-0 md:pb-0"
+        >
           {trustHighlights.slice(0, 6).map((item) => (
             <div key={item} className="flex min-w-[72vw] shrink-0 items-center gap-3 rounded-2xl border border-[#081120]/8 bg-white px-4 py-3 md:min-w-0 md:rounded-3xl md:p-5">
               <BadgeCheck className="h-5 w-5 shrink-0 text-[#10B981]" />
               <span className="font-bold text-[#081120]">{item}</span>
             </div>
           ))}
-        </div>
+        </AutoScrollRail>
         <div className="mt-10 rounded-[2.4rem] bg-white p-8 shadow-[0_24px_70px_rgba(8,17,32,0.08)] md:p-12">
           <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>

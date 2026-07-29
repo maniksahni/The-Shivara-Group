@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Building2, CalendarCheck, FileCheck2, Home, KeyRound, MapPinned } from "lucide-react";
 import { LuxuryButton, SectionHeader, SectionShell } from "@/components/website/LuxurySection";
+import AutoScrollRail from "@/components/website/AutoScrollRail";
 import { processSteps, services, siteConfig } from "@/components/website/site-data";
 
 export const metadata: Metadata = {
@@ -42,7 +43,10 @@ export default function ServicesPage() {
       </section>
 
       <SectionShell>
-        <div className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:gap-5 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-3">
+        <AutoScrollRail
+          ariaLabel="Shivara real estate services"
+          className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:gap-5 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-3"
+        >
           {services.map((service, index) => {
             const Icon = icons[index] ?? Home;
             return (
@@ -69,7 +73,7 @@ export default function ServicesPage() {
               </div>
             );
           })}
-        </div>
+        </AutoScrollRail>
       </SectionShell>
 
       <SectionShell className="bg-[#081120] pb-28 text-white md:pb-24">
@@ -78,7 +82,10 @@ export default function ServicesPage() {
           title="Simple, guided, and conversion-focused."
           dark
         />
-        <div className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
+        <AutoScrollRail
+          ariaLabel="How our property service works"
+          className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4"
+        >
           {processSteps.slice(0, 4).map((step) => (
             <div key={step.step} className="w-[78vw] max-w-[320px] shrink-0 snap-center rounded-[1.5rem] border border-white/10 bg-white/[0.045] p-4 sm:w-auto sm:max-w-none sm:rounded-[1.8rem] sm:p-5">
               <p className="font-[family-name:var(--font-playfair)] text-3xl font-semibold text-[#D4AF37]">
@@ -88,7 +95,7 @@ export default function ServicesPage() {
               <p className="mt-2 text-sm leading-6 text-white/62">{step.text}</p>
             </div>
           ))}
-        </div>
+        </AutoScrollRail>
         <div className="mt-10 rounded-[2rem] border border-[#D4AF37]/20 bg-[#D4AF37] p-6 text-[#081120] md:p-8">
           <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-center">
             <div>

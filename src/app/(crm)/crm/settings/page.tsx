@@ -18,8 +18,8 @@ export default async function CRMSettingsPage() {
     },
     {
       icon: Database,
-      title: "Railway database",
-      text: "Prisma uses the Railway MySQL DATABASE_URL. Public pages gracefully fall back when DB is unavailable.",
+      title: "PostgreSQL database",
+      text: "Prisma uses the production PostgreSQL DATABASE_URL. Public pages gracefully fall back when DB is unavailable.",
       status: "Configured",
     },
     {

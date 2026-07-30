@@ -2,7 +2,7 @@ import { defineConfig } from "prisma/config";
 
 const databaseUrl =
   process.env.DATABASE_URL ||
-  "mysql://root:password@127.0.0.1:3306/shivara";
+  "postgresql://postgres:postgres@127.0.0.1:5432/shivara?schema=public";
 
 if (!process.env.DATABASE_URL) {
   process.env.DATABASE_URL = databaseUrl;

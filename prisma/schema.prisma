@@ -1,9 +1,9 @@
 // Shivara CRM — Prisma Schema
-// Database: MySQL
+// Database: PostgreSQL
 // ORM: Prisma Client JS
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 

@@ -23,20 +23,20 @@ export default function CRMProviders({ children, session }: CRMProvidersProps) {
       localStorage.getItem("shivara_admin_auth") === "true" ||
       document.cookie.includes("shivara_admin_auth=true");
 
-    if (!isLocalAuth && !session?.user?.email) {
+    if (!isLocalAuth) {
       setIsAuthenticated(false);
       router.replace("/crm/login");
     } else {
       setIsAuthenticated(true);
     }
-  }, [router, session]);
+  }, [router]);
 
   if (isAuthenticated === false) {
     return null;
   }
 
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={session} refetchInterval={0} refetchOnWindowFocus={false}>
       <ToastProvider>
         <SidebarProvider>{children}</SidebarProvider>
         <Toaster richColors theme="dark" position="bottom-right" />

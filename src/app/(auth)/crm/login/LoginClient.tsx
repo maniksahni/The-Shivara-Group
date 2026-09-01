@@ -156,19 +156,7 @@ export default function CRMLoginClient() {
     if (password === 'SHIVAM@2112') {
       localStorage.setItem('shivara_admin_auth', 'true')
       document.cookie = 'shivara_admin_auth=true; path=/; max-age=2592000'
-
-      try {
-        await signIn('credentials', {
-          email: 'admin@shivaragroup.com',
-          password,
-          redirect: false,
-          callbackUrl,
-        })
-      } catch {
-        // Fallback for static hosts
-      }
-
-      router.push(callbackUrl)
+      window.location.href = callbackUrl
       return
     }
 
@@ -184,7 +172,7 @@ export default function CRMLoginClient() {
       if (result?.ok) {
         localStorage.setItem('shivara_admin_auth', 'true')
         document.cookie = 'shivara_admin_auth=true; path=/; max-age=2592000'
-        router.push(callbackUrl)
+        window.location.href = callbackUrl
         return
       }
     } catch {}

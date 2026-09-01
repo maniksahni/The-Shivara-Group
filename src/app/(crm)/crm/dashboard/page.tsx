@@ -11,8 +11,6 @@ import DailyOperationsPanel from "@/components/crm/dashboard/DailyOperationsPane
 import prisma, { isDatabaseConfigured } from "@/lib/prisma";
 import Link from "next/link";
 
-export const revalidate = 0; // Don't cache dashboard stats
-
 function cleanPhoneNumber(phone: string | null | undefined): string {
   return (phone ?? "").replace(/\D/g, "");
 }

@@ -7,8 +7,6 @@ import AddAgentModal from "@/components/crm/agents/AddAgentModal";
 import { CRMEmptyState, CRMHero, CRMPanel, CRMMiniStat } from "@/components/crm/CRMPrimitives";
 import { getInitials } from "@/lib/utils";
 
-export const revalidate = 0;
-
 export default async function AgentsPage() {
   const session = await getServerSession();
   if (!session?.user) redirect("/crm/login");

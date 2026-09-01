@@ -7,8 +7,6 @@ import { LuxuryButton, SectionHeader, SectionShell } from "@/components/website/
 import { fallbackProperties, siteConfig, type PublicProperty } from "@/components/website/site-data";
 import PropertyExperienceClient from "./PropertyExperienceClient";
 
-export const revalidate = 0;
-
 export async function generateStaticParams() {
   return fallbackProperties.map((property) => ({
     id: property.id,

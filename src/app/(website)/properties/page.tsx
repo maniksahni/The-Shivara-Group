@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { MessageCircle, Search } from "lucide-react";
 import { isDatabaseConfigured, prisma } from "@/lib/prisma";
@@ -23,8 +24,6 @@ export const metadata: Metadata = {
     type: "website",
   },
 };
-
-export const revalidate = 0;
 
 async function getProperties(): Promise<PublicProperty[]> {
   let properties: PublicProperty[] = [];
@@ -109,7 +108,9 @@ export default async function PropertiesPage() {
 
       <section id="properties-list" className="px-4 py-6 pb-28 sm:px-8 sm:py-10 lg:px-12 lg:py-14">
         <div className="mx-auto max-w-7xl">
-          <ClientPropertiesGrid initialProperties={properties} />
+          <Suspense fallback={<div className="py-12 text-center text-sm text-slate-400">Loading properties…</div>}>
+            <ClientPropertiesGrid initialProperties={properties} />
+          </Suspense>
         </div>
       </section>
     </main>

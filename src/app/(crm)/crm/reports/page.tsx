@@ -8,8 +8,6 @@ import { getAgentStats } from "@/features/agents/actions";
 import ReportCharts from "@/components/crm/reports/ReportCharts";
 import prisma, { isDatabaseConfigured } from "@/lib/prisma";
 
-export const revalidate = 0; // Fetch fresh data
-
 export default async function ReportsPage() {
   const session = await getServerSession();
   if (!session?.user) {

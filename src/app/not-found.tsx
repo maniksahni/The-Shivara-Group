@@ -1,7 +1,52 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Home, Search } from "lucide-react";
+import { Home, Search, Loader2 } from "lucide-react";
 
 export default function NotFound() {
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const pathname = window.location.pathname;
+      const search = window.location.search;
+
+      // Handle Instagram / social link-in-bio URL encoding where # becomes %23
+      if (pathname.includes("%23") || pathname.includes("#")) {
+        setIsRedirecting(true);
+        const targetHash = pathname.replace(/^.*(%23|#)/, "#");
+        window.location.replace(`/${targetHash}${search}`);
+        return;
+      }
+
+      // Handle /send-enquiry or /enquiry direct links
+      if (
+        pathname === "/send-enquiry" ||
+        pathname === "/send-enquiry/" ||
+        pathname === "/enquiry" ||
+        pathname === "/enquiry/"
+      ) {
+        setIsRedirecting(true);
+        window.location.replace(`/#send-enquiry${search}`);
+        return;
+      }
+    }
+  }, []);
+
+  if (isRedirecting) {
+    return (
+      <main className="flex min-h-[100dvh] items-center justify-center bg-[#081120] px-5 py-20 text-white">
+        <div className="flex flex-col items-center justify-center text-center">
+          <Loader2 className="h-10 w-10 animate-spin text-[#D4AF37]" />
+          <p className="mt-4 text-sm font-semibold tracking-wider text-slate-300">
+            Redirecting to Shivara Enquiry…
+          </p>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-[100dvh] bg-[#081120] px-5 py-20 text-white sm:px-8 lg:px-12">
       <div className="mx-auto flex min-h-[72vh] max-w-5xl flex-col items-center justify-center text-center">

@@ -3,6 +3,18 @@
     "public": "out",
     "cleanUrls": true,
     "trailingSlash": false,
+    "redirects": [
+      {
+        "source": "/send-enquiry",
+        "destination": "/#send-enquiry",
+        "type": 302
+      },
+      {
+        "source": "/enquiry",
+        "destination": "/#send-enquiry",
+        "type": 302
+      }
+    ],
     "ignore": [
       "firebase.json",
       "**/.*",

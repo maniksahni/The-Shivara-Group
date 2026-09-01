@@ -14,6 +14,7 @@
     "db:studio": "prisma studio",
     "db:generate": "prisma generate",
     "postinstall": "prisma generate",
+    "deploy": "bash scripts/deploy-static.sh",
     "deploy:firebase": "bash scripts/deploy-static.sh"
   },
   "dependencies": {

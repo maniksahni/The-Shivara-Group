@@ -78,12 +78,6 @@ function getPublicOrigin(request: NextRequest) {
     return requestOrigin
   }
 
-  // Railway fallback domains should generate redirects/callbacks on the
-  // configured custom domain once SITE_URL/NEXT_PUBLIC_SITE_URL is set.
-  if (requestHost.endsWith('.up.railway.app') || requestHost.endsWith('.railway.app')) {
-    return canonicalOrigin
-  }
-
   // For any already-custom domain, preserve the incoming host so CRM login
   // never jumps to a different domain because of an old NEXTAUTH_URL value.
   if (requestHost !== canonicalHost) {
@@ -179,9 +173,6 @@ export const config = {
    * Run the proxy for page requests so canonical custom-domain redirects work
    * across the public website and CRM. Static assets and API routes are
    * excluded. Auth protection itself is still limited to /crm routes above.
-   *
-   * The login page is handled in code instead of the matcher so the same proxy
-   * can also redirect old Railway-hosted login URLs to the custom domain.
    */
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)'],
 }

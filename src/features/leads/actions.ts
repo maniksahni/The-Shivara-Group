@@ -10,12 +10,17 @@
  * Every mutating action also creates a LeadActivity entry to provide a
  * full audit trail of everything that happened to a lead.
  */
-
-'use server'
-
-import { revalidatePath } from 'next/cache'
+const revalidatePath = (path: string) => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { revalidatePath: reval } = require('next/cache')
+    reval(path)
+  } catch {
+    // safe fallback for client/static bundles
+  }
+}
 import { z } from 'zod'
-import prisma from '@/lib/prisma'
+import prisma, { isDatabaseConfigured } from '@/lib/prisma'
 import { getServerSession } from '@/lib/auth'
 import { LeadSource, LeadStatus, Priority, PropertyType, Prisma, SiteVisitStatus } from '@prisma/client'
 import {
@@ -221,7 +226,7 @@ export async function createLead(
     const assignedAgentResult = await getAssignableSalesAgent(validated.assignedToId)
     if (!assignedAgentResult.success) return assignedAgentResult
 
-    const lead = await prisma.$transaction(async (tx) => {
+    const lead = await prisma.$transaction(async (tx: any) => {
       const newLead = await tx.lead.create({
         data: {
           name: validated.name,
@@ -290,7 +295,7 @@ export async function updateLead(
       return { success: false, error: 'Lead not found.' }
     }
 
-    const lead = await prisma.$transaction(async (tx) => {
+    const lead = await prisma.$transaction(async (tx: any) => {
       const updated = await tx.lead.update({
         where: { id },
         data: {
@@ -366,7 +371,7 @@ export async function updateLeadStatus(
       return { success: false, error: 'Lead not found.' }
     }
 
-    const lead = await prisma.$transaction(async (tx) => {
+    const lead = await prisma.$transaction(async (tx: any) => {
       const updated = await tx.lead.update({
         where: { id },
         data: { status: validStatus },
@@ -427,7 +432,7 @@ export async function assignLead(
       return { success: false, error: 'Lead not found.' }
     }
 
-    const lead = await prisma.$transaction(async (tx) => {
+    const lead = await prisma.$transaction(async (tx: any) => {
       const updated = await tx.lead.update({
         where: { id: leadId },
         data: {
@@ -493,7 +498,7 @@ export async function bulkAssignLeads(
     if (!assignedAgentResult.agent) return { success: false, error: 'Agent not found.' }
     const agent = assignedAgentResult.agent
 
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: any) => {
       const leads = await tx.lead.findMany({
         where: { id: { in: uniqueLeadIds } },
         select: {
@@ -597,7 +602,7 @@ export async function addNote(
       return { success: false, error: 'Lead not found.' }
     }
 
-    const note = await prisma.$transaction(async (tx) => {
+    const note = await prisma.$transaction(async (tx: any) => {
       const newNote = await tx.leadNote.create({
         data: {
           leadId,
@@ -659,7 +664,7 @@ export async function scheduleSiteVisit(
       return { success: false, error: 'Lead not found.' }
     }
 
-    const siteVisit = await prisma.$transaction(async (tx) => {
+    const siteVisit = await prisma.$transaction(async (tx: any) => {
       // Upsert: update the most recent pending visit, or create a new one
       const visit = await tx.siteVisit.upsert({
         where: { leadId },
@@ -737,7 +742,7 @@ export async function updateSiteVisit(
       return { success: false, error: 'No site visit found for this lead.' }
     }
 
-    const visit = await prisma.$transaction(async (tx) => {
+    const visit = await prisma.$transaction(async (tx: any) => {
       const updated = await tx.siteVisit.update({
         where: { leadId },
         data: {
@@ -793,6 +798,10 @@ export async function updateSiteVisit(
  */
 export async function getLeads(filters: LeadFilters = {}) {
   try {
+    if (!isDatabaseConfigured) {
+      return { success: true, data: [] }
+    }
+
     const where: Prisma.LeadWhereInput = {}
 
     if (filters.status) where.status = filters.status as LeadStatus
@@ -845,6 +854,10 @@ export async function getLeads(filters: LeadFilters = {}) {
  */
 export async function getLeadById(id: string) {
   try {
+    if (!isDatabaseConfigured) {
+      return { success: false, error: 'Database is not configured' }
+    }
+
     const lead = await prisma.lead.findUnique({
       where: { id },
       include: {
@@ -887,6 +900,24 @@ export async function getLeadById(id: string) {
  */
 export async function getDashboardStats(): Promise<ActionResult<DashboardStats>> {
   try {
+    if (!isDatabaseConfigured) {
+      return {
+        success: true,
+        data: {
+          totalLeads: 0,
+          newLeads: 0,
+          activeLeads: 0,
+          closedLeads: 0,
+          siteVisitsScheduled: 0,
+          leadsByStatus: {},
+          leadsBySource: {},
+          leadsByPriority: {},
+          recentLeads: [],
+          upcomingSiteVisits: [],
+        },
+      }
+    }
+
     const [
       totalLeads,
       leadsByStatusRaw,
@@ -948,15 +979,15 @@ export async function getDashboardStats(): Promise<ActionResult<DashboardStats>>
 
     // Reshape grouped results into plain objects
     const leadsByStatus = Object.fromEntries(
-      leadsByStatusRaw.map((row) => [row.status, row._count.status]),
+      leadsByStatusRaw.map((row: any) => [row.status, row._count.status]),
     )
 
     const leadsBySource = Object.fromEntries(
-      leadsBySourceRaw.map((row) => [row.source, row._count.source]),
+      leadsBySourceRaw.map((row: any) => [row.source, row._count.source]),
     )
 
     const leadsByPriority = Object.fromEntries(
-      leadsByPriorityRaw.map((row) => [row.priority, row._count.priority]),
+      leadsByPriorityRaw.map((row: any) => [row.priority, row._count.priority]),
     )
 
     const stats: DashboardStats = {
@@ -972,7 +1003,7 @@ export async function getDashboardStats(): Promise<ActionResult<DashboardStats>>
       leadsBySource,
       leadsByPriority,
       recentLeads,
-      upcomingSiteVisits: upcomingSiteVisits.map((v) => ({
+      upcomingSiteVisits: upcomingSiteVisits.map((v: any) => ({
         id: v.id,
         scheduledAt: v.scheduledAt,
         location: v.location,
@@ -1037,7 +1068,7 @@ export async function exportLeads(
       },
     })
 
-    const rows: ExportLeadRow[] = leads.map((lead) => ({
+    const rows: ExportLeadRow[] = leads.map((lead: any) => ({
       id: lead.id,
       name: lead.name,
       phone: lead.phone,

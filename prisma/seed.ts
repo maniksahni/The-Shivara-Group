@@ -12,6 +12,7 @@
  * are created by this seed.
  */
 
+import type { Prisma } from '@prisma/client'
 import bcryptjs from 'bcryptjs'
 import { prisma } from '../src/lib/prisma'
 
@@ -37,7 +38,7 @@ async function main() {
   const adminEmail = SHIVAM_USER.email
   const passwordHash = await bcryptjs.hash(SHIVAM_USER.password, 12)
 
-  const user = await prisma.$transaction(async (tx) => {
+  const user = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     await tx.siteVisit.deleteMany()
     await tx.leadNote.deleteMany()
     await tx.leadActivity.deleteMany()

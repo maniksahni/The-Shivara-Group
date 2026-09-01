@@ -3,8 +3,6 @@ import { Bell, Database, KeyRound, ShieldCheck, Smartphone, UserCog } from "luci
 import { getServerSession } from "@/lib/auth";
 import { CRMHero, CRMPanel } from "@/components/crm/CRMPrimitives";
 
-export const dynamic = "force-dynamic";
-
 export default async function CRMSettingsPage() {
   const session = await getServerSession();
   if (!session?.user) redirect("/crm/login");

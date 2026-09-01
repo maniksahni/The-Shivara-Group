@@ -204,17 +204,17 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     siteVisitsScheduled,
     closedDeals,
 
-    leadsBySource: leadsBySourceRaw.map((row) => ({
+    leadsBySource: leadsBySourceRaw.map((row: any) => ({
       source: row.source,
       count: row._count.source,
     })),
 
-    leadsByStatus: leadsByStatusRaw.map((row) => ({
+    leadsByStatus: leadsByStatusRaw.map((row: any) => ({
       status: row.status,
       count: row._count.status,
     })),
 
-    recentActivities: recentActivities.map((a) => ({
+    recentActivities: recentActivities.map((a: any) => ({
       id: a.id,
       action: a.action,
       oldValue: a.oldValue,
@@ -431,7 +431,7 @@ export async function getDailyOperations(): Promise<DailyOperationsData> {
   ])
 
   const agentWorkload = await Promise.all(
-    agents.map(async (agent) => {
+    agents.map(async (agent: any) => {
       const [
         totalLeads,
         newAssignedLeadsCount,

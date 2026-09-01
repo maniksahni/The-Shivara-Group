@@ -15,6 +15,7 @@
  *         content area where {children} are rendered.
  */
 
+import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { Plus } from 'lucide-react'
 
@@ -92,17 +93,19 @@ export default async function CRMLayout({ children }: CRMLayoutProps) {
             {children}
           </main>
 
-          <AddLeadModal
-            agents={agents}
-            trigger={
-              <button
-                className="fixed bottom-[calc(5.75rem+env(safe-area-inset-bottom))] right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#F4B400] text-[#081120] shadow-2xl shadow-[#F4B400]/30 ring-1 ring-white/20 transition active:scale-95 md:hidden"
-                aria-label="Add lead"
-              >
-                <Plus className="h-6 w-6" />
-              </button>
-            }
-          />
+          <Suspense fallback={null}>
+            <AddLeadModal
+              agents={agents}
+              trigger={
+                <button
+                  className="fixed bottom-[calc(5.75rem+env(safe-area-inset-bottom))] right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#F4B400] text-[#081120] shadow-2xl shadow-[#F4B400]/30 ring-1 ring-white/20 transition active:scale-95 md:hidden"
+                  aria-label="Add lead"
+                >
+                  <Plus className="h-6 w-6" />
+                </button>
+              }
+            />
+          </Suspense>
         </div>
       </div>
     </CRMProviders>

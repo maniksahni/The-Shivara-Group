@@ -18,31 +18,9 @@ import { getProperties } from '@/features/properties/actions'
 import PropertyAdminCard from '@/components/crm/properties/PropertyAdminCard'
 import AddPropertyModal from '@/components/crm/properties/AddPropertyModal'
 import { CRMEmptyState, CRMHero, CRMMiniStat } from '@/components/crm/CRMPrimitives'
+import type { PropertyRecord } from '@/types'
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
-
-/** The shape Prisma returns for a Property record. */
-export interface PropertyRecord {
-  id: string
-  title: string
-  description: string | null
-  price: string | number
-  location: string
-  type: string
-  bedrooms: number | null
-  bathrooms: number | null
-  area: string | null
-  amenities: string[]
-  images: string[]
-  isActive: boolean
-  isFeatured: boolean
-  createdAt: Date
-  updatedAt: Date
-}
-
-export const dynamic = 'force-dynamic' // always fetch fresh data
+export type { PropertyRecord }
 
 export default async function PropertiesPage() {
   // ── Data fetching ────────────────────────────────────────────────────────

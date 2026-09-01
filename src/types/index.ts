@@ -319,3 +319,25 @@ export interface LeadFilterParams extends PaginationParams {
   dateFrom?: string
   dateTo?: string
 }
+
+/**
+ * Property record shape returned by Prisma/features for CRM.
+ */
+export interface PropertyRecord {
+  id: string
+  title: string
+  description: string | null
+  price: string | number
+  location: string
+  type: string
+  bedrooms: number | null
+  bathrooms: number | null
+  area: string | null
+  amenities: string[]
+  images: string[]
+  isActive: boolean
+  isFeatured: boolean
+  createdAt: Date
+  updatedAt: Date
+}
+

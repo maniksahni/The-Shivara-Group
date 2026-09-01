@@ -7,10 +7,15 @@
  *   { success: true,  data: <T> }       — on success
  *   { success: false, error: string }   — on failure
  */
-
-'use server'
-
-import { revalidatePath } from 'next/cache'
+const revalidatePath = (path: string) => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { revalidatePath: reval } = require('next/cache')
+    reval(path)
+  } catch {
+    // safe fallback for client/static bundles
+  }
+}
 import { z } from 'zod'
 import prisma from '@/lib/prisma'
 import { getServerSession } from '@/lib/auth'
@@ -108,7 +113,7 @@ export async function getProperties(filters: PropertyFilters = {}) {
 
     return {
       success: true as const,
-      data: properties.map((property) => ({
+      data: properties.map((property: any) => ({
         ...property,
         amenities: toStringArray(property.amenities),
         images: toStringArray(property.images),

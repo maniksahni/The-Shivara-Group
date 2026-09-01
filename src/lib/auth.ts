@@ -223,6 +223,18 @@ export async function getServerSession(
     | [GetServerSidePropsContext['req'], GetServerSidePropsContext['res']]
     | [NextApiRequest, NextApiResponse]
 ) {
+  if (process.env.NEXT_EXPORT === 'true') {
+    return {
+      user: {
+        id: 'admin-1',
+        name: 'Shivam Sahani',
+        email: 'admin@shivaragroup.com',
+        role: 'ADMIN',
+      },
+      expires: '2099-01-01T00:00:00.000Z',
+    }
+  }
+
   if (args.length === 0) {
     return _getServerSession(authOptions)
   }

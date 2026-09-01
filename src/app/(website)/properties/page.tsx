@@ -39,7 +39,7 @@ async function getProperties(): Promise<PublicProperty[]> {
       orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
     });
 
-    properties = databaseProperties.map((property) => ({
+    properties = (databaseProperties as Array<Record<string, any>>).map((property) => ({
       id: property.id,
       title: property.title,
       description: property.description,
@@ -50,10 +50,10 @@ async function getProperties(): Promise<PublicProperty[]> {
       bathrooms: property.bathrooms,
       area: property.area,
       amenities: Array.isArray(property.amenities)
-        ? property.amenities.filter((item): item is string => typeof item === "string")
+        ? (property.amenities as unknown[]).filter((item: unknown): item is string => typeof item === "string")
         : [],
       images: Array.isArray(property.images)
-        ? property.images.filter((item): item is string => typeof item === "string")
+        ? (property.images as unknown[]).filter((item: unknown): item is string => typeof item === "string")
         : [],
       isActive: property.isActive,
       isFeatured: property.isFeatured,

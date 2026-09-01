@@ -40,7 +40,7 @@ import {
   deleteProperty,
 } from '@/features/properties/actions'
 import AddPropertyModal from './AddPropertyModal'
-import type { PropertyRecord } from '@/app/(crm)/crm/properties/page'
+import type { PropertyRecord } from '@/types'
 
 // ---------------------------------------------------------------------------
 // Helpers

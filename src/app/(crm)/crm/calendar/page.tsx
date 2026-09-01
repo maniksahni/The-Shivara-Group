@@ -5,8 +5,6 @@ import { getServerSession } from "@/lib/auth";
 import prisma, { isDatabaseConfigured } from "@/lib/prisma";
 import { CRMEmptyState, CRMHero, CRMPanel, CRMMiniStat } from "@/components/crm/CRMPrimitives";
 
-export const dynamic = "force-dynamic";
-
 function range(daysAhead: number) {
   const start = new Date();
   start.setHours(0, 0, 0, 0);
@@ -24,7 +22,30 @@ export default async function CRMCalendarPage() {
   const agentFilter =
     session.user.role === "ADMIN" ? {} : { lead: { assignedToId: session.user.id } };
 
-  const [siteVisits, followUps] = isDatabaseConfigured
+  const [siteVisits, followUps]: [
+    Array<{
+      id: string;
+      scheduledAt: Date;
+      location?: string | null;
+      status?: string;
+      lead?: {
+        id: string;
+        name: string;
+        phone: string;
+        priority: string;
+        assignedTo?: { name: string } | null;
+      } | null;
+    }>,
+    Array<{
+      id: string;
+      name: string;
+      phone: string;
+      status: string;
+      followUpDate: Date | null;
+      priority: string;
+      assignedTo?: { name: string } | null;
+    }>
+  ] = isDatabaseConfigured
     ? await Promise.all([
         prisma.siteVisit
           .findMany({
@@ -61,8 +82,8 @@ export default async function CRMCalendarPage() {
     : [[], []];
 
   const today = new Date().toDateString();
-  const todaysVisits = siteVisits.filter((visit) => visit.scheduledAt.toDateString() === today);
-  const todaysFollowUps = followUps.filter((lead) => lead.followUpDate?.toDateString() === today);
+  const todaysVisits = siteVisits.filter((visit) => new Date(visit.scheduledAt).toDateString() === today);
+  const todaysFollowUps = followUps.filter((lead) => lead.followUpDate ? new Date(lead.followUpDate).toDateString() === today : false);
 
   return (
     <div className="space-y-6 text-white">
@@ -102,27 +123,33 @@ export default async function CRMCalendarPage() {
                 <article key={visit.id} className="rounded-2xl border border-white/10 bg-[#0E1726]/75 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <Link href={`/crm/leads/${visit.lead.id}`} className="font-black text-white hover:text-[#F4B400]">
-                        {visit.lead.name}
-                      </Link>
+                      {visit.lead ? (
+                        <Link href={`/crm/leads/${visit.lead.id}`} className="font-black text-white hover:text-[#F4B400]">
+                          {visit.lead.name}
+                        </Link>
+                      ) : (
+                        <span className="font-black text-white">Client Visit</span>
+                      )}
                       <p className="mt-1 flex items-center gap-2 text-sm text-slate-400">
                         <MapPin className="h-4 w-4 text-[#F4B400]" />
-                        {visit.location}
+                        {visit.location || "Location TBD"}
                       </p>
                     </div>
                     <span className="rounded-full bg-cyan-500/10 px-2.5 py-1 text-[10px] font-black text-cyan-300 ring-1 ring-cyan-400/20">
-                      {visit.status}
+                      {visit.status || "SCHEDULED"}
                     </span>
                   </div>
                   <div className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
                     <span className="flex items-center gap-2 text-slate-300">
                       <Clock3 className="h-4 w-4 text-[#F4B400]" />
-                      {visit.scheduledAt.toLocaleString("en-IN")}
+                      {new Date(visit.scheduledAt).toLocaleString("en-IN")}
                     </span>
-                    <a href={`tel:${visit.lead.phone}`} className="flex items-center gap-2 text-blue-300">
-                      <Phone className="h-4 w-4" />
-                      {visit.lead.phone}
-                    </a>
+                    {visit.lead?.phone && (
+                      <a href={`tel:${visit.lead.phone}`} className="flex items-center gap-2 text-blue-300">
+                        <Phone className="h-4 w-4" />
+                        {visit.lead.phone}
+                      </a>
+                    )}
                   </div>
                 </article>
               ))}

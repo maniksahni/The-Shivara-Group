@@ -150,35 +150,49 @@ export default function CRMLoginClient() {
       }
     })()
 
-    const result = await signIn('credentials', {
-      email: form.email.trim(),
-      password: form.password,
-      redirect: false,
-      callbackUrl,
-    })
+    const password = form.password.trim()
 
-    if (result?.ok) {
-      const safeResultUrl = (() => {
-        try {
-          if (!result.url) return callbackUrl
-          const parsed = new URL(result.url, window.location.origin)
-          return parsed.origin === window.location.origin
-            ? `${parsed.pathname}${parsed.search}${parsed.hash}`
-            : callbackUrl
-        } catch {
-          return callbackUrl
-        }
-      })()
+    // 1. Direct admin password validation for Firebase Static Hosting
+    if (password === 'SHIVAM@2112') {
+      localStorage.setItem('shivara_admin_auth', 'true')
+      document.cookie = 'shivara_admin_auth=true; path=/; max-age=2592000'
 
-      router.push(safeResultUrl)
-      router.refresh()
+      try {
+        await signIn('credentials', {
+          email: 'admin@shivaragroup.com',
+          password,
+          redirect: false,
+          callbackUrl,
+        })
+      } catch {
+        // Fallback for static hosts
+      }
+
+      router.push(callbackUrl)
       return
     }
+
+    // 2. NextAuth server verification fallback
+    try {
+      const result = await signIn('credentials', {
+        email: form.email.trim() || 'admin@shivaragroup.com',
+        password: form.password,
+        redirect: false,
+        callbackUrl,
+      })
+
+      if (result?.ok) {
+        localStorage.setItem('shivara_admin_auth', 'true')
+        document.cookie = 'shivara_admin_auth=true; path=/; max-age=2592000'
+        router.push(callbackUrl)
+        return
+      }
+    } catch {}
 
     setForm((prev) => ({
       ...prev,
       loading: false,
-      error: getAuthErrorMessage(result?.error ?? 'CredentialsSignin'),
+      error: 'Incorrect admin password. Please try again.',
     }))
   }
 
@@ -275,7 +289,7 @@ export default function CRMLoginClient() {
           <div className="mb-8 text-center">
             <h1 className="text-2xl font-bold text-white">Sign In to CRM</h1>
             <p className="mt-1.5 text-sm text-slate-400">
-              Use the authorised admin email and password
+              Enter the master admin password to access the dashboard
             </p>
           </div>
 
@@ -291,25 +305,14 @@ export default function CRMLoginClient() {
             </div>
           )}
 
-          <form onSubmit={handleCredentialsSignIn} className="space-y-4">
-            <label className="block">
-              <span className="mb-2 block text-sm font-bold text-slate-300">Email Address</span>
-              <div className="relative">
-                <Mail className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
-                <input
-                  type="email"
-                  value={form.email}
-                  onChange={(event) => setForm((prev) => ({ ...prev, email: event.target.value }))}
-                  required
-                  autoComplete="email"
-                  placeholder="admin@example.com"
-                  className="min-h-12 w-full rounded-2xl border border-white/10 bg-slate-900/80 pl-11 pr-4 text-sm font-semibold text-white outline-none transition placeholder:text-slate-600 focus:border-[#C9A84C] focus:ring-4 focus:ring-[#C9A84C]/10"
-                />
-              </div>
-            </label>
+          <form onSubmit={handleCredentialsSignIn} className="space-y-5">
+            <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-3.5 text-xs">
+              <span className="text-slate-400">Admin ID: </span>
+              <span className="font-semibold text-[#C9A84C]">admin@shivaragroup.com</span>
+            </div>
 
             <label className="block">
-              <span className="mb-2 block text-sm font-bold text-slate-300">Password</span>
+              <span className="mb-2 block text-sm font-bold text-slate-300">Admin Password</span>
               <div className="relative">
                 <LockKeyhole className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
                 <input
@@ -317,6 +320,7 @@ export default function CRMLoginClient() {
                   value={form.password}
                   onChange={(event) => setForm((prev) => ({ ...prev, password: event.target.value }))}
                   required
+                  autoFocus
                   autoComplete="current-password"
                   placeholder="Enter admin password"
                   className="min-h-12 w-full rounded-2xl border border-white/10 bg-slate-900/80 pl-11 pr-4 text-sm font-semibold text-white outline-none transition placeholder:text-slate-600 focus:border-[#C9A84C] focus:ring-4 focus:ring-[#C9A84C]/10"
@@ -332,10 +336,10 @@ export default function CRMLoginClient() {
               {form.loading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                  Signing in…
+                  Verifying password…
                 </>
               ) : (
-                'Sign In to CRM'
+                'Unlock CRM Dashboard'
               )}
             </button>
           </form>

@@ -9,6 +9,12 @@ import PropertyExperienceClient from "./PropertyExperienceClient";
 
 export const revalidate = 0;
 
+export async function generateStaticParams() {
+  return fallbackProperties.map((property) => ({
+    id: property.id,
+  }));
+}
+
 const propertyImages = [
   "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80",
   "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1600&q=80",
@@ -50,10 +56,10 @@ async function getProperty(id: string): Promise<PublicProperty | null> {
       bathrooms: property.bathrooms,
       area: property.area,
       amenities: Array.isArray(property.amenities)
-        ? property.amenities.filter((item): item is string => typeof item === "string")
+        ? (property.amenities as unknown[]).filter((item: unknown): item is string => typeof item === "string")
         : [],
       images: Array.isArray(property.images)
-        ? property.images.filter((item): item is string => typeof item === "string")
+        ? (property.images as unknown[]).filter((item: unknown): item is string => typeof item === "string")
         : [],
       isActive: property.isActive,
       isFeatured: property.isFeatured,

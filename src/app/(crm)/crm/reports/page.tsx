@@ -6,7 +6,7 @@ import { getServerSession } from "@/lib/auth";
 import { getDashboardStats } from "@/features/leads/actions";
 import { getAgentStats } from "@/features/agents/actions";
 import ReportCharts from "@/components/crm/reports/ReportCharts";
-import prisma from "@/lib/prisma";
+import prisma, { isDatabaseConfigured } from "@/lib/prisma";
 
 export const revalidate = 0; // Fetch fresh data
 
@@ -42,14 +42,18 @@ export default async function ReportsPage() {
   const closedLeads = stats.closedLeads;
   const conversionRate = totalLeads > 0 ? ((closedLeads / totalLeads) * 100).toFixed(1) : "0.0";
 
-  const sourceClosedRaw = await prisma.lead.groupBy({
-    by: ["source"],
-    where: {
-      status: "CLOSED",
-      ...(session.user.role === "ADMIN" ? {} : { assignedToId: session.user.id }),
-    },
-    _count: { source: true },
-  }).catch(() => []);
+  const sourceClosedRaw: Array<{ source: string; _count: { source: number } }> = isDatabaseConfigured
+    ? await prisma.lead
+        .groupBy({
+          by: ["source"],
+          where: {
+            status: "CLOSED",
+            ...(session.user.role === "ADMIN" ? {} : { assignedToId: session.user.id }),
+          },
+          _count: { source: true },
+        })
+        .catch(() => [])
+    : [];
 
   const closedBySource = Object.fromEntries(
     sourceClosedRaw.map((row) => [row.source, row._count.source]),

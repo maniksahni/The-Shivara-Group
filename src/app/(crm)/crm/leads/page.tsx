@@ -8,7 +8,7 @@
  * the table or kanban view depending on the `view` param.
  */
 
-import React from 'react'
+import React, { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { Plus, LayoutList, Kanban, AlertTriangle } from 'lucide-react'
@@ -45,9 +45,19 @@ interface PageProps {
 // Page Component
 // ---------------------------------------------------------------------------
 
-export default async function LeadsPage({ searchParams }: PageProps) {
-  // Await searchParams (Next.js 15+ dynamic API)
-  const params = await searchParams
+export default async function LeadsPage({ searchParams }: { searchParams?: Promise<{
+  status?: string
+  source?: string
+  priority?: string
+  assignedToId?: string
+  search?: string
+  view?: string
+  dateFrom?: string
+  dateTo?: string
+  page?: string
+}> }) {
+  // Await searchParams safely if provided
+  const params: Record<string, string | undefined> = searchParams ? (await searchParams.catch(() => ({}))) ?? {} : {}
 
   // ---- Auth check ----
   const session = await getServerSession()
@@ -114,17 +124,19 @@ export default async function LeadsPage({ searchParams }: PageProps) {
               <ViewToggle currentView={view} />
 
               {/* Add lead — rendered as a client modal trigger */}
-              <AddLeadModal
-                agents={agents}
-                trigger={
-                  <button
-                    className="hidden items-center gap-2 rounded-2xl bg-[#F4B400] px-4 py-3 text-sm font-black text-[#081120] shadow-lg shadow-[#F4B400]/20 transition hover:-translate-y-0.5 hover:bg-[#f59e0b] md:inline-flex"
-                  >
-                    <Plus className="h-4 w-4" />
-                    Add Lead
-                  </button>
-                }
-              />
+              <Suspense fallback={null}>
+                <AddLeadModal
+                  agents={agents}
+                  trigger={
+                    <button
+                      className="hidden items-center gap-2 rounded-2xl bg-[#F4B400] px-4 py-3 text-sm font-black text-[#081120] shadow-lg shadow-[#F4B400]/20 transition hover:-translate-y-0.5 hover:bg-[#f59e0b] md:inline-flex"
+                    >
+                      <Plus className="h-4 w-4" />
+                      Add Lead
+                    </button>
+                  }
+                />
+              </Suspense>
             </div>
           </div>
         </div>
@@ -134,11 +146,13 @@ export default async function LeadsPage({ searchParams }: PageProps) {
       <div className="mx-auto max-w-screen-2xl py-6">
         {/* Filters */}
         <div className="mb-6">
-          <LeadFilters
-            agents={agents}
-            isAdmin={isAdmin}
-            currentFilters={filters}
-          />
+          <React.Suspense fallback={null}>
+            <LeadFilters
+              agents={agents}
+              isAdmin={isAdmin}
+              currentFilters={filters}
+            />
+          </React.Suspense>
         </div>
 
         {/* Lead list */}

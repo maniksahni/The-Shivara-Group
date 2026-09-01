@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
       validatedData.message.includes('Source: Website Direct Enquiry')
 
     // ── Persist lead + activity inside a transaction ───────────────────────
-    const lead = await prisma.$transaction(async (tx) => {
+    const lead = await prisma.$transaction(async (tx: any) => {
       const newLead = await tx.lead.create({
         data: {
           name: validatedData.name,

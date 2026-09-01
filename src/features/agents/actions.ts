@@ -10,10 +10,15 @@
  * Passwords are hashed with bcryptjs before storage.
  * No plaintext passwords are ever returned in query results.
  */
-
-'use server'
-
-import { revalidatePath } from 'next/cache'
+const revalidatePath = (path: string) => {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const { revalidatePath: reval } = require('next/cache')
+    reval(path)
+  } catch {
+    // safe fallback for client/static bundles
+  }
+}
 import { z } from 'zod'
 import bcrypt from 'bcryptjs'
 import prisma from '@/lib/prisma'
@@ -413,7 +418,7 @@ export async function getAgentStats(): Promise<ActionResult<AgentPerformanceStat
     // Fetch all aggregated lead counts per agent in a single query each
     // to avoid N+1 issues.  For large datasets consider raw SQL instead.
     const stats = await Promise.all(
-      agents.map(async (agent) => {
+      agents.map(async (agent: any) => {
         const [totalLeads, closedLeads, pendingFollowUps, siteVisitsScheduled] =
           await Promise.all([
             prisma.lead.count({ where: { assignedToId: agent.id } }),
@@ -442,7 +447,7 @@ export async function getAgentStats(): Promise<ActionResult<AgentPerformanceStat
     )
 
     // Sort by totalLeads descending for a default leaderboard view
-    stats.sort((a, b) => b.totalLeads - a.totalLeads)
+    stats.sort((a: any, b: any) => b.totalLeads - a.totalLeads)
 
     return { success: true, data: stats }
   } catch (error) {

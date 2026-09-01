@@ -125,7 +125,11 @@ function UserDropdown({ name, email, onClose }: UserDropdownProps) {
 
   async function handleSignOut() {
     onClose()
-    await signOut({ redirect: false })
+    localStorage.removeItem('shivara_admin_auth')
+    document.cookie = 'shivara_admin_auth=; path=/; max-age=0'
+    try {
+      await signOut({ redirect: false })
+    } catch {}
     router.push('/crm/login')
   }
 

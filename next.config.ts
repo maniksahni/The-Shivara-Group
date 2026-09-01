@@ -23,7 +23,15 @@ const securityHeaders = [
   },
 ];
 
+const isStaticExport = process.env.NEXT_EXPORT === "true";
+
 const nextConfig: NextConfig = {
+  ...(isStaticExport && {
+    output: "export",
+    images: {
+      unoptimized: true,
+    },
+  }),
   async headers() {
     return [
       {

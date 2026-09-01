@@ -14,7 +14,12 @@
 
 import { PrismaClient } from '@prisma/client'
 
-export const isDatabaseConfigured = Boolean(process.env.DATABASE_URL)
+export const isDatabaseConfigured = Boolean(
+  process.env.DATABASE_URL &&
+    !process.env.DATABASE_URL.includes('USER:PASSWORD') &&
+    !process.env.DATABASE_URL.includes('@HOST:PORT') &&
+    process.env.NEXT_EXPORT !== 'true'
+)
 
 // Extend globalThis so TypeScript accepts our custom property.
 const globalForPrisma = globalThis as unknown as {

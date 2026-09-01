@@ -5,13 +5,20 @@ import { getServerSession } from "@/lib/auth";
 import prisma, { isDatabaseConfigured } from "@/lib/prisma";
 import { CRMEmptyState, CRMHero, CRMPanel, CRMMiniStat } from "@/components/crm/CRMPrimitives";
 
-export const dynamic = "force-dynamic";
-
 export default async function CRMActivitiesPage() {
   const session = await getServerSession();
   if (!session?.user) redirect("/crm/login");
 
-  const activities = isDatabaseConfigured
+  const activities: Array<{
+    id: string;
+    action: string;
+    details?: string | null;
+    newValue?: string | null;
+    oldValue?: string | null;
+    createdAt: Date;
+    user?: { name: string; role: string } | null;
+    lead?: { id: string; name: string; status: string } | null;
+  }> = isDatabaseConfigured
     ? await prisma.leadActivity
         .findMany({
           where:
@@ -30,7 +37,7 @@ export default async function CRMActivitiesPage() {
 
   const systemCount = activities.filter((item) => !item.user).length;
   const todayCount = activities.filter(
-    (item) => item.createdAt.toDateString() === new Date().toDateString(),
+    (item) => new Date(item.createdAt).toDateString() === new Date().toDateString(),
   ).length;
 
   return (
@@ -64,11 +71,15 @@ export default async function CRMActivitiesPage() {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                      <Link href={`/crm/leads/${item.lead.id}`} className="truncate font-black text-white hover:text-[#F4B400]">
-                        {item.lead.name}
-                      </Link>
+                      {item.lead ? (
+                        <Link href={`/crm/leads/${item.lead.id}`} className="truncate font-black text-white hover:text-[#F4B400]">
+                          {item.lead.name}
+                        </Link>
+                      ) : (
+                        <span className="truncate font-black text-white">Direct Lead</span>
+                      )}
                       <span className="text-xs font-semibold text-slate-500">
-                        {item.createdAt.toLocaleString("en-IN")}
+                        {new Date(item.createdAt).toLocaleString("en-IN")}
                       </span>
                     </div>
                     <p className="mt-2 text-sm leading-6 text-slate-300">
@@ -82,9 +93,11 @@ export default async function CRMActivitiesPage() {
                         <UserRound className="h-3 w-3" />
                         {item.user?.name || "System"}
                       </span>
-                      <span className={`rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wider status-${item.lead.status.toLowerCase()}`}>
-                        {item.lead.status.replace(/_/g, " ")}
-                      </span>
+                      {item.lead && (
+                        <span className={`rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wider status-${item.lead.status.toLowerCase()}`}>
+                          {item.lead.status.replace(/_/g, " ")}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>

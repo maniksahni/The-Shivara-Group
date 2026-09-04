@@ -141,7 +141,21 @@ export default function Footer() {
         </div>
 
         <div className="mt-10 border-t border-white/10 pt-6 sm:mt-14">
-          <div className="flex flex-col justify-between gap-3 text-xs text-white/42 sm:flex-row">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pb-4 text-xs font-semibold text-white/60 border-b border-white/5">
+            <Link href="/disclaimer" className="hover:text-[#F5D67B] transition">
+              Disclaimer
+            </Link>
+            <Link href="/privacy" className="hover:text-[#F5D67B] transition">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="hover:text-[#F5D67B] transition">
+              Terms of Service
+            </Link>
+            <Link href="/faq" className="hover:text-[#F5D67B] transition">
+              FAQs
+            </Link>
+          </div>
+          <div className="flex flex-col justify-between gap-3 pt-4 text-xs text-white/42 sm:flex-row">
             <p>© {year} The Shivara Group. All rights reserved.</p>
             <p>Pricing, availability, documents and visit slots are confirmed directly before booking.</p>
           </div>

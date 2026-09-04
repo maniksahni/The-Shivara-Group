@@ -43,11 +43,14 @@ async function getProperties(): Promise<PublicProperty[]> {
       title: property.title,
       description: property.description,
       price: property.price,
+      priceNumeric: typeof property.priceNumeric === "number" ? property.priceNumeric : undefined,
       location: property.location,
+      microLocation: property.microLocation || undefined,
       type: property.type,
       bedrooms: property.bedrooms,
       bathrooms: property.bathrooms,
       area: property.area,
+      status: property.status || "Available",
       amenities: Array.isArray(property.amenities)
         ? (property.amenities as unknown[]).filter((item: unknown): item is string => typeof item === "string")
         : [],
@@ -56,6 +59,7 @@ async function getProperties(): Promise<PublicProperty[]> {
         : [],
       isActive: property.isActive,
       isFeatured: property.isFeatured,
+      isVerified: true,
     }));
   } catch (error) {
     if (isDatabaseConfigured) {

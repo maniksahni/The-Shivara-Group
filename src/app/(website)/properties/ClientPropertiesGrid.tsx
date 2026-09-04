@@ -1,346 +1,566 @@
 "use client";
 
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
-import { PropertyType } from "@prisma/client";
-import { Bath, BedDouble, CalendarDays, Heart, MapPin, MessageCircle, Phone, Ruler, Search, Sparkles } from "lucide-react";
+import { useMemo, useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  ArrowUpDown,
+  Filter,
+  MessageCircle,
+  RotateCcw,
+  Search,
+  SlidersHorizontal,
+  X,
+} from "lucide-react";
+import PropertyCard from "@/components/website/PropertyCard";
 import ClientEnquiryModal from "./ClientEnquiryModal";
-import { siteConfig, type PublicProperty } from "@/components/website/site-data";
-
-const propertyImages = [
-  "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80",
-  "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1200&q=80",
-];
-
-const filterTabs = [
-  { value: "ALL", label: "All" },
-  { value: PropertyType.APARTMENT, label: "Apartments" },
-  { value: PropertyType.VILLA, label: "Villas" },
-  { value: PropertyType.PLOT, label: "Plots" },
-  { value: PropertyType.COMMERCIAL, label: "Commercial" },
-  { value: PropertyType.FARMHOUSE, label: "Farmhouse" },
-];
-
-const budgetTabs = ["All Budgets", "Under 25 Lakh", "25–50 Lakh", "50 Lakh–1 Cr", "1 Cr+", "Contact for pricing"];
-
-const locationTabs = ["All Locations", "Bareilly", "Rajendar Nagar", "Aurika", "Delhi NCR"];
+import {
+  filterBedrooms,
+  filterBudgets,
+  filterLocations,
+  filterPropertyTypes,
+  filterStatuses,
+  siteConfig,
+  sortOptions,
+  type PublicProperty,
+} from "@/components/website/site-data";
 
 export default function ClientPropertiesGrid({
   initialProperties,
 }: {
   initialProperties: PublicProperty[];
 }) {
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const initialType = searchParams.get("type");
-  const initialQuery = searchParams.get("q") ?? "";
-  const [selectedType, setSelectedType] = useState(
-    initialType && filterTabs.some((tab) => tab.value === initialType) ? initialType : "ALL",
-  );
-  const [selectedBudget, setSelectedBudget] = useState("All Budgets");
-  const [selectedLocation, setSelectedLocation] = useState("All Locations");
-  const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [selectedProperty, setSelectedProperty] = useState<PublicProperty | null>(null);
-  const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
 
-  const filteredProperties = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-    return initialProperties.filter((property) => {
-      const matchesType = selectedType === "ALL" || property.type === selectedType;
-      const price = property.price.toLowerCase();
-      const matchesBudget =
-        selectedBudget === "All Budgets" ||
-        (selectedBudget === "Contact for pricing"
-          ? price.includes("contact") || price.includes("request")
-          : price.includes(selectedBudget.toLowerCase().replace("–", "–")) ||
-            property.description.toLowerCase().includes(selectedBudget.toLowerCase()));
-      const matchesLocation =
-        selectedLocation === "All Locations" ||
-        property.location.toLowerCase().includes(selectedLocation.toLowerCase()) ||
-        property.title.toLowerCase().includes(selectedLocation.toLowerCase()) ||
-        property.description.toLowerCase().includes(selectedLocation.toLowerCase());
-      const matchesSearch =
-        !query ||
-        property.title.toLowerCase().includes(query) ||
-        property.location.toLowerCase().includes(query) ||
-        property.description.toLowerCase().includes(query);
-      return matchesType && matchesBudget && matchesLocation && matchesSearch;
-    });
-  }, [initialProperties, searchQuery, selectedBudget, selectedLocation, selectedType]);
+  // Read initial params
+  const paramLocation = searchParams.get("location") ?? "All Locations";
+  const paramType = searchParams.get("type") ?? "ALL";
+  const paramBudget = searchParams.get("budget") ?? "ALL";
+  const paramBhk = searchParams.get("bhk") ?? "ALL";
+  const paramStatus = searchParams.get("status") ?? "All Status";
+  const paramSort = searchParams.get("sort") ?? "recommended";
+  const paramQ = searchParams.get("q") ?? "";
 
-  const toggleSaved = (id: string) => {
-    setSavedIds((current) => {
-      const next = new Set(current);
-      if (next.has(id)) {
-        next.delete(id);
-      } else {
-        next.add(id);
-      }
-      return next;
+  // Component state
+  const [searchQuery, setSearchQuery] = useState(paramQ);
+  const [selectedLocation, setSelectedLocation] = useState(paramLocation);
+  const [selectedType, setSelectedType] = useState(paramType);
+  const [selectedBudget, setSelectedBudget] = useState(paramBudget);
+  const [selectedBhk, setSelectedBhk] = useState(paramBhk);
+  const [selectedStatus, setSelectedStatus] = useState(paramStatus);
+  const [selectedSort, setSelectedSort] = useState(paramSort);
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
+  const [selectedPropertyForModal, setSelectedPropertyForModal] =
+    useState<PublicProperty | null>(null);
+
+  // Sync state if URL params change externally
+  useEffect(() => {
+    setSearchQuery(searchParams.get("q") ?? "");
+    setSelectedLocation(searchParams.get("location") ?? "All Locations");
+    setSelectedType(searchParams.get("type") ?? "ALL");
+    setSelectedBudget(searchParams.get("budget") ?? "ALL");
+    setSelectedBhk(searchParams.get("bhk") ?? "ALL");
+    setSelectedStatus(searchParams.get("status") ?? "All Status");
+    setSelectedSort(searchParams.get("sort") ?? "recommended");
+  }, [searchParams]);
+
+  // Update URL params
+  const syncParams = (overrides: Record<string, string>) => {
+    const params = new URLSearchParams();
+    const loc = overrides.location ?? selectedLocation;
+    const typ = overrides.type ?? selectedType;
+    const bud = overrides.budget ?? selectedBudget;
+    const bhk = overrides.bhk ?? selectedBhk;
+    const sta = overrides.status ?? selectedStatus;
+    const srt = overrides.sort ?? selectedSort;
+    const q = overrides.q ?? searchQuery;
+
+    if (loc && loc !== "All Locations") params.set("location", loc);
+    if (typ && typ !== "ALL") params.set("type", typ);
+    if (bud && bud !== "ALL") params.set("budget", bud);
+    if (bhk && bhk !== "ALL") params.set("bhk", bhk);
+    if (sta && sta !== "All Status") params.set("status", sta);
+    if (srt && srt !== "recommended") params.set("sort", srt);
+    if (q.trim()) params.set("q", q.trim());
+
+    const queryString = params.toString();
+    router.replace(queryString ? `/properties?${queryString}` : "/properties", {
+      scroll: false,
     });
   };
 
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setSelectedLocation("All Locations");
+    setSelectedType("ALL");
+    setSelectedBudget("ALL");
+    setSelectedBhk("ALL");
+    setSelectedStatus("All Status");
+    setSelectedSort("recommended");
+    router.replace("/properties", { scroll: false });
+  };
+
+  // Active filters count
+  const activeFiltersCount = [
+    selectedLocation !== "All Locations",
+    selectedType !== "ALL",
+    selectedBudget !== "ALL",
+    selectedBhk !== "ALL",
+    selectedStatus !== "All Status",
+    Boolean(searchQuery.trim()),
+  ].filter(Boolean).length;
+
+  // Filter & Sort Logic
+  const filteredAndSortedProperties = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    // 1. Filter
+    const results = initialProperties.filter((item) => {
+      // Search query filter
+      if (query) {
+        const titleMatch = item.title.toLowerCase().includes(query);
+        const locMatch = item.location.toLowerCase().includes(query);
+        const descMatch = item.description.toLowerCase().includes(query);
+        const microMatch = item.microLocation?.toLowerCase().includes(query) ?? false;
+        const amenityMatch = item.amenities.some((a) => a.toLowerCase().includes(query));
+        if (!titleMatch && !locMatch && !descMatch && !microMatch && !amenityMatch) {
+          return false;
+        }
+      }
+
+      // Location filter
+      if (selectedLocation !== "All Locations") {
+        const itemLoc = `${item.location} ${item.microLocation || ""}`.toLowerCase();
+        if (!itemLoc.includes(selectedLocation.toLowerCase())) {
+          return false;
+        }
+      }
+
+      // Property Type filter
+      if (selectedType !== "ALL") {
+        if (selectedType === "VILLA") {
+          if (item.type !== "VILLA") return false;
+        } else if (selectedType === "APARTMENT") {
+          if (item.type !== "APARTMENT") return false;
+        } else if (selectedType === "PLOT") {
+          if (item.type !== "PLOT") return false;
+        } else if (selectedType === "COMMERCIAL") {
+          if (item.type !== "COMMERCIAL") return false;
+        } else if (selectedType === "FARMHOUSE") {
+          if (item.type !== "FARMHOUSE") return false;
+        }
+      }
+
+      // Budget filter
+      if (selectedBudget !== "ALL") {
+        const budgetDef = filterBudgets.find((b) => b.value === selectedBudget);
+        if (budgetDef && item.priceNumeric) {
+          if (budgetDef.min && item.priceNumeric < budgetDef.min) return false;
+          if (budgetDef.max && item.priceNumeric > budgetDef.max) return false;
+        }
+      }
+
+      // Bedroom filter
+      if (selectedBhk !== "ALL") {
+        const targetBhk = Number(selectedBhk);
+        if (targetBhk === 5) {
+          if (!item.bedrooms || item.bedrooms < 5) return false;
+        } else {
+          if (item.bedrooms !== targetBhk) return false;
+        }
+      }
+
+      // Status filter
+      if (selectedStatus !== "All Status") {
+        if (item.status !== selectedStatus) return false;
+      }
+
+      return true;
+    });
+
+    // 2. Sort
+    results.sort((a, b) => {
+      if (selectedSort === "price_asc") {
+        return (a.priceNumeric || 0) - (b.priceNumeric || 0);
+      }
+      if (selectedSort === "price_desc") {
+        return (b.priceNumeric || 0) - (a.priceNumeric || 0);
+      }
+      if (selectedSort === "newest") {
+        return b.id.localeCompare(a.id);
+      }
+      // recommended: featured first, then verified
+      if (a.isFeatured !== b.isFeatured) {
+        return a.isFeatured ? -1 : 1;
+      }
+      if (a.isVerified !== b.isVerified) {
+        return a.isVerified ? -1 : 1;
+      }
+      return 0;
+    });
+
+    return results;
+  }, [
+    initialProperties,
+    searchQuery,
+    selectedLocation,
+    selectedType,
+    selectedBudget,
+    selectedBhk,
+    selectedStatus,
+    selectedSort,
+  ]);
+
   return (
-    <div className="space-y-8">
-      <div className="rounded-[1.6rem] border border-[#081120]/8 bg-white p-3.5 shadow-[0_24px_70px_rgba(8,17,32,0.07)] sm:rounded-[2rem] sm:p-5">
-        <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
+    <div className="space-y-6 sm:space-y-8">
+      {/* ============================================================ */}
+      {/* SEARCH AND FILTER BAR */}
+      {/* ============================================================ */}
+      <div className="rounded-[1.6rem] border border-[#081120]/10 bg-white p-4 shadow-[0_20px_60px_rgba(8,17,32,0.06)] sm:rounded-[2.2rem] sm:p-6">
+        <div className="grid gap-3 lg:grid-cols-[1.5fr_1fr_auto]">
+          {/* Main Keyword Search Bar */}
           <div className="relative">
-            <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-[#9B7A19]" />
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9B7A19]" />
             <input
               type="search"
               value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="Search project, location, category..."
-              className="min-h-13 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] pl-12 pr-4 text-sm font-semibold outline-none transition placeholder:text-[#6B7280]/70 focus:border-[#D4AF37] focus:bg-white focus:ring-4 focus:ring-[#D4AF37]/14 sm:min-h-14"
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                syncParams({ q: e.target.value });
+              }}
+              placeholder="Search by locality, villa, 3 BHK, kothi, plot..."
+              className="min-h-12 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] pl-11 pr-4 text-sm font-semibold text-[#081120] outline-none transition placeholder:text-[#6B7280]/70 focus:border-[#D4AF37] focus:bg-white focus:ring-2 focus:ring-[#D4AF37]/20"
             />
           </div>
-          <div className="premium-scrollbar flex gap-2 overflow-x-auto pb-1 lg:pb-0">
-            {filterTabs.map((tab) => (
-              <button
-                key={tab.value}
-                type="button"
-                onClick={() => setSelectedType(tab.value)}
-                className={`min-h-11 shrink-0 rounded-full px-4 text-xs font-black uppercase tracking-[0.14em] transition ${
-                  selectedType === tab.value
-                    ? "bg-[#081120] text-white"
-                    : "bg-[#F8F5EE] text-[#4B5563] hover:bg-[#D4AF37] hover:text-[#081120]"
-                }`}
+
+          {/* Location Quick Select */}
+          <div>
+            <select
+              value={selectedLocation}
+              onChange={(e) => {
+                setSelectedLocation(e.target.value);
+                syncParams({ location: e.target.value });
+              }}
+              className="min-h-12 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] px-4 text-xs font-bold text-[#081120] outline-none transition focus:border-[#D4AF37] focus:bg-white focus:ring-2 focus:ring-[#D4AF37]/20"
+            >
+              {filterLocations.map((loc) => (
+                <option key={loc} value={loc}>
+                  {loc}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Sorting Dropdown */}
+          <div className="flex items-center gap-2">
+            <div className="relative flex-1 sm:w-48">
+              <select
+                value={selectedSort}
+                onChange={(e) => {
+                  setSelectedSort(e.target.value);
+                  syncParams({ sort: e.target.value });
+                }}
+                className="min-h-12 w-full rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] px-3.5 text-xs font-bold text-[#081120] outline-none transition focus:border-[#D4AF37] focus:bg-white"
               >
-                {tab.label}
-              </button>
-            ))}
+                {sortOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    Sort: {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Mobile Filter Toggle */}
+            <button
+              type="button"
+              onClick={() => setIsFilterDrawerOpen((prev) => !prev)}
+              className="relative flex min-h-12 items-center justify-center gap-1.5 rounded-2xl border border-[#081120]/15 bg-[#081120] px-4 text-xs font-black uppercase tracking-[0.1em] text-white transition lg:hidden"
+            >
+              <SlidersHorizontal className="h-4 w-4" />
+              <span>Filters</span>
+              {activeFiltersCount > 0 && (
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#D4AF37] text-[10px] text-[#081120]">
+                  {activeFiltersCount}
+                </span>
+              )}
+            </button>
           </div>
         </div>
-        <div className="mt-3 grid gap-3 lg:grid-cols-2">
-          <div className="premium-scrollbar flex gap-2 overflow-x-auto pb-1">
-            {budgetTabs.map((tab) => (
+
+        {/* Desktop Filter Pills Row */}
+        <div className="mt-4 hidden border-t border-[#081120]/8 pt-4 lg:block">
+          <div className="flex flex-wrap items-center gap-2.5">
+            <span className="text-[10px] font-black uppercase tracking-[0.16em] text-[#6B7280]">
+              Category:
+            </span>
+            {filterPropertyTypes.map((type) => (
               <button
-                key={tab}
+                key={type.value}
                 type="button"
-                onClick={() => setSelectedBudget(tab)}
-                className={`min-h-10 shrink-0 rounded-full px-3 text-[11px] font-black uppercase tracking-[0.12em] transition ${
-                  selectedBudget === tab
-                    ? "bg-[#D4AF37] text-[#081120]"
-                    : "bg-[#F8F5EE] text-[#4B5563] hover:bg-[#081120] hover:text-white"
+                onClick={() => {
+                  setSelectedType(type.value);
+                  syncParams({ type: type.value });
+                }}
+                className={`min-h-9 rounded-full px-3.5 text-xs font-bold transition ${
+                  selectedType === type.value
+                    ? "bg-[#081120] text-white shadow-sm"
+                    : "bg-[#F8F5EE] text-[#4B5563] hover:bg-[#D4AF37]/25 hover:text-[#081120]"
                 }`}
               >
-                {tab}
+                {type.label}
               </button>
             ))}
-          </div>
-          <div className="premium-scrollbar flex gap-2 overflow-x-auto pb-1 lg:justify-end">
-            {locationTabs.map((tab) => (
+
+            <div className="mx-2 h-4 w-[1px] bg-[#081120]/15" />
+
+            <span className="text-[10px] font-black uppercase tracking-[0.16em] text-[#6B7280]">
+              Budget:
+            </span>
+            {filterBudgets.slice(0, 5).map((budget) => (
               <button
-                key={tab}
+                key={budget.value}
                 type="button"
-                onClick={() => setSelectedLocation(tab)}
-                className={`min-h-10 shrink-0 rounded-full px-3 text-[11px] font-black uppercase tracking-[0.12em] transition ${
-                  selectedLocation === tab
-                    ? "bg-[#081120] text-white"
-                    : "bg-[#F8F5EE] text-[#4B5563] hover:bg-[#D4AF37] hover:text-[#081120]"
+                onClick={() => {
+                  setSelectedBudget(budget.value);
+                  syncParams({ budget: budget.value });
+                }}
+                className={`min-h-9 rounded-full px-3 text-xs font-bold transition ${
+                  selectedBudget === budget.value
+                    ? "bg-[#D4AF37] text-[#081120] shadow-sm"
+                    : "bg-[#F8F5EE] text-[#4B5563] hover:bg-slate-200"
                 }`}
               >
-                {tab}
+                {budget.label}
               </button>
             ))}
+
+            <div className="mx-2 h-4 w-[1px] bg-[#081120]/15" />
+
+            <span className="text-[10px] font-black uppercase tracking-[0.16em] text-[#6B7280]">
+              Bedrooms:
+            </span>
+            {filterBedrooms.map((bhk) => (
+              <button
+                key={String(bhk.value)}
+                type="button"
+                onClick={() => {
+                  setSelectedBhk(String(bhk.value));
+                  syncParams({ bhk: String(bhk.value) });
+                }}
+                className={`min-h-9 rounded-full px-2.5 text-xs font-bold transition ${
+                  selectedBhk === String(bhk.value)
+                    ? "bg-[#081120] text-white shadow-sm"
+                    : "bg-[#F8F5EE] text-[#4B5563] hover:bg-slate-200"
+                }`}
+              >
+                {bhk.label}
+              </button>
+            ))}
+
+            {activeFiltersCount > 0 && (
+              <button
+                type="button"
+                onClick={handleResetFilters}
+                className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-red-200 bg-red-50 px-3.5 py-1 text-xs font-bold text-red-700 transition hover:bg-red-100"
+              >
+                <RotateCcw className="h-3 w-3" />
+                Reset
+              </button>
+            )}
           </div>
         </div>
+
+        {/* Mobile Filter Drawer */}
+        {isFilterDrawerOpen && (
+          <div className="mt-4 space-y-3 rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] p-4 lg:hidden">
+            <div className="flex items-center justify-between border-b border-[#081120]/10 pb-2">
+              <span className="text-xs font-black uppercase tracking-wider text-[#081120]">
+                Filter Criteria
+              </span>
+              <button
+                type="button"
+                onClick={() => setIsFilterDrawerOpen(false)}
+                className="p-1 text-[#4B5563]"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-[10px] font-black uppercase text-[#6B7280]">
+                Property Type
+              </label>
+              <select
+                value={selectedType}
+                onChange={(e) => {
+                  setSelectedType(e.target.value);
+                  syncParams({ type: e.target.value });
+                }}
+                className="w-full rounded-xl bg-white p-2.5 text-xs font-bold text-[#081120]"
+              >
+                {filterPropertyTypes.map((t) => (
+                  <option key={t.value} value={t.value}>
+                    {t.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-[10px] font-black uppercase text-[#6B7280]">
+                Budget
+              </label>
+              <select
+                value={selectedBudget}
+                onChange={(e) => {
+                  setSelectedBudget(e.target.value);
+                  syncParams({ budget: e.target.value });
+                }}
+                className="w-full rounded-xl bg-white p-2.5 text-xs font-bold text-[#081120]"
+              >
+                {filterBudgets.map((b) => (
+                  <option key={b.value} value={b.value}>
+                    {b.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-[10px] font-black uppercase text-[#6B7280]">
+                Bedrooms
+              </label>
+              <select
+                value={selectedBhk}
+                onChange={(e) => {
+                  setSelectedBhk(e.target.value);
+                  syncParams({ bhk: e.target.value });
+                }}
+                className="w-full rounded-xl bg-white p-2.5 text-xs font-bold text-[#081120]"
+              >
+                {filterBedrooms.map((bhk) => (
+                  <option key={String(bhk.value)} value={String(bhk.value)}>
+                    {bhk.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="mb-1 block text-[10px] font-black uppercase text-[#6B7280]">
+                Status
+              </label>
+              <select
+                value={selectedStatus}
+                onChange={(e) => {
+                  setSelectedStatus(e.target.value);
+                  syncParams({ status: e.target.value });
+                }}
+                className="w-full rounded-xl bg-white p-2.5 text-xs font-bold text-[#081120]"
+              >
+                {filterStatuses.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {activeFiltersCount > 0 && (
+              <button
+                type="button"
+                onClick={handleResetFilters}
+                className="flex min-h-10 w-full items-center justify-center gap-1.5 rounded-xl bg-red-100 text-xs font-bold text-red-800"
+              >
+                <RotateCcw className="h-3 w-3" />
+                Reset All Filters
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
-      <div className="flex items-end justify-between gap-4">
+      {/* ============================================================ */}
+      {/* RESULTS HEADER */}
+      {/* ============================================================ */}
+      <div className="flex flex-wrap items-center justify-between gap-3 px-1">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.24em] text-[#9B7A19]">
-            {filteredProperties.length} properties found
+          <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#9B7A19]">
+            {filteredAndSortedProperties.length} Properties Available
           </p>
-          <h2 className="mt-1 font-[family-name:var(--font-playfair)] text-[2rem] font-semibold leading-none tracking-[-0.035em] text-[#081120] sm:text-3xl">
-            Curated opportunities
+          <h2 className="font-[family-name:var(--font-playfair)] text-2xl font-semibold text-[#081120] sm:text-3xl">
+            {selectedLocation === "All Locations" ? "All Curated Listings" : `${selectedLocation} Listings`}
           </h2>
         </div>
+
         <a
           href={siteConfig.whatsappHref}
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden min-h-12 items-center gap-2 rounded-full bg-[#10B981] px-5 text-sm font-black text-white shadow-lg transition hover:-translate-y-0.5 sm:inline-flex"
+          className="inline-flex min-h-10 items-center gap-2 rounded-full bg-[#10B981] px-4 text-xs font-black uppercase tracking-[0.1em] text-white shadow-sm transition hover:bg-emerald-600"
         >
-          <MessageCircle className="h-4 w-4" />
-          Ask on WhatsApp
+          <MessageCircle className="h-3.5 w-3.5" />
+          <span>Ask Requirement on WhatsApp</span>
         </a>
       </div>
 
-      {filteredProperties.length === 0 ? (
-        <div className="rounded-[2.4rem] border border-[#081120]/8 bg-white p-10 text-center shadow-[0_24px_70px_rgba(8,17,32,0.07)]">
-            <Search className="mx-auto h-12 w-12 text-[#D4AF37]" />
-          <h3 className="mt-5 font-[family-name:var(--font-playfair)] text-3xl font-semibold">
-            No matching properties found.
+      {/* ============================================================ */}
+      {/* PROPERTY GRID */}
+      {/* ============================================================ */}
+      {filteredAndSortedProperties.length === 0 ? (
+        <div className="rounded-[2.4rem] border border-[#081120]/10 bg-white p-10 text-center shadow-sm sm:p-14">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#FFF9E8] text-[#9B7A19]">
+            <Search className="h-8 w-8" />
+          </div>
+          <h3 className="mt-5 font-[family-name:var(--font-playfair)] text-2xl font-semibold sm:text-3xl">
+            No properties matched your criteria.
           </h3>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-7 text-[#4B5563]">
-            Try another category or send your requirement. The team can manually shortlist options.
+          <p className="mx-auto mt-2 max-w-md text-xs leading-6 text-[#6B7280] sm:text-sm">
+            Try adjusting your budget, location, or property category filter. Alternatively, share
+            your exact requirements and our advisory team will manually shortlist off-market options.
           </p>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2 sm:justify-center">
+
+          <div className="mt-7 flex flex-wrap justify-center gap-3">
             <button
               type="button"
-              onClick={() => {
-                setSearchQuery("");
-                setSelectedType("ALL");
-                setSelectedBudget("All Budgets");
-                setSelectedLocation("All Locations");
-              }}
-              className="min-h-12 rounded-full bg-[#081120] px-6 text-sm font-black uppercase tracking-[0.14em] text-white"
+              onClick={handleResetFilters}
+              className="inline-flex min-h-12 items-center justify-center rounded-full bg-[#081120] px-6 text-xs font-black uppercase tracking-[0.14em] text-white shadow-sm"
             >
-              Reset filters
+              Reset All Filters
             </button>
+
             <a
-              href={siteConfig.whatsappHref}
+              href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(
+                "Hi The Shivara Group, I am searching for specific property options in Bareilly. Can you share custom options?"
+              )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#10B981] px-6 text-sm font-black uppercase tracking-[0.14em] text-white"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#10B981] px-6 text-xs font-black uppercase tracking-[0.14em] text-white shadow-sm"
             >
               <MessageCircle className="h-4 w-4" />
-              WhatsApp requirement
+              WhatsApp Requirement
             </a>
           </div>
         </div>
       ) : (
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {filteredProperties.map((property, index) => {
-            const image = property.images[0] || propertyImages[index % propertyImages.length];
-            const isSaved = savedIds.has(property.id);
-            return (
-              <article
-                key={property.id}
-                className="group overflow-hidden rounded-[1.75rem] border border-[#081120]/8 bg-white shadow-[0_20px_58px_rgba(8,17,32,0.08)] transition duration-500 hover:-translate-y-2 hover:shadow-[0_32px_90px_rgba(8,17,32,0.16)] sm:rounded-[2.2rem]"
-              >
-                <Link href={`/properties/${property.id}`} className="block">
-                  <div
-                    className="relative h-64 overflow-hidden bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.02] sm:h-72"
-                    style={{
-                      backgroundImage: `linear-gradient(180deg,rgba(8,17,32,0.02),rgba(8,17,32,0.68)),url(${image})`,
-                    }}
-                  >
-                    <div className="absolute left-4 top-4 flex gap-2">
-                      <span className="rounded-full bg-white px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-[#081120]">
-                        {property.type.replace("_", " ")}
-                      </span>
-                      {property.isFeatured && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[#D4AF37] px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-[#081120]">
-                          <Sparkles className="h-3 w-3" />
-                          Featured
-                        </span>
-                      )}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={(event) => {
-                        event.preventDefault();
-                        toggleSaved(property.id);
-                      }}
-                      className="absolute right-4 top-4 flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-[#081120] shadow-lg transition hover:scale-105"
-                      aria-label={isSaved ? "Remove saved property" : "Save property"}
-                    >
-                      <Heart className={`h-5 w-5 ${isSaved ? "fill-[#D4AF37] text-[#D4AF37]" : ""}`} />
-                    </button>
-                    <div className="absolute bottom-4 left-4 right-4 text-white">
-                      <p className="text-sm font-black uppercase tracking-[0.2em] text-[#F5D67B]">
-                        {property.price}
-                      </p>
-                      <h3 className="mt-2 line-clamp-2 font-[family-name:var(--font-playfair)] text-[1.75rem] font-semibold leading-[1.02] tracking-[-0.035em] sm:text-3xl">
-                        {property.title}
-                      </h3>
-                    </div>
-                  </div>
-                </Link>
-
-                <div className="p-4 sm:p-6">
-                  <p className="flex items-center gap-2 text-sm font-bold text-[#4B5563]">
-                    <MapPin className="h-4 w-4 text-[#D4AF37]" />
-                    {property.location}
-                  </p>
-
-                  <div className="mt-4 grid grid-cols-3 gap-2">
-                    <Fact icon={<BedDouble className="h-4 w-4" />} value={property.bedrooms ? `${property.bedrooms} Beds` : "On request"} />
-                    <Fact icon={<Bath className="h-4 w-4" />} value={property.bathrooms ? `${property.bathrooms} Baths` : "Verified"} />
-                    <Fact icon={<Ruler className="h-4 w-4" />} value={property.area || "Area TBC"} />
-                  </div>
-
-                  <p className="mt-4 line-clamp-3 text-sm leading-6 text-[#4B5563] sm:leading-7">
-                    {property.description}
-                  </p>
-
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {property.amenities.slice(0, 3).map((amenity) => (
-                      <span
-                        key={amenity}
-                        className="rounded-full bg-[#F8F5EE] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#4B5563]"
-                      >
-                        {amenity}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-[1fr_auto_auto]">
-                    <Link
-                      href={`/properties/${property.id}`}
-                      className="col-span-2 flex min-h-12 items-center justify-center rounded-full bg-[#081120] px-4 text-sm font-black uppercase tracking-[0.12em] text-white transition hover:bg-[#D4AF37] hover:text-[#081120] sm:col-span-1"
-                    >
-                      View Details
-                    </Link>
-                    <a
-                      href={siteConfig.phoneHref}
-                      className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#F8F5EE] text-xs font-black text-[#081120] sm:w-12"
-                      aria-label="Call"
-                    >
-                      <Phone className="h-5 w-5" />
-                      <span className="sm:hidden">Call</span>
-                    </a>
-                    <a
-                      href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(
-                        `Hi The Shivara Group, I am interested in ${property.title}. Please share details.`,
-                      )}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#10B981] text-xs font-black text-white sm:w-12"
-                      aria-label="WhatsApp"
-                    >
-                      <MessageCircle className="h-5 w-5" />
-                      <span className="sm:hidden">WhatsApp</span>
-                    </a>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedProperty(property)}
-                      className="col-span-2 flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#D4AF37]/45 bg-[#FFF9E8] px-4 text-xs font-black uppercase tracking-[0.12em] text-[#081120] transition hover:bg-[#D4AF37]"
-                    >
-                      <CalendarDays className="h-4 w-4" />
-                      Book Site Visit
-                    </button>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredAndSortedProperties.map((property) => (
+            <PropertyCard
+              key={property.id}
+              property={property}
+              onBookSiteVisit={(prop) => setSelectedPropertyForModal(prop)}
+            />
+          ))}
         </div>
       )}
 
-      {selectedProperty && (
+      {/* Book Site Visit Modal */}
+      {selectedPropertyForModal && (
         <ClientEnquiryModal
-          property={selectedProperty}
-          onClose={() => setSelectedProperty(null)}
+          property={selectedPropertyForModal}
+          onClose={() => setSelectedPropertyForModal(null)}
         />
       )}
-    </div>
-  );
-}
-
-function Fact({ icon, value }: { icon: React.ReactNode; value: string }) {
-  return (
-    <div className="min-w-0 rounded-2xl bg-[#F8F5EE] p-3 text-center">
-      <div className="mx-auto mb-1 flex h-7 w-7 items-center justify-center rounded-full bg-white text-[#9B7A19]">
-        {icon}
-      </div>
-      <p className="truncate text-[11px] font-black uppercase tracking-[0.08em] text-[#4B5563]">
-        {value}
-      </p>
     </div>
   );
 }

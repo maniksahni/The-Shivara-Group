@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowDown,
@@ -5,485 +6,431 @@ import {
   BadgeCheck,
   CalendarDays,
   CheckCircle2,
-  Heart,
+  Compass,
   Home,
   MapPin,
   MessageCircle,
   Phone,
-  Search,
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-import {
-  Eyebrow,
-  GoldDivider,
-  LuxuryButton,
-  SectionHeader,
-  SectionShell,
-} from "@/components/website/LuxurySection";
 import DirectEnquiryForm from "@/components/website/DirectEnquiryForm";
-import FloatingEnquiryCard from "@/components/website/FloatingEnquiryCard";
+import HomepageSearchModule from "@/components/website/HomepageSearchModule";
+import PropertyCard from "@/components/website/PropertyCard";
+import TrustSection from "@/components/website/TrustSection";
 import AutoScrollRail from "@/components/website/AutoScrollRail";
 import {
+  bareillyGuide,
   categoryShowcase,
   fallbackProperties,
   faqs,
-  bareillyGuide,
   processSteps,
   publicStats,
-  searchSuggestions,
   services,
   siteConfig,
   trustHighlights,
 } from "@/components/website/site-data";
 
-const heroImage =
-  "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80";
-const villaImage =
-  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1400&q=80";
+const heroVisualImage =
+  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85";
+
 export default function HomePage() {
-  const faqJsonLd = {
+  const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.slice(0, 6).map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.answer,
+    "@graph": [
+      {
+        "@type": "RealEstateAgent",
+        "@id": "https://shivara.site/#organization",
+        name: siteConfig.name,
+        alternateName: siteConfig.shortName,
+        url: "https://shivara.site",
+        logo: "https://shivara.site/favicon.ico",
+        description: siteConfig.description,
+        telephone: siteConfig.phone,
+        areaServed: [
+          {
+            "@type": "AdministrativeArea",
+            name: "Bareilly",
+          },
+          {
+            "@type": "AdministrativeArea",
+            name: "Delhi NCR",
+          },
+        ],
+        address: {
+          "@type": "PostalAddress",
+          addressLocality: "Bareilly",
+          addressRegion: "Uttar Pradesh",
+          addressCountry: "IN",
+        },
+        sameAs: [siteConfig.instagram, siteConfig.founderInstagram],
       },
-    })),
+      {
+        "@type": "WebSite",
+        "@id": "https://shivara.site/#website",
+        url: "https://shivara.site",
+        name: siteConfig.name,
+        potentialAction: {
+          "@type": "SearchAction",
+          target: "https://shivara.site/properties?q={search_term_string}",
+          "query-input": "required name=search_term_string",
+        },
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.answer,
+          },
+        })),
+      },
+    ],
   };
 
+  const featuredProperties = fallbackProperties.slice(0, 3);
+
   return (
-    <main className="bg-[#F8F5EE]">
+    <main className="min-h-screen bg-[#F8F5EE] text-[#081120]">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <section className="relative overflow-hidden bg-[#081120] px-4 pb-5 pt-[4.75rem] text-white sm:min-h-[100svh] sm:px-8 sm:pb-12 sm:pt-28 lg:px-12">
-        <div
-          className="absolute inset-0 opacity-50"
-          style={{
-            backgroundImage: `linear-gradient(180deg, rgba(8,17,32,0.72), rgba(8,17,32,0.76) 38%, rgba(8,17,32,0.94)), linear-gradient(90deg, rgba(8,17,32,0.96), rgba(8,17,32,0.70), rgba(8,17,32,0.34)), url(${heroImage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_16%_16%,rgba(245,214,123,0.22),transparent_32%),radial-gradient(circle_at_86%_20%,rgba(16,185,129,0.18),transparent_30%),linear-gradient(180deg,transparent_0%,rgba(8,17,32,0.55)_82%,#081120_100%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#081120] to-transparent sm:h-40" />
 
-        <div className="relative mx-auto grid w-full max-w-7xl min-w-0 items-center gap-5 sm:min-h-[calc(100svh-8rem)] sm:gap-8 lg:grid-cols-[1.08fr_0.92fr]">
-          <div className="w-full min-w-0 max-w-3xl animate-hero-rise">
-            <div className="mb-3 inline-flex max-w-full items-center gap-2 rounded-full border border-[#D4AF37]/24 bg-white/[0.075] px-3 py-2 text-[10px] font-black uppercase tracking-[0.16em] text-[#F5D67B] shadow-[0_18px_60px_rgba(0,0,0,0.16)] backdrop-blur-xl sm:mb-5 sm:px-4 sm:text-xs sm:tracking-[0.26em]">
-              <Sparkles className="h-3.5 w-3.5 shrink-0" />
-              <span className="truncate">Premium real estate in Bareilly</span>
+      {/* ============================================================ */}
+      {/* 1. EDITORIAL LUXURY HERO SECTION */}
+      {/* ============================================================ */}
+      <section className="relative min-h-[92vh] overflow-hidden bg-[#081120] px-4 pb-14 pt-[5.6rem] text-white sm:min-h-[100svh] sm:px-8 sm:pb-20 sm:pt-32 lg:px-12 lg:pt-36">
+        {/* Full-width High-end Background Image with Elegant Treatment */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src={heroVisualImage}
+            alt="Shivara Luxury Real Estate"
+            fill
+            priority
+            className="object-cover object-center brightness-[0.42] contrast-[1.05]"
+            sizes="100vw"
+          />
+          {/* Subtle editorial vignetting and contrast layers — no flashy gradient artifacts */}
+          <div className="absolute inset-0 bg-gradient-to-t from-[#081120] via-[#081120]/40 to-[#081120]/75" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#081120]/90 via-[#081120]/50 to-transparent" />
+        </div>
+
+        <div className="relative z-10 mx-auto flex min-h-[calc(88vh-5rem)] w-full max-w-7xl flex-col justify-between sm:min-h-[calc(100svh-10rem)]">
+          <div className="max-w-3xl pt-2 sm:pt-6">
+            {/* Editorial Location & Trust Indicator */}
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-black/40 px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.24em] text-[#F5D67B] backdrop-blur-md sm:text-xs sm:tracking-[0.3em]">
+              <Sparkles className="h-3 w-3 text-[#D4AF37]" />
+              <span>Bareilly &bull; Delhi NCR Advisory</span>
             </div>
-            <Eyebrow dark>{siteConfig.tagline}</Eyebrow>
-            <h1 className="max-w-[13.4ch] text-balance font-[family-name:var(--font-playfair)] text-[clamp(2.22rem,10vw,3.25rem)] font-semibold leading-[0.94] tracking-[-0.055em] sm:max-w-none sm:text-[clamp(4.6rem,8vw,7.8rem)] sm:leading-[0.92] sm:tracking-[-0.075em]">
-              Find Your Perfect Property With Bareilly&apos;s Trusted Real Estate Experts.
+
+            {/* Exact Required Headline */}
+            <h1 className="mt-5 font-[family-name:var(--font-playfair)] text-[clamp(2.4rem,7vw,5.5rem)] font-semibold leading-[1.02] tracking-[-0.035em] text-white sm:mt-7">
+              Exceptional Properties.
+              <br />
+              <span className="italic font-normal text-white/90">Thoughtfully Chosen.</span>
             </h1>
-            <p className="mt-2.5 max-w-[31rem] text-[14px] leading-[1.65] text-white/76 sm:mt-7 sm:max-w-2xl sm:text-xl sm:leading-8">
-              Discover verified residential, commercial, and investment properties with expert
-              guidance, site visits, pricing clarity, and complete documentation assistance.
+
+            {/* Exact Required Supporting Text */}
+            <p className="mt-5 max-w-xl text-base leading-relaxed text-white/80 sm:mt-7 sm:text-xl sm:leading-8">
+              Premium homes, villas, plots and investment opportunities across Bareilly and Delhi NCR.
             </p>
 
-            <div className="mt-3 flex flex-wrap gap-1.5 sm:mt-6 sm:gap-2">
-              {["Verified properties", "Site visit support", "Documentation help"].map((item) => (
-                <span
-                  key={item}
-                  className="inline-flex min-h-8 items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.065] px-2.5 text-[10.5px] font-bold text-white/78 backdrop-blur sm:min-h-9 sm:px-3 sm:text-[11px]"
-                >
-                  <CheckCircle2 className="h-3.5 w-3.5 text-[#10B981]" />
-                  {item}
-                </span>
-              ))}
+            {/* Trust Anchors */}
+            <div className="mt-6 flex flex-wrap items-center gap-3 text-xs font-semibold text-white/75 sm:gap-4 sm:text-sm">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-[#D4AF37]" />
+                Verified Properties
+              </span>
+              <span className="h-3 w-[1px] bg-white/20" />
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-[#D4AF37]" />
+                Escorted Site Visits
+              </span>
+              <span className="h-3 w-[1px] bg-white/20" />
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 className="h-4 w-4 text-[#D4AF37]" />
+                Transparent Pricing
+              </span>
             </div>
 
-            <div className="mt-3.5 grid w-full max-w-[28rem] grid-cols-2 gap-2 sm:mt-9 sm:flex sm:max-w-none sm:flex-row sm:gap-3">
-              <LuxuryButton href="/properties" className="col-span-2 w-full sm:w-auto">Explore Properties</LuxuryButton>
-              <LuxuryButton href="/#send-enquiry" variant="outline" className="w-full px-3 text-[10px] tracking-[0.06em] sm:w-auto sm:px-6 sm:text-sm sm:tracking-[0.16em]">
-                Free Consultation
-              </LuxuryButton>
+            {/* CTA Group with Required CTAs + Visible WhatsApp */}
+            <div className="mt-8 flex flex-wrap items-center gap-3 sm:mt-10 sm:gap-4">
+              <Link
+                href="/properties"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-7 text-xs font-black uppercase tracking-[0.14em] text-[#081120] shadow-lg transition-all duration-300 hover:bg-[#F5D67B] active:scale-[0.98] sm:min-h-13 sm:text-sm"
+              >
+                <span>Explore Properties</span>
+                <ArrowUpRight className="h-4 w-4" />
+              </Link>
+
+              <Link
+                href="/#send-enquiry"
+                className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/25 bg-black/30 px-6 text-xs font-bold uppercase tracking-[0.12em] text-white backdrop-blur-sm transition-all duration-300 hover:border-white hover:bg-white/10 sm:min-h-13 sm:text-sm"
+              >
+                Private Consultation
+              </Link>
+
               <a
                 href={siteConfig.whatsappHref}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex min-h-12 max-w-full items-center justify-center gap-2 rounded-full bg-[#10B981] px-3 text-center text-[11px] font-black uppercase tracking-[0.08em] text-white shadow-[0_18px_45px_rgba(16,185,129,0.24)] transition-all duration-300 hover:-translate-y-0.5 sm:px-6 sm:text-sm sm:tracking-[0.16em]"
+                className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#10B981] px-5 text-xs font-black uppercase tracking-[0.12em] text-white shadow-lg transition-all duration-300 hover:bg-[#0ea5e9] sm:min-h-13 sm:text-sm"
+                aria-label="Direct WhatsApp Consultation"
               >
                 <MessageCircle className="h-4 w-4" />
-                WhatsApp
+                <span>WhatsApp</span>
               </a>
             </div>
+          </div>
 
-            <div className="mt-4 hidden w-full max-w-[28rem] overflow-hidden rounded-[1.35rem] border border-white/12 bg-white/[0.075] p-2 shadow-[0_24px_70px_rgba(0,0,0,0.24)] backdrop-blur-xl sm:mt-8 sm:block sm:max-w-2xl sm:rounded-[1.75rem] sm:p-3">
-              <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+          {/* Homepage Search Module */}
+          <div className="mt-10 sm:mt-12">
+            <HomepageSearchModule />
+          </div>
+        </div>
+
+        {/* Scroll down indicator */}
+        <div className="absolute bottom-3 left-1/2 hidden -translate-x-1/2 items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.2em] text-white/50 md:flex">
+          <span>Scroll</span>
+          <ArrowDown className="h-3 w-3 animate-bounce" />
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* KEY STATS & HIGHLIGHTS RAIL */}
+      {/* ============================================================ */}
+      <section className="border-b border-[#081120]/10 bg-white py-6 shadow-sm">
+        <div className="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6">
+            {publicStats.map((stat) => (
+              <div key={stat.label} className="border-l-2 border-[#D4AF37] pl-3 sm:pl-4">
+                <p className="font-[family-name:var(--font-playfair)] text-2xl font-semibold text-[#081120] sm:text-3xl">
+                  {stat.value}
+                </p>
+                <p className="mt-0.5 text-xs font-bold text-[#4B5563]">
+                  {stat.label}
+                </p>
+                <p className="text-[10px] text-[#9CA3AF]">
+                  {stat.note}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 2. FEATURED PROPERTIES SHORTLIST */}
+      {/* ============================================================ */}
+      <section id="curated" className="py-14 sm:py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+          <div className="flex flex-col justify-between gap-4 border-b border-[#081120]/10 pb-6 sm:flex-row sm:items-end">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.24em] text-[#9B7A19]">
+                Curated Collection
+              </p>
+              <h2 className="mt-2 font-[family-name:var(--font-playfair)] text-3xl font-semibold tracking-[-0.02em] text-[#081120] sm:text-4xl lg:text-5xl">
+                Featured Properties
+              </h2>
+              <p className="mt-2 max-w-xl text-xs leading-5 text-[#6B7280] sm:text-sm sm:leading-6">
+                Handpicked villas, residences, and development plots across Bareilly and Delhi NCR.
+                Confirmed with owners and developers for site visit readiness.
+              </p>
+            </div>
+            <Link
+              href="/properties"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#081120]/20 bg-white px-5 text-xs font-black uppercase tracking-[0.14em] text-[#081120] transition hover:border-[#081120] hover:bg-[#081120] hover:text-white"
+            >
+              <span>View All Properties</span>
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          </div>
+
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:mt-10">
+            {featuredProperties.map((property) => (
+              <PropertyCard key={property.id} property={property} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* 5. TRUST / CREDIBILITY SYSTEM ("Why Shivara" & Process) */}
+      {/* ============================================================ */}
+      <TrustSection />
+
+      {/* ============================================================ */}
+      {/* PROPERTY UNIVERSE / CATEGORIES */}
+      {/* ============================================================ */}
+      <section className="py-16 sm:py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+          <div className="text-center">
+            <p className="text-xs font-black uppercase tracking-[0.24em] text-[#9B7A19]">
+              Portfolio Structure
+            </p>
+            <h2 className="mt-2 font-[family-name:var(--font-playfair)] text-3xl font-semibold tracking-[-0.02em] text-[#081120] sm:text-4xl lg:text-5xl">
+              Explore by Asset Category
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-xs leading-6 text-[#6B7280] sm:text-sm">
+              Discover residential and commercial assets suited to family living or long-term capital preservation.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4 sm:mt-12">
+            {categoryShowcase.map((category) => (
+              <Link
+                key={category.title}
+                href={category.href}
+                className="group relative flex min-h-[360px] flex-col justify-end overflow-hidden rounded-[1.8rem] bg-[#081120] p-6 text-white shadow-lg transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl"
+              >
+                <Image
+                  src={category.image}
+                  alt={category.title}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  className="object-cover opacity-70 transition-transform duration-700 ease-out group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#081120] via-[#081120]/45 to-transparent" />
+
+                <div className="relative z-10">
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-[#F5D67B]">
+                    Portfolio
+                  </span>
+                  <h3 className="mt-1 font-[family-name:var(--font-playfair)] text-2xl font-semibold leading-tight">
+                    {category.title}
+                  </h3>
+                  <p className="mt-2 text-xs leading-5 text-white/70">
+                    {category.description}
+                  </p>
+                  <span className="mt-4 inline-flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#081120] transition group-hover:bg-[#D4AF37]">
+                    <ArrowUpRight className="h-4 w-4" />
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============================================================ */}
+      {/* BAREILLY & NCR LOCATION INTELLIGENCE */}
+      {/* ============================================================ */}
+      <section className="bg-[#081120] py-16 text-white sm:py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.24em] text-[#D4AF37]">
+                Micro-Market Intelligence
+              </p>
+              <h2 className="mt-3 font-[family-name:var(--font-playfair)] text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">
+                Bareilly & NCR Growth Corridors.
+              </h2>
+              <p className="mt-4 text-xs leading-6 text-white/70 sm:text-sm sm:leading-7">
+                Every property recommendation is informed by micro-market fundamentals: road connectivity,
+                upcoming civil infrastructure, civic development approvals, and verified capital appreciation trends.
+              </p>
+              <div className="mt-6">
                 <Link
                   href="/properties"
-                  className="flex min-h-13 min-w-0 flex-1 items-center gap-3 rounded-2xl bg-white px-4 text-[#081120] active:scale-[0.99] sm:min-h-14"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#D4AF37] px-6 text-xs font-black uppercase tracking-[0.14em] text-[#081120] transition hover:bg-[#F5D67B]"
                 >
-                  <Search className="h-5 w-5 shrink-0 text-[#9B7A19]" />
-                  <span className="min-w-0 truncate text-sm font-bold text-[#4B5563]">
-                    Search location, villa, plot...
-                  </span>
+                  Explore Corridors
                 </Link>
-                <Link
-                  href="/#send-enquiry"
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl bg-[#D4AF37] px-5 text-xs font-black uppercase tracking-[0.12em] text-[#081120] transition hover:bg-[#F5D67B] sm:min-h-14 sm:text-sm sm:tracking-[0.14em]"
-                >
-                  Send Enquiry
-                  <ArrowUpRight className="h-4 w-4" />
-                </Link>
-              </div>
-              <div className="premium-scrollbar mt-2 flex gap-2 overflow-x-auto pb-1 sm:mt-3">
-                {searchSuggestions.map((item) => (
-                  <Link
-                    key={item}
-                    href={`/properties?q=${encodeURIComponent(item)}`}
-                    className="shrink-0 rounded-full border border-white/10 bg-white/[0.035] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.11em] text-white/70 transition hover:border-[#D4AF37]/60 hover:text-[#F5D67B] sm:text-[11px] sm:tracking-[0.12em]"
-                  >
-                    {item}
-                  </Link>
-                ))}
               </div>
             </div>
 
-            <div className="premium-scrollbar mt-3 hidden snap-x gap-2 overflow-x-auto pb-1 sm:mt-10 sm:grid sm:grid-cols-4 sm:gap-3 sm:overflow-visible sm:pb-0">
-              {publicStats.map((stat) => (
+            <div className="grid gap-4 sm:grid-cols-2">
+              {bareillyGuide.map((zone) => (
                 <div
-                  key={stat.label}
-                  className="touch-lift min-w-[7.65rem] snap-start rounded-2xl border border-white/10 bg-white/[0.055] p-3 backdrop-blur sm:min-w-0 sm:rounded-3xl sm:p-4"
+                  key={zone.zone}
+                  className="rounded-[1.6rem] border border-white/10 bg-white/[0.04] p-5 backdrop-blur transition hover:border-[#D4AF37]/40"
                 >
-                  <p className="font-[family-name:var(--font-playfair)] text-[1.55rem] font-semibold leading-none text-[#F5D67B] sm:text-3xl">
-                    {stat.value}
-                  </p>
-                  <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white/72 sm:text-xs sm:tracking-[0.14em]">
-                    {stat.label}
+                  <div className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4 text-[#D4AF37]" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.18em] text-[#F5D67B]">
+                      {zone.signal}
+                    </span>
+                  </div>
+                  <h3 className="mt-3 text-lg font-bold text-white">
+                    {zone.zone}
+                  </h3>
+                  <p className="mt-2 text-xs leading-5 text-white/60">
+                    {zone.insight}
                   </p>
                 </div>
               ))}
             </div>
           </div>
-
-          <div className="relative hidden animate-hero-rise lg:block" style={{ animationDelay: "120ms" }}>
-            <div className="absolute -left-16 top-8 z-10 w-[420px]">
-              <FloatingEnquiryCard />
-            </div>
-
-            <div className="ml-auto h-[640px] max-w-[520px] rounded-[3rem] border border-white/12 bg-cover bg-center shadow-[0_40px_120px_rgba(0,0,0,0.42)]"
-              style={{ backgroundImage: `url(${villaImage})` }}
-            />
-            <div className="absolute -bottom-8 right-12 w-80 rounded-[2rem] border border-[#D4AF37]/28 bg-[#081120]/88 p-5 shadow-2xl backdrop-blur-xl">
-              <div className="flex items-center justify-between">
-                <p className="text-sm font-black uppercase tracking-[0.22em] text-[#F5D67B]">
-                  Featured
-                </p>
-                <Heart className="h-5 w-5 text-[#F5D67B]" />
-              </div>
-              <h3 className="mt-4 font-[family-name:var(--font-playfair)] text-2xl font-semibold">
-                Premium Bareilly Shortlist
-              </h3>
-              <p className="mt-2 flex items-center gap-2 text-sm text-white/62">
-                <MapPin className="h-4 w-4 text-[#D4AF37]" />
-                Homes • plots • commercial • investment
-              </p>
-            </div>
-          </div>
         </div>
-
-        <a
-          href="#curated"
-          className="absolute bottom-7 left-1/2 hidden -translate-x-1/2 items-center gap-2 text-xs font-black uppercase tracking-[0.22em] text-white/58 transition hover:text-white md:flex"
-        >
-          Scroll
-          <ArrowDown className="h-4 w-4 animate-bounce" />
-        </a>
       </section>
 
-      <GoldDivider />
-
-      <SectionShell className="bg-[#081120] py-2 text-white sm:py-6">
-        <AutoScrollRail
-          ariaLabel="Shivara service highlights"
-          className="premium-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-3 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-6"
-        >
-          {trustHighlights.map((item) => (
-            <div
-              key={item}
-              className="touch-lift flex min-w-[72vw] shrink-0 items-center gap-2 rounded-2xl border border-white/8 bg-white/[0.045] px-3 py-2.5 sm:min-w-0 sm:gap-3 sm:p-4"
-            >
-              <BadgeCheck className="h-4 w-4 shrink-0 text-[#D4AF37] sm:h-5 sm:w-5" />
-              <span className="text-xs font-semibold text-white/74 sm:text-sm">{item}</span>
-            </div>
-          ))}
-        </AutoScrollRail>
-      </SectionShell>
-
-      <SectionShell className="bg-[#F8F5EE] py-3 sm:py-10">
-        <DirectEnquiryForm />
-      </SectionShell>
-
-      <SectionShell id="curated" className="pt-4 sm:pt-12">
-        <SectionHeader
-          eyebrow="Featured properties"
-          title="A focused shortlist, ready to explore."
-          description="Start with selected homes and projects, then confirm pricing, availability, and site visits directly with our team."
-        />
-
-        <AutoScrollRail
-          ariaLabel="Featured properties"
-          className="premium-scrollbar flex snap-x gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-2 md:overflow-visible md:pb-0 xl:grid-cols-3"
-        >
-          {fallbackProperties.slice(0, 3).map((property, index) => (
-            <article
-              key={property.id}
-              className="touch-lift group w-[86vw] shrink-0 snap-center overflow-hidden rounded-[1.6rem] border border-[#081120]/8 bg-white shadow-[0_24px_70px_rgba(8,17,32,0.08)] transition duration-500 hover:shadow-[0_32px_90px_rgba(8,17,32,0.16)] sm:w-[420px] sm:rounded-[2rem] md:w-auto"
-            >
-              <Link href={`/properties/${property.id}`} className="block">
-                <div
-                  className="relative h-56 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.03] sm:h-72"
-                  style={{
-                    backgroundImage: `linear-gradient(180deg,rgba(8,17,32,0.04),rgba(8,17,32,0.62)), url(${
-                      index === 1 ? villaImage : heroImage
-                    })`,
-                  }}
-                >
-                  <div className="absolute left-4 top-4 rounded-full bg-white px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-[#081120]">
-                    {property.type.replace("_", " ")}
-                  </div>
-                  {property.isFeatured && (
-                    <div className="absolute right-4 top-4 rounded-full bg-[#D4AF37] px-3 py-1 text-[11px] font-black uppercase tracking-[0.14em] text-[#081120]">
-                      Featured
-                    </div>
-                  )}
-                  <div className="absolute bottom-4 left-4 right-4 text-white">
-                    <p className="text-sm font-black uppercase tracking-[0.2em] text-[#F5D67B]">
-                      {property.price}
-                    </p>
-                    <h3 className="mt-1.5 font-[family-name:var(--font-playfair)] text-2xl font-semibold sm:mt-2 sm:text-3xl">
-                      {property.title}
-                    </h3>
-                  </div>
-                </div>
-              </Link>
-              <div className="p-4 sm:p-6">
-                <p className="flex items-center gap-2 text-sm font-semibold text-[#4B5563]">
-                  <MapPin className="h-4 w-4 text-[#D4AF37]" />
-                  {property.location}
-                </p>
-                <div className="mt-3 flex items-center gap-2 text-xs font-black uppercase tracking-[0.14em] text-[#10B981]">
-                  <BadgeCheck className="h-4 w-4" />
-                  Visit-ready enquiry
-                </div>
-                <div className="mt-4 flex flex-wrap gap-2 sm:mt-5">
-                  {property.amenities.slice(0, 3).map((amenity) => (
-                    <span
-                      key={amenity}
-                      className="rounded-full bg-[#F8F5EE] px-3 py-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#4B5563]"
-                    >
-                      {amenity}
-                    </span>
-                  ))}
-                </div>
-                <div className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-[1fr_auto_auto]">
-                  <Link
-                    href={`/properties/${property.id}`}
-                    className="col-span-2 inline-flex min-h-11 items-center justify-center rounded-full bg-[#081120] px-4 text-xs font-black uppercase tracking-[0.12em] text-white transition hover:bg-[#D4AF37] hover:text-[#081120] sm:col-span-1"
-                  >
-                    View Details
-                  </Link>
-                  <a
-                    href={siteConfig.phoneHref}
-                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-[#F8F5EE] text-xs font-black text-[#081120] sm:w-11"
-                    aria-label={`Call for ${property.title}`}
-                  >
-                    <Phone className="h-4 w-4" />
-                    <span className="sm:hidden">Call</span>
-                  </a>
-                  <a
-                    href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(
-                      `Hi The Shivara Group, I am interested in ${property.title}. Please share details.`,
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-[#10B981] text-xs font-black text-white sm:w-11"
-                    aria-label={`WhatsApp for ${property.title}`}
-                  >
-                    <MessageCircle className="h-4 w-4" />
-                    <span className="sm:hidden">WhatsApp</span>
-                  </a>
-                </div>
-              </div>
-            </article>
-          ))}
-        </AutoScrollRail>
-      </SectionShell>
-
-      <SectionShell className="bg-white">
-        <SectionHeader
-          eyebrow="Property universe"
-          title="Browse like a premium buyer, not a spreadsheet."
-          description="A flagship real estate experience should make categories feel visual, focused, and easy to act on from mobile."
-          align="center"
-        />
-        <AutoScrollRail
-          ariaLabel="Property categories"
-          className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:gap-5 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-4"
-        >
-          {categoryShowcase.map((category) => (
-            <Link
-              key={category.title}
-              href={category.href}
-              className="touch-lift group relative min-h-[300px] w-[82vw] max-w-[340px] shrink-0 snap-center overflow-hidden rounded-[1.6rem] bg-[#081120] shadow-[0_24px_70px_rgba(8,17,32,0.12)] sm:min-h-[380px] sm:rounded-[2.2rem] md:w-auto md:max-w-none xl:min-h-[420px]"
-            >
-              <div
-                className="absolute inset-0 bg-cover bg-center transition duration-700 group-hover:scale-110"
-                style={{
-                  backgroundImage: `linear-gradient(180deg,rgba(8,17,32,0.08),rgba(8,17,32,0.86)),url(${category.image})`,
-                }}
-              />
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(212,175,55,0.24),transparent_34%)]" />
-              <div className="relative flex h-full min-h-[300px] flex-col justify-end p-4 text-white sm:min-h-[380px] sm:p-6 xl:min-h-[420px]">
-                <p className="mb-3 text-[11px] font-black uppercase tracking-[0.22em] text-[#F5D67B]">
-                  Explore
-                </p>
-                <h3 className="font-[family-name:var(--font-playfair)] text-3xl font-semibold tracking-[-0.03em]">
-                  {category.title}
-                </h3>
-                <p className="mt-2 text-sm leading-6 text-white/66 sm:mt-3 sm:leading-7">{category.description}</p>
-                <span className="mt-4 inline-flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#081120] transition group-hover:bg-[#D4AF37] sm:mt-6 sm:h-11 sm:w-11">
-                  <ArrowUpRight className="h-5 w-5" />
-                </span>
-              </div>
-            </Link>
-          ))}
-        </AutoScrollRail>
-      </SectionShell>
-
-      <SectionShell className="bg-[#081120] text-white">
-        <div className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
-          <SectionHeader
-            eyebrow="Bareilly Property Guide"
-            title="Explore Bareilly’s most promising property locations."
-            description="The Shivara experience positions every enquiry around location fit, lifestyle, investment intent, and site-visit readiness."
-            dark
-          />
-          <AutoScrollRail
-            ariaLabel="Bareilly property locations"
-            className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0 md:pb-0"
-          >
-            {bareillyGuide.slice(0, 4).map((item) => (
-              <div
-                key={item.zone}
-                className="touch-lift w-[82vw] max-w-[340px] shrink-0 snap-center rounded-[1.5rem] border border-white/10 bg-white/[0.055] p-4 shadow-[0_20px_70px_rgba(0,0,0,0.18)] sm:rounded-[2rem] sm:p-5 md:w-auto md:max-w-none"
-              >
-                <MapPin className="h-5 w-5 text-[#D4AF37]" />
-                <p className="mt-4 text-[11px] font-black uppercase tracking-[0.2em] text-[#F5D67B]">
-                  {item.signal}
-                </p>
-                <h3 className="mt-2 text-xl font-black">{item.zone}</h3>
-                <p className="mt-3 text-sm leading-7 text-white/62">{item.insight}</p>
-              </div>
-            ))}
-          </AutoScrollRail>
+      {/* ============================================================ */}
+      {/* 8. LEAD GENERATION SECTION */}
+      {/* ============================================================ */}
+      <section className="py-14 sm:py-20 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+          <DirectEnquiryForm />
         </div>
-      </SectionShell>
+      </section>
 
-      <SectionShell className="bg-white">
-          <SectionHeader
-            eyebrow="Premium services"
-            title="Built for high-intent buyers, investors, and families."
-          description="Every service is designed around a real outcome: shortlist faster, visit confidently, and move forward with verified information."
-          align="center"
-        />
-        <AutoScrollRail
-          ariaLabel="Real estate services"
-          className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 md:mx-0 md:grid md:grid-cols-2 md:gap-4 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-3"
-        >
-          {services.slice(0, 3).map((service, index) => (
-            <div
-              key={service.title}
-              className="touch-lift group w-[82vw] max-w-[340px] shrink-0 snap-center rounded-[1.6rem] border border-[#081120]/8 bg-[#F8F5EE] p-4 transition duration-300 hover:bg-[#081120] hover:text-white sm:rounded-[2rem] sm:p-6 md:w-auto md:max-w-none"
-            >
-              <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-[#D4AF37] text-[#081120] sm:mb-8 sm:h-12 sm:w-12">
-                {index % 3 === 0 ? (
-                  <Home className="h-5 w-5" />
-                ) : index % 3 === 1 ? (
-                  <CalendarDays className="h-5 w-5" />
-                ) : (
-                  <ShieldCheck className="h-5 w-5" />
-                )}
-              </div>
-              <h3 className="font-[family-name:var(--font-playfair)] text-2xl font-semibold">
-                {service.title}
-              </h3>
-              <p className="mt-2 text-sm leading-6 text-[#4B5563] transition group-hover:text-white/68 sm:mt-3 sm:min-h-24 sm:leading-7">
-                {service.description}
+      {/* ============================================================ */}
+      {/* FAQ SECTION */}
+      {/* ============================================================ */}
+      <section className="border-t border-[#081120]/10 bg-white py-14 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-12">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.24em] text-[#9B7A19]">
+                Questions & Answers
               </p>
-              <Link
-                href="/contact"
-                className="mt-4 inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.18em] text-[#9B7A19] transition group-hover:text-[#F5D67B] sm:mt-5"
-              >
-                {service.cta}
-                <Sparkles className="h-4 w-4" />
-              </Link>
-            </div>
-          ))}
-        </AutoScrollRail>
-      </SectionShell>
-
-      <SectionShell className="bg-[#081120] text-white">
-        <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-10">
-          <SectionHeader
-            eyebrow="Property journey"
-            title="From requirement to site visit, without confusion."
-            description="A simple process designed to keep property discovery focused and easy to follow."
-            dark
-          />
-          <AutoScrollRail
-            ariaLabel="Property journey steps"
-            className="premium-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0"
-          >
-            {processSteps.slice(0, 4).map((step) => (
-              <div
-                key={step.step}
-                className="w-[78vw] max-w-[320px] shrink-0 snap-center rounded-[1.4rem] border border-white/10 bg-white/[0.045] p-4 sm:w-auto sm:max-w-none sm:rounded-[1.7rem] sm:p-5"
-              >
-                <div className="font-[family-name:var(--font-playfair)] text-3xl font-semibold text-[#D4AF37]">
-                  {step.step}
-                </div>
-                <h3 className="mt-3 text-lg font-bold">{step.title}</h3>
-                <p className="mt-1.5 text-sm leading-6 text-white/62">{step.text}</p>
+              <h2 className="mt-3 font-[family-name:var(--font-playfair)] text-3xl font-semibold leading-tight text-[#081120] sm:text-4xl">
+                Frequently Asked Questions.
+              </h2>
+              <p className="mt-4 text-xs leading-6 text-[#6B7280] sm:text-sm sm:leading-7">
+                Everything you need to know about our advisory process, property verification standards,
+                pricing transparency, and site visits.
+              </p>
+              <div className="mt-6 flex flex-col gap-3">
+                <a
+                  href={siteConfig.phoneHref}
+                  className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[#081120] hover:text-[#9B7A19]"
+                >
+                  <Phone className="h-4 w-4 text-[#9B7A19]" />
+                  <span>Call Advisory Desk: {siteConfig.phone}</span>
+                </a>
+                <a
+                  href={siteConfig.whatsappHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-11 items-center gap-2 text-sm font-bold text-[#10B981] hover:text-emerald-700"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  <span>Chat on WhatsApp (+91 7060788407)</span>
+                </a>
               </div>
-            ))}
-          </AutoScrollRail>
-        </div>
-      </SectionShell>
+            </div>
 
-      <SectionShell className="bg-white pb-28 md:pb-20">
-        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-10">
-          <SectionHeader
-            eyebrow="FAQ"
-            title="Clear answers before you call."
-            description="A polished brand also tells buyers what is verified, what is pending, and what needs direct confirmation."
-          />
-          <div className="space-y-3">
-            {faqs.slice(0, 5).map((faq) => (
-              <details
-                key={faq.question}
-                className="group rounded-2xl border border-[#081120]/8 bg-[#F8F5EE] p-4 open:bg-[#081120] open:text-white sm:rounded-3xl sm:p-5"
-              >
-                <summary className="cursor-pointer list-none text-base font-bold sm:text-lg">
-                  {faq.question}
-                </summary>
-                <p className="mt-3 text-sm leading-6 text-[#4B5563] group-open:text-white/68 sm:mt-4 sm:leading-7">
-                  {faq.answer}
-                </p>
-              </details>
-            ))}
+            <div className="space-y-3">
+              {faqs.map((faq) => (
+                <details
+                  key={faq.question}
+                  className="group rounded-2xl border border-[#081120]/10 bg-[#F8F5EE] p-5 transition-all open:border-[#D4AF37]/50 open:bg-[#081120] open:text-white"
+                >
+                  <summary className="cursor-pointer list-none text-sm font-bold sm:text-base">
+                    {faq.question}
+                  </summary>
+                  <p className="mt-3 text-xs leading-6 text-[#4B5563] group-open:text-white/75 sm:text-sm">
+                    {faq.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
           </div>
         </div>
-      </SectionShell>
+      </section>
     </main>
   );
 }

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MessageCircle, Phone, Sparkles } from "lucide-react";
+import { CalendarDays, MessageCircle, Phone } from "lucide-react";
 import Footer from "@/components/website/Footer";
 import FloatingEnquiryCTA from "@/components/website/FloatingEnquiryCTA";
 import Navbar from "@/components/website/Navbar";
@@ -8,92 +8,129 @@ import { siteConfig } from "@/components/website/site-data";
 import { ToastProvider } from "@/components/ui/toast";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://shivara.site"),
   title: {
-    default: "The Shivara Group | Premium Real Estate in Bareilly",
+    default: "Shivara | Exceptional Properties. Thoughtfully Chosen.",
     template: "%s | The Shivara Group",
   },
-  description:
-    siteConfig.description,
+  description: siteConfig.description,
   keywords: [
     "The Shivara Group",
-    "premium real estate Bareilly",
-    "property in Bareilly",
+    "Shivara real estate",
+    "luxury properties Bareilly",
+    "villas in Bareilly",
+    "kothi in Rajendra Nagar",
     "Aurika Bareilly",
-    "Rajendar Nagar 3BHK",
-    "Godrej Golf Links",
-    "Delhi NCR real estate portfolio",
-    "off-market real estate",
+    "Pilibhit Road Bareilly property",
+    "Delhi NCR luxury real estate",
+    "Godrej Golf Links Greater Noida",
+    "Yamuna Expressway serviced apartments",
+    "verified property Bareilly",
     "site visit Bareilly",
   ],
   openGraph: {
-    title: "The Shivara Group | Premium Real Estate in Bareilly",
+    title: "Shivara | Premium Real Estate Advisory",
     description: siteConfig.description,
     siteName: "The Shivara Group",
     locale: "en_IN",
     type: "website",
-    url: "/",
+    url: "https://shivara.site",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Shivara | Exceptional Properties. Thoughtfully Chosen.",
+    description: siteConfig.description,
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 
 export default function WebsiteLayout({ children }: { children: React.ReactNode }) {
+  const orgSchema = {
+    "@context": "https://schema.org",
+    "@type": "RealEstateAgent",
+    name: siteConfig.name,
+    alternateName: siteConfig.shortName,
+    url: "https://shivara.site",
+    telephone: siteConfig.phone,
+    description: siteConfig.description,
+    areaServed: ["Bareilly", "Delhi NCR", "Noida", "Greater Noida"],
+    sameAs: [siteConfig.instagram, siteConfig.founderInstagram],
+  };
+
   return (
     <ToastProvider>
-      <div className="public-site min-h-[100dvh] overflow-x-hidden bg-[#F8F5EE] pb-[calc(5.9rem+env(safe-area-inset-bottom))] text-[#081120] antialiased md:pb-0">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+      />
+      <div className="public-site min-h-[100dvh] overflow-x-hidden bg-[#F8F5EE] pb-[calc(5.8rem+env(safe-area-inset-bottom))] text-[#081120] antialiased md:pb-0">
         <Navbar />
         {children}
         <Footer />
         <FloatingEnquiryCTA />
 
-        <div className="fixed bottom-5 right-5 z-50 hidden flex-col gap-3 md:flex">
-        <a
-          href={siteConfig.whatsappHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group flex h-14 w-14 items-center justify-center rounded-full bg-[#10B981] text-white shadow-[0_18px_40px_rgba(16,185,129,0.32)] transition hover:-translate-y-1"
-          aria-label="Chat on WhatsApp"
-        >
-          <MessageCircle className="h-6 w-6" />
-          <span className="pointer-events-none absolute right-16 rounded-full bg-[#081120] px-4 py-2 text-xs font-bold text-white opacity-0 shadow-xl transition group-hover:opacity-100">
-            WhatsApp
-          </span>
-        </a>
-        <a
-          href={siteConfig.phoneHref}
-          className="group flex h-14 w-14 items-center justify-center rounded-full bg-[#081120] text-[#F5D67B] shadow-[0_18px_40px_rgba(8,17,32,0.28)] transition hover:-translate-y-1"
-          aria-label="Call The Shivara Group"
-        >
-          <Phone className="h-6 w-6" />
-          <span className="pointer-events-none absolute right-16 rounded-full bg-[#081120] px-4 py-2 text-xs font-bold text-white opacity-0 shadow-xl transition group-hover:opacity-100">
-            Call now
-          </span>
-        </a>
+        {/* Desktop Fixed Floating WhatsApp & Call Buttons */}
+        <div className="fixed bottom-6 right-6 z-50 hidden flex-col gap-3 md:flex">
+          <a
+            href={siteConfig.whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#10B981] text-white shadow-[0_16px_36px_rgba(16,185,129,0.36)] transition-all duration-300 hover:scale-110"
+            aria-label="Chat with Shivara on WhatsApp"
+          >
+            <MessageCircle className="h-6 w-6" />
+            <span className="pointer-events-none absolute right-16 whitespace-nowrap rounded-xl bg-[#081120] px-3.5 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+              Chat on WhatsApp
+            </span>
+          </a>
+          <a
+            href={siteConfig.phoneHref}
+            className="group relative flex h-14 w-14 items-center justify-center rounded-full bg-[#081120] text-[#F5D67B] shadow-[0_16px_36px_rgba(8,17,32,0.32)] transition-all duration-300 hover:scale-110"
+            aria-label="Call Shivara Advisory Desk"
+          >
+            <Phone className="h-6 w-6" />
+            <span className="pointer-events-none absolute right-16 whitespace-nowrap rounded-xl bg-[#081120] px-3.5 py-1.5 text-xs font-bold text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
+              Call {siteConfig.phone}
+            </span>
+          </a>
         </div>
 
-        <div className="fixed inset-x-3 bottom-[calc(0.65rem+env(safe-area-inset-bottom))] z-50 grid grid-cols-3 gap-1 rounded-[1.1rem] border border-white/20 bg-[#081120]/94 p-1 shadow-[0_14px_34px_rgba(0,0,0,0.26)] backdrop-blur-xl md:hidden">
-        <a
-          href={siteConfig.phoneHref}
-          className="flex min-h-11 items-center justify-center gap-1 rounded-[0.9rem] bg-white/8 text-[11px] font-black text-white active:scale-[0.98]"
-        >
-          <Phone className="h-3.5 w-3.5 text-[#D4AF37]" />
-          Call
-        </a>
-        <a
-          href={siteConfig.whatsappHref}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex min-h-11 items-center justify-center gap-1 rounded-[0.9rem] bg-[#10B981] text-[11px] font-black text-white shadow-[0_10px_24px_rgba(16,185,129,0.22)] active:scale-[0.98]"
-        >
-          <MessageCircle className="h-3.5 w-3.5" />
-          WhatsApp
-        </a>
-        <Link
-          href="/#send-enquiry"
-          className="flex min-h-11 items-center justify-center gap-1 rounded-[0.9rem] bg-gradient-to-br from-[#F5D67B] to-[#D4AF37] text-[11px] font-black text-[#081120] shadow-[0_10px_24px_rgba(212,175,55,0.24)] active:scale-[0.98]"
-        >
-          <Sparkles className="h-3.5 w-3.5" />
-          <span className="hidden min-[375px]:inline">Enquire</span>
-          <span className="min-[375px]:hidden">Query</span>
-        </Link>
+        {/* Mobile Sticky Action Bar: CALL, WHATSAPP, BOOK SITE VISIT */}
+        <div className="fixed inset-x-3 bottom-[calc(0.6rem+env(safe-area-inset-bottom))] z-50 grid grid-cols-3 gap-1.5 rounded-[1.25rem] border border-white/20 bg-[#081120]/95 p-1.5 shadow-[0_16px_40px_rgba(0,0,0,0.34)] backdrop-blur-xl md:hidden">
+          {/* CALL */}
+          <a
+            href={siteConfig.phoneHref}
+            className="flex min-h-[46px] items-center justify-center gap-1.5 rounded-[0.95rem] bg-white/10 text-[11px] font-black uppercase tracking-wider text-white transition active:scale-[0.97]"
+            aria-label="Call Advisory Desk"
+          >
+            <Phone className="h-3.5 w-3.5 text-[#D4AF37]" />
+            <span>Call</span>
+          </a>
+
+          {/* WHATSAPP */}
+          <a
+            href={siteConfig.whatsappHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex min-h-[46px] items-center justify-center gap-1.5 rounded-[0.95rem] bg-[#10B981] text-[11px] font-black uppercase tracking-wider text-white shadow-sm transition active:scale-[0.97]"
+            aria-label="Chat on WhatsApp"
+          >
+            <MessageCircle className="h-3.5 w-3.5" />
+            <span>WhatsApp</span>
+          </a>
+
+          {/* BOOK SITE VISIT */}
+          <Link
+            href="/#send-enquiry"
+            className="flex min-h-[46px] items-center justify-center gap-1.5 rounded-[0.95rem] bg-gradient-to-br from-[#F5D67B] to-[#D4AF37] px-1 text-[10.5px] font-black uppercase tracking-wider text-[#081120] shadow-sm transition active:scale-[0.97]"
+            aria-label="Book Site Visit"
+          >
+            <CalendarDays className="h-3.5 w-3.5 shrink-0" />
+            <span className="truncate">Site Visit</span>
+          </Link>
         </div>
       </div>
     </ToastProvider>

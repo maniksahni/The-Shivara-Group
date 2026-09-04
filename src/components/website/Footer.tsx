@@ -42,7 +42,7 @@ export default function Footer() {
         <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1fr]">
           <div>
             <div className="flex items-center gap-3">
-              <Monogram className="h-12 w-12 text-2xl font-black" />
+              <Monogram className="h-14 w-14 shrink-0 rounded-full" />
               <div>
                 <p className="font-[family-name:var(--font-playfair)] text-2xl font-semibold">
                   The Shivara Group

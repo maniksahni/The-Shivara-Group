@@ -16,6 +16,7 @@
  */
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
@@ -261,9 +262,15 @@ export default function CRMSidebar() {
             className="flex items-center gap-3 group"
             onClick={close}
           >
-            {/* Gold "S" icon */}
-            <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#F4B400] to-[#f59e0b] text-lg font-black text-[#081120] shadow-lg shadow-[#F4B400]/20 ring-1 ring-white/20">
-              S
+            {/* Shivara official logo */}
+            <div className="relative h-11 w-11 flex-shrink-0 overflow-hidden rounded-full border border-[#F4B400]/40 bg-[#FFFDF9] shadow-md shadow-[#F4B400]/20">
+              <Image
+                src="/logo.png"
+                alt="Shivara Logo"
+                fill
+                sizes="48px"
+                className="object-contain p-0.5"
+              />
             </div>
 
             {/* Brand text */}

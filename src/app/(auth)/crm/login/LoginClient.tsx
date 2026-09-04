@@ -9,6 +9,7 @@
  */
 
 import React, { useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
@@ -68,11 +69,15 @@ function LuxuryGraphic() {
 
       {/* Centre logo mark */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div
-          className="flex h-14 w-14 items-center justify-center rounded-xl text-slate-900 text-2xl font-black shadow-2xl"
-          style={{ backgroundColor: '#C9A84C' }}
-        >
-          S
+        <div className="relative h-20 w-20 overflow-hidden rounded-full border-2 border-[#C9A84C]/50 bg-[#FFFDF9] shadow-2xl">
+          <Image
+            src="/logo.png"
+            alt="Shivara Logo"
+            fill
+            priority
+            sizes="80px"
+            className="object-contain p-1"
+          />
         </div>
       </div>
 

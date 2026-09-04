@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { ArrowRight } from "lucide-react";
@@ -115,9 +116,15 @@ export function GoldDivider() {
 export function Monogram({ className = "" }: { className?: string }) {
   return (
     <div
-      className={`flex items-center justify-center rounded-2xl bg-gradient-to-br from-[#F7D879] via-[#D4AF37] to-[#987118] font-[family-name:var(--font-playfair)] text-[#081120] shadow-[0_16px_40px_rgba(212,175,55,0.28)] ${className}`}
+      className={`relative overflow-hidden rounded-full border border-[#D4AF37]/35 bg-[#FFFDF9] shadow-[0_12px_32px_rgba(212,175,55,0.25)] ${className}`}
     >
-      S
+      <Image
+        src="/logo.png"
+        alt="The Shivara Group Logo"
+        fill
+        sizes="96px"
+        className="object-contain p-0.5"
+      />
     </div>
   );
 }

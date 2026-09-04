@@ -36,7 +36,7 @@ export default function Navbar() {
     >
       <div className="mx-auto flex h-[72px] max-w-7xl items-center justify-between gap-2 px-4 pt-[env(safe-area-inset-top)] sm:h-20 sm:px-8 lg:px-12">
         <Link href="/" className="group flex min-w-0 items-center gap-2.5 sm:gap-3" aria-label="The Shivara Group home">
-          <Monogram className="h-10 w-10 shrink-0 rounded-[1rem] text-2xl font-black transition-transform duration-300 group-hover:scale-105 sm:h-11 sm:w-11" />
+          <Monogram className="h-10 w-10 shrink-0 rounded-full transition-transform duration-300 group-hover:scale-105 sm:h-11 sm:w-11" />
           <div className="min-w-0 leading-none">
             <p className="truncate font-[family-name:var(--font-playfair)] text-[1.05rem] font-semibold tracking-[-0.02em] text-white sm:text-xl">
               The Shivara Group

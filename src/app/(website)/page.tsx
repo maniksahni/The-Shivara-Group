@@ -44,7 +44,7 @@ export default function HomePage() {
         name: siteConfig.name,
         alternateName: siteConfig.shortName,
         url: "https://shivara.site",
-        logo: "https://shivara.site/favicon.ico",
+        logo: "https://shivara.site/logo.png",
         description: siteConfig.description,
         telephone: siteConfig.phone,
         areaServed: [

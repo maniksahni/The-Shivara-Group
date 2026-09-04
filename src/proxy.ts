@@ -174,5 +174,7 @@ export const config = {
    * across the public website and CRM. Static assets and API routes are
    * excluded. Auth protection itself is still limited to /crm routes above.
    */
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|robots.txt|sitemap.xml).*)'],
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon\\.ico|robots\\.txt|sitemap\\.xml|site\\.webmanifest|manifest\\.json|.*\\.(?:ico|png|jpg|jpeg|svg|webp|webmanifest|txt|xml)$).*)',
+  ],
 }

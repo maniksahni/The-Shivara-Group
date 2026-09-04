@@ -5,6 +5,12 @@ Disallow: /api/
 Disallow: /_next/
 Disallow: /admin/
 
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
 # Block low-value query parameters from being indexed
 Disallow: /*?*sort=
 Disallow: /*?*page=

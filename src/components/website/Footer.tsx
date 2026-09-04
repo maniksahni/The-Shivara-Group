@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, MapPin, MessageCircle, Phone, Sparkles } from "lucide-react";
 import { Monogram } from "@/components/website/LuxurySection";
-import { navLinks, services, siteConfig } from "@/components/website/site-data";
+import { navLinks, siteConfig } from "@/components/website/site-data";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -39,7 +39,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1fr]">
+        <div className="grid gap-10 lg:grid-cols-[1.2fr_0.7fr_0.7fr_0.8fr_0.8fr]">
           <div>
             <div className="flex items-center gap-3">
               <Monogram className="h-14 w-14 shrink-0 rounded-full" />
@@ -103,11 +103,64 @@ export default function Footer() {
               Services
             </h3>
             <ul className="mt-5 space-y-3">
-              {services.slice(0, 5).map((service) => (
-                <li key={service.title} className="text-sm text-white/62">
-                  {service.title}
-                </li>
-              ))}
+              <li>
+                <Link href="/services" className="text-sm text-white/62 transition hover:text-white">
+                  Buy Property
+                </Link>
+              </li>
+              <li>
+                <Link href="/services" className="text-sm text-white/62 transition hover:text-white">
+                  Site Visit Assistance
+                </Link>
+              </li>
+              <li>
+                <Link href="/services" className="text-sm text-white/62 transition hover:text-white">
+                  Investment Advisory
+                </Link>
+              </li>
+              <li>
+                <Link href="/services" className="text-sm text-white/62 transition hover:text-white">
+                  Documentation Guidance
+                </Link>
+              </li>
+              <li>
+                <Link href="/services" className="text-sm text-white/62 transition hover:text-white">
+                  Commercial Advisory
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h3 className="text-sm font-black uppercase tracking-[0.24em] text-[#D4AF37]">
+              Locations
+            </h3>
+            <ul className="mt-5 space-y-3">
+              <li>
+                <Link href="/locations/bareilly" className="text-sm text-white/62 transition hover:text-white">
+                  Properties in Bareilly
+                </Link>
+              </li>
+              <li>
+                <Link href="/locations/rajendra-nagar-bareilly" className="text-sm text-white/62 transition hover:text-white">
+                  Rajendra Nagar, Bareilly
+                </Link>
+              </li>
+              <li>
+                <Link href="/locations/delhi-ncr" className="text-sm text-white/62 transition hover:text-white">
+                  Delhi NCR Portfolio
+                </Link>
+              </li>
+              <li>
+                <Link href="/properties?location=Noida" className="text-sm text-white/62 transition hover:text-white">
+                  Noida Properties
+                </Link>
+              </li>
+              <li>
+                <Link href="/properties?location=Greater+Noida" className="text-sm text-white/62 transition hover:text-white">
+                  Greater Noida
+                </Link>
+              </li>
             </ul>
           </div>
 

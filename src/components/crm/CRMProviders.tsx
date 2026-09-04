@@ -16,39 +16,36 @@ interface CRMProvidersProps {
 
 export default function CRMProviders({ children, session }: CRMProvidersProps) {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(() => {
-    // If session is already passed from server, initialize to true
-    return Boolean(session?.user);
-  });
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Check if the administrator is actively authenticated in this browser
     const isLocalAuth =
       localStorage.getItem("shivara_admin_auth") === "true" ||
       document.cookie.includes("shivara_admin_auth=true");
 
-    const hasValidSession = Boolean(session?.user);
-
-    if (hasValidSession) {
-      if (typeof window !== "undefined") {
-        try {
-          localStorage.setItem("shivara_admin_auth", "true");
-          document.cookie = "shivara_admin_auth=true; path=/; max-age=2592000; SameSite=Lax";
-        } catch {}
-      }
-      setIsAuthenticated(true);
+    if (!isLocalAuth) {
+      setIsAuthenticated(false);
+      window.location.href = "/crm/login";
       return;
     }
 
-    if (!isLocalAuth && !hasValidSession) {
-      setIsAuthenticated(false);
-      router.replace("/crm/login");
-    } else {
-      setIsAuthenticated(true);
-    }
-  }, [router, session]);
+    setIsAuthenticated(true);
+  }, []);
 
-  if (isAuthenticated === false) {
-    return null;
+  if (isAuthenticated !== true) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#081120] text-sm text-slate-400">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#F4B400] border-t-transparent" />
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#F4B400]">
+            {isAuthenticated === false ? "Redirecting to CRM login…" : "Verifying secure session…"}
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (

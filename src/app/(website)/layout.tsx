@@ -10,40 +10,52 @@ import { ToastProvider } from "@/components/ui/toast";
 export const metadata: Metadata = {
   metadataBase: new URL("https://shivara.site"),
   title: {
-    default: "Shivara | Exceptional Properties. Thoughtfully Chosen.",
+    default: "Premium Real Estate in Bareilly | The Shivara Group",
     template: "%s | The Shivara Group",
   },
-  description: siteConfig.description,
+  description:
+    "Verified luxury homes, villas, kothis, and plots in Bareilly with expert advisory, guided site visits, and transparent pricing. Delhi NCR properties also available.",
   keywords: [
-    "The Shivara Group",
-    "Shivara real estate",
-    "luxury properties Bareilly",
-    "villas in Bareilly",
-    "kothi in Rajendra Nagar",
+    "real estate in Bareilly",
+    "property in Bareilly",
+    "premium properties Bareilly",
+    "villas for sale in Bareilly",
+    "kothi in Rajendra Nagar Bareilly",
+    "plots in Bareilly",
+    "property dealer in Bareilly",
+    "real estate agent Bareilly",
     "Aurika Bareilly",
-    "Pilibhit Road Bareilly property",
+    "Pilibhit Road property Bareilly",
     "Delhi NCR luxury real estate",
-    "Godrej Golf Links Greater Noida",
-    "Yamuna Expressway serviced apartments",
-    "verified property Bareilly",
-    "site visit Bareilly",
+    "The Shivara Group",
   ],
   openGraph: {
-    title: "Shivara | Premium Real Estate Advisory",
-    description: siteConfig.description,
+    title: "Premium Real Estate in Bareilly | The Shivara Group",
+    description:
+      "Verified luxury homes, villas, kothis, and plots in Bareilly. Expert advisory, guided site visits, and transparent pricing.",
     siteName: "The Shivara Group",
     locale: "en_IN",
     type: "website",
     url: "https://shivara.site",
+    images: [{ url: "https://shivara.site/logo.png", width: 676, height: 676, alt: "The Shivara Group" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Shivara | Exceptional Properties. Thoughtfully Chosen.",
-    description: siteConfig.description,
+    title: "Premium Real Estate in Bareilly | The Shivara Group",
+    description:
+      "Verified luxury homes, villas, kothis, and plots in Bareilly. Expert real estate advisory across Bareilly and Delhi NCR.",
+    images: ["https://shivara.site/logo.png"],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
   icons: {
     icon: [
@@ -59,17 +71,55 @@ export const metadata: Metadata = {
   },
 };
 
+
 export default function WebsiteLayout({ children }: { children: React.ReactNode }) {
   const orgSchema = {
     "@context": "https://schema.org",
     "@type": "RealEstateAgent",
+    "@id": "https://shivara.site/#organization",
     name: siteConfig.name,
     alternateName: siteConfig.shortName,
     url: "https://shivara.site",
+    logo: {
+      "@type": "ImageObject",
+      url: "https://shivara.site/logo.png",
+      width: 676,
+      height: 676,
+    },
+    image: "https://shivara.site/logo.png",
     telephone: siteConfig.phone,
-    description: siteConfig.description,
-    areaServed: ["Bareilly", "Delhi NCR", "Noida", "Greater Noida"],
+    email: siteConfig.email,
+    description: "Premium real estate advisory firm in Bareilly, UP — specialising in verified luxury homes, villas, kothis, plots and investment properties across Bareilly and Delhi NCR.",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Civil Lines & Rajendra Nagar",
+      addressLocality: "Bareilly",
+      addressRegion: "Uttar Pradesh",
+      postalCode: "243122",
+      addressCountry: "IN",
+    },
+    areaServed: [
+      {
+        "@type": "City",
+        name: "Bareilly",
+        containedInPlace: { "@type": "State", name: "Uttar Pradesh" },
+      },
+      { "@type": "City", name: "Noida" },
+      { "@type": "City", name: "Greater Noida" },
+      { "@type": "Place", name: "Yamuna Expressway" },
+    ],
+    openingHours: "Mo-Sa 09:30-19:30",
     sameAs: [siteConfig.instagram, siteConfig.founderInstagram],
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Real Estate Services",
+      itemListElement: [
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Property Buying Assistance in Bareilly" } },
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Property Site Visit Coordination" } },
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Real Estate Investment Advisory" } },
+        { "@type": "Offer", itemOffered: { "@type": "Service", name: "Property Documentation Guidance" } },
+      ],
+    },
   };
 
   return (

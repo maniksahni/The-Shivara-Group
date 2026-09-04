@@ -34,6 +34,29 @@ import {
 const heroVisualImage =
   "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=85";
 
+export const metadata = {
+  title: "Premium Real Estate in Bareilly | The Shivara Group",
+  description:
+    "Discover verified luxury homes, villas, kothis, plots and investment properties in Bareilly, UP. Expert property advisory with guided site visits, transparent pricing, and documentation support. Also covering Delhi NCR.",
+  alternates: {
+    canonical: "https://shivara.site/",
+  },
+  openGraph: {
+    title: "Premium Real Estate in Bareilly | The Shivara Group",
+    description:
+      "Verified luxury homes, villas, kothis, and plots in Bareilly. Expert real estate advisory with guided site visits and transparent pricing. Delhi NCR properties also available.",
+    url: "https://shivara.site/",
+    type: "website",
+    images: [{ url: "https://shivara.site/logo.png", width: 676, height: 676, alt: "The Shivara Group" }],
+  },
+  twitter: {
+    card: "summary_large_image" as const,
+    title: "Premium Real Estate in Bareilly | The Shivara Group",
+    description: "Verified luxury homes, villas, kothis, and plots in Bareilly with expert advisory, guided site visits, and transparent pricing.",
+    images: ["https://shivara.site/logo.png"],
+  },
+};
+
 export default function HomePage() {
   const jsonLd = {
     "@context": "https://schema.org",
@@ -44,25 +67,27 @@ export default function HomePage() {
         name: siteConfig.name,
         alternateName: siteConfig.shortName,
         url: "https://shivara.site",
-        logo: "https://shivara.site/logo.png",
-        description: siteConfig.description,
+        logo: {
+          "@type": "ImageObject",
+          url: "https://shivara.site/logo.png",
+        },
+        description: "Premium real estate advisory in Bareilly, UP — specialising in verified luxury homes, villas, kothis, plots and investment properties. Also serving Delhi NCR markets.",
         telephone: siteConfig.phone,
-        areaServed: [
-          {
-            "@type": "AdministrativeArea",
-            name: "Bareilly",
-          },
-          {
-            "@type": "AdministrativeArea",
-            name: "Delhi NCR",
-          },
-        ],
+        email: siteConfig.email,
         address: {
           "@type": "PostalAddress",
+          streetAddress: "Civil Lines & Rajendra Nagar",
           addressLocality: "Bareilly",
           addressRegion: "Uttar Pradesh",
+          postalCode: "243122",
           addressCountry: "IN",
         },
+        areaServed: [
+          { "@type": "City", name: "Bareilly" },
+          { "@type": "City", name: "Noida" },
+          { "@type": "City", name: "Greater Noida" },
+        ],
+        openingHours: "Mo-Sa 09:30-19:30",
         sameAs: [siteConfig.instagram, siteConfig.founderInstagram],
       },
       {
@@ -70,9 +95,13 @@ export default function HomePage() {
         "@id": "https://shivara.site/#website",
         url: "https://shivara.site",
         name: siteConfig.name,
+        description: "Premium real estate advisory — Bareilly & Delhi NCR",
         potentialAction: {
           "@type": "SearchAction",
-          target: "https://shivara.site/properties?q={search_term_string}",
+          target: {
+            "@type": "EntryPoint",
+            urlTemplate: "https://shivara.site/properties?q={search_term_string}",
+          },
           "query-input": "required name=search_term_string",
         },
       },
@@ -107,7 +136,7 @@ export default function HomePage() {
         <div className="absolute inset-0 z-0">
           <Image
             src={heroVisualImage}
-            alt="Shivara Luxury Real Estate"
+            alt="Premium luxury villa and real estate in Bareilly — The Shivara Group"
             fill
             priority
             className="object-cover object-center brightness-[0.42] contrast-[1.05]"
@@ -326,42 +355,58 @@ export default function HomePage() {
                 Micro-Market Intelligence
               </p>
               <h2 className="mt-3 font-[family-name:var(--font-playfair)] text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">
-                Bareilly & NCR Growth Corridors.
+                Bareilly &amp; NCR Growth Corridors.
               </h2>
               <p className="mt-4 text-xs leading-6 text-white/70 sm:text-sm sm:leading-7">
                 Every property recommendation is informed by micro-market fundamentals: road connectivity,
                 upcoming civil infrastructure, civic development approvals, and verified capital appreciation trends.
               </p>
-              <div className="mt-6">
+              <div className="mt-6 flex flex-col gap-2.5">
                 <Link
-                  href="/properties"
+                  href="/locations/bareilly"
                   className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-[#D4AF37] px-6 text-xs font-black uppercase tracking-[0.14em] text-[#081120] transition hover:bg-[#F5D67B]"
                 >
-                  Explore Corridors
+                  Explore Bareilly
+                </Link>
+                <Link
+                  href="/locations/delhi-ncr"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/20 px-6 text-xs font-bold uppercase tracking-[0.14em] text-white transition hover:border-white hover:bg-white/10"
+                >
+                  Delhi NCR Portfolio
                 </Link>
               </div>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              {bareillyGuide.map((zone) => (
-                <div
-                  key={zone.zone}
-                  className="rounded-[1.6rem] border border-white/10 bg-white/[0.04] p-5 backdrop-blur transition hover:border-[#D4AF37]/40"
-                >
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-[#D4AF37]" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.18em] text-[#F5D67B]">
-                      {zone.signal}
+              {bareillyGuide.map((zone) => {
+                const locationHref =
+                  zone.zone === "Rajendra Nagar" ? "/locations/rajendra-nagar-bareilly"
+                  : zone.zone === "Delhi NCR Portfolio" ? "/locations/delhi-ncr"
+                  : `/locations/bareilly`;
+                return (
+                  <Link
+                    key={zone.zone}
+                    href={locationHref}
+                    className="group rounded-[1.6rem] border border-white/10 bg-white/[0.04] p-5 backdrop-blur transition hover:border-[#D4AF37]/40 hover:bg-white/[0.07]"
+                  >
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-[#D4AF37]" />
+                      <span className="text-[10px] font-black uppercase tracking-[0.18em] text-[#F5D67B]">
+                        {zone.signal}
+                      </span>
+                    </div>
+                    <h3 className="mt-3 text-lg font-bold text-white">
+                      {zone.zone}
+                    </h3>
+                    <p className="mt-2 text-xs leading-5 text-white/60">
+                      {zone.insight}
+                    </p>
+                    <span className="mt-3 inline-flex items-center gap-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#D4AF37]/70 group-hover:text-[#D4AF37]">
+                      Explore <ArrowUpRight className="h-3 w-3" />
                     </span>
-                  </div>
-                  <h3 className="mt-3 text-lg font-bold text-white">
-                    {zone.zone}
-                  </h3>
-                  <p className="mt-2 text-xs leading-5 text-white/60">
-                    {zone.insight}
-                  </p>
-                </div>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>

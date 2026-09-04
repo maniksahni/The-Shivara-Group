@@ -1,88 +1,140 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- ======================================== -->
+  <!-- PRIMARY PAGES -->
+  <!-- ======================================== -->
   <url>
     <loc>https://shivara.site/</loc>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://shivara.site/properties</loc>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>daily</changefreq>
-    <priority>0.9</priority>
+    <priority>0.95</priority>
   </url>
   <url>
     <loc>https://shivara.site/services</loc>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://shivara.site/about</loc>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.80</priority>
   </url>
   <url>
     <loc>https://shivara.site/contact</loc>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.80</priority>
   </url>
   <url>
     <loc>https://shivara.site/faq</loc>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
+    <priority>0.75</priority>
+  </url>
+
+  <!-- ======================================== -->
+  <!-- LOCATION LANDING PAGES -->
+  <!-- ======================================== -->
+  <url>
+    <loc>https://shivara.site/locations/bareilly</loc>
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
   </url>
   <url>
-    <loc>https://shivara.site/disclaimer</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://shivara.site/locations/rajendra-nagar-bareilly</loc>
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://shivara.site/privacy</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://shivara.site/locations/delhi-ncr</loc>
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
   </url>
-  <url>
-    <loc>https://shivara.site/terms</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
-  </url>
+
+  <!-- ======================================== -->
+  <!-- PROPERTY LISTINGS — INDIVIDUAL -->
+  <!-- ======================================== -->
   <url>
     <loc>https://shivara.site/properties/park-facing-240-gaj-kothi</loc>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.92</priority>
   </url>
   <url>
     <loc>https://shivara.site/properties/aurika-the-residences</loc>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.92</priority>
   </url>
   <url>
     <loc>https://shivara.site/properties/amara-villas-bareilly</loc>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.92</priority>
   </url>
   <url>
     <loc>https://shivara.site/properties/the-residences-plots</loc>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.90</priority>
   </url>
   <url>
     <loc>https://shivara.site/properties/rajendar-nagar-3bhk</loc>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.92</priority>
   </url>
   <url>
     <loc>https://shivara.site/properties/singaporean-luxury-bareilly</loc>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.88</priority>
   </url>
   <url>
     <loc>https://shivara.site/properties/godrej-golf-links-final-phase</loc>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.90</priority>
   </url>
   <url>
     <loc>https://shivara.site/properties/bento-by-gaurs-yamuna-expressway</loc>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.88</priority>
   </url>
+
+  <!-- ======================================== -->
+  <!-- LEGAL / SECONDARY PAGES -->
+  <!-- ======================================== -->
+  <url>
+    <loc>https://shivara.site/disclaimer</loc>
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.30</priority>
+  </url>
+  <url>
+    <loc>https://shivara.site/privacy</loc>
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.30</priority>
+  </url>
+  <url>
+    <loc>https://shivara.site/terms</loc>
+    <lastmod>2026-09-04</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.30</priority>
+  </url>
+
 </urlset>

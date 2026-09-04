@@ -4,11 +4,25 @@ import { HelpCircle, MessageCircle, Phone } from "lucide-react";
 import { faqs, siteConfig } from "@/components/website/site-data";
 
 export const metadata: Metadata = {
-  title: "Frequently Asked Questions",
+  title: "Real Estate FAQs — Property Buying, Verification & Site Visits in Bareilly",
   description:
-    "Common questions about buying, verifying, and investing in Bareilly and Delhi NCR properties with The Shivara Group.",
+    "Frequently asked questions about buying property in Bareilly, how The Shivara Group verifies properties, site visit booking process, pricing transparency, and documentation guidance.",
   alternates: {
     canonical: "/faq",
+  },
+  openGraph: {
+    title: "Real Estate FAQs | The Shivara Group — Bareilly",
+    description:
+      "Common questions answered about property verification, site visits, pricing, documentation, and buying process for Bareilly and Delhi NCR properties.",
+    type: "website",
+    url: "https://shivara.site/faq",
+    images: [{ url: "https://shivara.site/logo.png", width: 676, height: 676, alt: "The Shivara Group FAQs" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Real Estate FAQs | The Shivara Group — Bareilly",
+    description: "Answers to common questions about property verification, site visits, pricing, and buying in Bareilly.",
+    images: ["https://shivara.site/logo.png"],
   },
 };
 

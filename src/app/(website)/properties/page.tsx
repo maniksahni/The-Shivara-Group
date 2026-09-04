@@ -11,19 +11,32 @@ import {
 } from "@/components/website/site-data";
 
 export const metadata: Metadata = {
-  title: "Properties in Bareilly",
+  title: "Properties for Sale in Bareilly — Villas, Kothis, Plots, Apartments",
   description:
-    "Explore verified residential, commercial, plot, and investment properties in Bareilly. Book site visits and get expert guidance from The Shivara Group.",
+    "Browse verified properties for sale in Bareilly — luxury villas, park-facing kothis, residential plots, premium apartments, and commercial properties. Expert guidance, guided site visits, and WhatsApp enquiry by The Shivara Group.",
   alternates: {
     canonical: "/properties",
   },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
-    title: "Properties in Bareilly | The Shivara Group",
+    title: "Properties for Sale in Bareilly | The Shivara Group",
     description:
-      "Explore verified residential, commercial, plot, and investment properties in Bareilly with WhatsApp enquiries and site visit booking.",
+      "Explore verified properties in Bareilly — villas, kothis, plots, apartments and investment opportunities. Book site visits with expert guidance.",
     type: "website",
+    url: "https://shivara.site/properties",
+    images: [{ url: "https://shivara.site/logo.png", width: 676, height: 676, alt: "The Shivara Group Properties in Bareilly" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Properties for Sale in Bareilly | The Shivara Group",
+    description: "Browse verified villas, kothis, plots and apartments in Bareilly with site visit assistance.",
+    images: ["https://shivara.site/logo.png"],
   },
 };
+
 
 async function getProperties(): Promise<PublicProperty[]> {
   let properties: PublicProperty[] = [];

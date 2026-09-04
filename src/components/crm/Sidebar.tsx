@@ -33,7 +33,9 @@ import {
   CalendarDays,
   Activity,
   Settings,
+  Loader2,
 } from 'lucide-react'
+import { handleCrmSignOut } from '@/lib/crm-auth-client'
 
 import { cn } from '@/lib/utils'
 
@@ -207,10 +209,12 @@ export default function CRMSidebar() {
     { label: 'Profile', href: '/crm/profile', icon: UserCircle },
   ]
 
+  const [isSigningOut, setIsSigningOut] = useState(false)
+
   // ── Sign out handler ──────────────────────────────────────────────────────
   async function handleSignOut() {
-    await signOut({ redirect: false })
-    router.push('/crm/login')
+    setIsSigningOut(true)
+    await handleCrmSignOut()
   }
 
   // ── Determine if a nav item is "active" ──────────────────────────────────
@@ -387,11 +391,16 @@ export default function CRMSidebar() {
           {/* Logout button */}
           <button
             onClick={handleSignOut}
-            className="flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-sm font-semibold text-gray-400 transition-all duration-150 hover:bg-rose-500/10 hover:text-rose-300"
+            disabled={isSigningOut}
+            className="flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-sm font-semibold text-gray-400 transition-all duration-150 hover:bg-rose-500/10 hover:text-rose-300 disabled:opacity-50"
             aria-label="Sign out of CRM"
           >
-            <LogOut className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
-            <span>Sign Out</span>
+            {isSigningOut ? (
+              <Loader2 className="h-4 w-4 flex-shrink-0 animate-spin text-rose-400" aria-hidden="true" />
+            ) : (
+              <LogOut className="h-4 w-4 flex-shrink-0" aria-hidden="true" />
+            )}
+            <span>{isSigningOut ? 'Signing out…' : 'Sign Out'}</span>
           </button>
         </div>
       </motion.aside>

@@ -5,17 +5,25 @@ import AutoScrollRail from "@/components/website/AutoScrollRail";
 import { processSteps, services, siteConfig } from "@/components/website/site-data";
 
 export const metadata: Metadata = {
-  title: "Real Estate Services in Bareilly",
+  title: "Real Estate Services in Bareilly — Advisory, Site Visits & Guidance",
   description:
-    "Explore The Shivara Group's real estate services in Bareilly including property consultation, site visits, documentation support, residential, commercial, plots, and investment guidance.",
+    "Comprehensive real estate services in Bareilly by The Shivara Group — property buying consultation, escorted site visits, investment advisory, documentation guidance, selling support, and commercial property advisory.",
   alternates: {
     canonical: "/services",
   },
   openGraph: {
     title: "Real Estate Services in Bareilly | The Shivara Group",
     description:
-      "Premium property consultation, site visit assistance, pricing clarity, and documentation guidance in Bareilly.",
+      "Property buying consultation, site visit assistance, investment advisory, and documentation guidance in Bareilly and Delhi NCR.",
     type: "website",
+    url: "https://shivara.site/services",
+    images: [{ url: "https://shivara.site/logo.png", width: 676, height: 676, alt: "The Shivara Group Services" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Real Estate Services in Bareilly | The Shivara Group",
+    description: "Property advisory, site visits, documentation support, and investment guidance in Bareilly.",
+    images: ["https://shivara.site/logo.png"],
   },
 };
 

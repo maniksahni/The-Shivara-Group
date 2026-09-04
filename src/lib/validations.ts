@@ -239,8 +239,8 @@ export const propertySchema = z.object({
   /** List of available amenities, e.g. ["Swimming Pool", "Gym"]. */
   amenities: z.array(z.string().trim()),
 
-  /** Array of public image URLs. */
-  images: z.array(z.string().url('Each image must be a valid URL')),
+  /** Array of image URLs or uploaded image data. */
+  images: z.array(z.string()),
 
   /** Whether the listing is visible to the public / active. */
   isActive: z.boolean(),

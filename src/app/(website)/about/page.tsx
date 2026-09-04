@@ -14,17 +14,26 @@ import {
 } from "@/components/website/site-data";
 
 export const metadata: Metadata = {
-  title: "About Our Property Consultants in Bareilly",
+  title: "About Our Real Estate Consultants in Bareilly",
   description:
-    "Learn about The Shivara Group's premium real estate guidance, verified property shortlisting, site visit support, and buyer consultation across Bareilly and Delhi NCR.",
+    "The Shivara Group is a premium real estate advisory firm in Bareilly, UP — offering verified property shortlisting, guided site visits, pricing transparency, and documentation support for buyers and investors in Bareilly and Delhi NCR.",
   alternates: {
     canonical: "/about",
   },
   openGraph: {
-    title: "About The Shivara Group | Property Consultants in Bareilly",
+    title: "About The Shivara Group | Real Estate Advisory in Bareilly",
     description:
-      "Premium Bareilly real estate consultation with verified shortlists, WhatsApp-first guidance, and site visit support.",
+      "Premium real estate advisory in Bareilly — verified property shortlists, guided site visits, transparent pricing, and buyer consultation by The Shivara Group.",
     type: "website",
+    url: "https://shivara.site/about",
+    images: [{ url: "https://shivara.site/logo.png", width: 676, height: 676, alt: "The Shivara Group" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About The Shivara Group | Real Estate Advisory in Bareilly",
+    description:
+      "Verified property advisory in Bareilly — shortlists, site visits, pricing clarity and documentation support.",
+    images: ["https://shivara.site/logo.png"],
   },
 };
 

@@ -1,5 +1,15 @@
 import { Suspense } from "react";
+import type { Metadata } from "next";
 import CRMLoginClient from "./LoginClient";
+
+export const metadata: Metadata = {
+  title: "CRM Login | The Shivara Group",
+  description: "Secure CRM access for The Shivara Group team.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function CRMLoginPage() {
   return (

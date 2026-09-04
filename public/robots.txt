@@ -2,5 +2,11 @@ User-agent: *
 Allow: /
 Disallow: /crm/
 Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+
+# Block low-value query parameters from being indexed
+Disallow: /*?*sort=
+Disallow: /*?*page=
 
 Sitemap: https://shivara.site/sitemap.xml

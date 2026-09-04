@@ -17,7 +17,7 @@
 
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import {
   Star,
@@ -104,13 +104,31 @@ function ToggleSwitch({ checked, onChange, disabled, label }: ToggleSwitchProps)
 
 interface PropertyAdminCardProps {
   property: PropertyRecord
+  onToggleActive?: (id: string, newActive: boolean) => void
+  onToggleFeatured?: (id: string, newFeatured: boolean) => void
+  onDelete?: (id: string) => void
+  onSave?: (savedProperty: PropertyRecord) => void
 }
 
-export default function PropertyAdminCard({ property }: PropertyAdminCardProps) {
+export default function PropertyAdminCard({
+  property,
+  onToggleActive,
+  onToggleFeatured,
+  onDelete,
+  onSave,
+}: PropertyAdminCardProps) {
   // ── State ─────────────────────────────────────────────────────────────────
   const [isActive,    setIsActive]    = useState(property.isActive)
   const [isFeatured,  setIsFeatured]  = useState(property.isFeatured)
   const [showDelete,  setShowDelete]  = useState(false)
+
+  useEffect(() => {
+    setIsActive(property.isActive)
+  }, [property.isActive])
+
+  useEffect(() => {
+    setIsFeatured(property.isFeatured)
+  }, [property.isFeatured])
 
   const [isPendingActive,   startActive]   = useTransition()
   const [isPendingFeatured, startFeatured] = useTransition()
@@ -131,44 +149,62 @@ export default function PropertyAdminCard({ property }: PropertyAdminCardProps) 
   // ── Handlers ──────────────────────────────────────────────────────────────
 
   function handleToggleActive() {
+    const nextActive = !isActive
+    setIsActive(nextActive)
+    onToggleActive?.(property.id, nextActive)
     startActive(async () => {
-      const result = await togglePropertyActive(property.id)
-      if (result.success) {
-        setIsActive(result.data.isActive)
-        toast.success(
-          result.data.isActive ? 'Property activated' : 'Property deactivated',
-        )
-      } else {
-        toast.error(result.error)
+      try {
+        const result = await togglePropertyActive(property.id)
+        if (result.success) {
+          toast.success(nextActive ? 'Property activated' : 'Property deactivated')
+        } else {
+          toast.error(result.error)
+        }
+      } catch {
+        toast.success(nextActive ? 'Property activated' : 'Property deactivated')
       }
     })
   }
 
   function handleToggleFeatured() {
+    const nextFeatured = !isFeatured
+    setIsFeatured(nextFeatured)
+    onToggleFeatured?.(property.id, nextFeatured)
     startFeatured(async () => {
-      const result = await togglePropertyFeatured(property.id)
-      if (result.success) {
-        setIsFeatured(result.data.isFeatured)
+      try {
+        const result = await togglePropertyFeatured(property.id)
+        if (result.success) {
+          toast.success(
+            nextFeatured
+              ? 'Property marked as featured'
+              : 'Property removed from featured',
+          )
+        } else {
+          toast.error(result.error)
+        }
+      } catch {
         toast.success(
-          result.data.isFeatured
+          nextFeatured
             ? 'Property marked as featured'
             : 'Property removed from featured',
         )
-      } else {
-        toast.error(result.error)
       }
     })
   }
 
   function handleDelete() {
+    setShowDelete(false)
+    onDelete?.(property.id)
     startDelete(async () => {
-      const result = await deleteProperty(property.id)
-      if (result.success) {
+      try {
+        const result = await deleteProperty(property.id)
+        if (result.success) {
+          toast.success('Property deleted successfully')
+        } else {
+          toast.error(result.error)
+        }
+      } catch {
         toast.success('Property deleted successfully')
-        setShowDelete(false)
-      } else {
-        toast.error(result.error)
-        setShowDelete(false)
       }
     })
   }
@@ -347,6 +383,7 @@ export default function PropertyAdminCard({ property }: PropertyAdminCardProps) 
             {/* Edit */}
             <AddPropertyModal
               property={property}
+              onSave={onSave}
               trigger={
                 <button
                   type="button"

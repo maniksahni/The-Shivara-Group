@@ -18,6 +18,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { signOut, useSession } from 'next-auth/react'
 import { motion } from 'framer-motion'
+import { handleCrmSignOut } from '@/lib/crm-auth-client'
 import {
   Search,
   Bell,
@@ -125,12 +126,7 @@ function UserDropdown({ name, email, onClose }: UserDropdownProps) {
 
   async function handleSignOut() {
     onClose()
-    localStorage.removeItem('shivara_admin_auth')
-    document.cookie = 'shivara_admin_auth=; path=/; max-age=0'
-    try {
-      await signOut({ redirect: false })
-    } catch {}
-    router.push('/crm/login')
+    await handleCrmSignOut()
   }
 
   function handleProfile() {

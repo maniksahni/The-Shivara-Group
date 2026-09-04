@@ -108,30 +108,47 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {
       title: "Property Not Found | The Shivara Group",
       description: "The requested property is currently unavailable or has been archived.",
+      robots: { index: false, follow: false },
     };
   }
 
-  const title = `${property.title} | The Shivara Group`;
-  const description = property.description.slice(0, 160);
+  // Build SEO-rich title: Property Name in Location | Brand
+  const locationSuffix = property.location ? ` in ${property.location}` : "";
+  const title = `${property.title}${locationSuffix} | The Shivara Group`;
+
+  // Build unique, helpful description from property data
+  const bedroomText = property.bedrooms ? `${property.bedrooms} BHK ` : "";
+  const areaText = property.area ? `, ${property.area}` : "";
+  const descSnippet = property.description.slice(0, 100).replace(/\s+\S*$/, "");
+  const description =
+    `${bedroomText}${property.type.toLowerCase()} for sale in ${property.location}${areaText}. ${descSnippet}. Expert advisory and site visit by The Shivara Group.`.slice(0, 160);
+
+  const ogImage = property.images.length > 0
+    ? [{ url: property.images[0], alt: `${property.title} — ${property.location}` }]
+    : [{ url: "https://shivara.site/logo.png", width: 676, height: 676, alt: "The Shivara Group" }];
 
   return {
     title,
     description,
     alternates: {
-      canonical: `/properties/${property.id}`,
+      canonical: `https://shivara.site/properties/${property.id}`,
+    },
+    robots: {
+      index: property.isActive,
+      follow: true,
     },
     openGraph: {
       title,
       description,
       type: "website",
-      url: `/properties/${property.id}`,
-      images: property.images.length > 0 ? [property.images[0]] : [],
+      url: `https://shivara.site/properties/${property.id}`,
+      images: ogImage,
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: property.images.length > 0 ? [property.images[0]] : [],
+      images: property.images.length > 0 ? [property.images[0]] : ["https://shivara.site/logo.png"],
     },
   };
 }
@@ -156,36 +173,39 @@ export default async function PropertyDetailsPage({ params }: Props) {
     .filter((p) => p.id !== property.id && (p.type === property.type || p.location.includes("Bareilly")))
     .slice(0, 3);
 
-  // JSON-LD Structured Data for Real Estate Listing
+  // JSON-LD Structured Data — schema type depends on property category
+  const schemaType =
+    property.type === "PLOT"
+      ? "LandParcel"
+      : property.type === "COMMERCIAL"
+      ? "CivicStructure"
+      : "SingleFamilyResidence";
+
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "SingleFamilyResidence",
+    "@type": schemaType,
+    "@id": `https://shivara.site/properties/${property.id}`,
     name: property.title,
     description: property.description,
     image: gallery,
+    url: `https://shivara.site/properties/${property.id}`,
     address: {
       "@type": "PostalAddress",
       addressLocality: property.location,
+      addressRegion: property.location.includes("NCR") || property.location.includes("Noida") || property.location.includes("Yamuna") ? "Delhi" : "Uttar Pradesh",
       addressCountry: "IN",
     },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: "28.3670",
-      longitude: "79.4304",
-    },
-    numberOfRooms: property.bedrooms || undefined,
-    numberOfBathroomsTotal: property.bathrooms || undefined,
+    ...(property.bedrooms ? { numberOfBedrooms: property.bedrooms } : {}),
+    ...(property.bathrooms ? { numberOfBathroomsTotal: property.bathrooms } : {}),
+    ...(property.area ? { floorSize: { "@type": "QuantitativeValue", value: property.area, unitCode: "SQF" } } : {}),
     offers: {
       "@type": "Offer",
       priceCurrency: "INR",
-      price: property.priceNumeric ? String(property.priceNumeric) : undefined,
-      priceSpecification: {
-        "@type": "PriceSpecification",
-        price: property.priceNumeric ? String(property.priceNumeric) : undefined,
-        priceCurrency: "INR",
-      },
+      availability: property.status === "Sold" ? "https://schema.org/SoldOut" : "https://schema.org/InStock",
+      ...(property.priceNumeric ? { price: String(property.priceNumeric) } : {}),
       seller: {
         "@type": "RealEstateAgent",
+        "@id": "https://shivara.site/#organization",
         name: siteConfig.name,
         telephone: siteConfig.phone,
         url: "https://shivara.site",

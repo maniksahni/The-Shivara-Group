@@ -15,6 +15,7 @@
  *         content area where {children} are rendered.
  */
 
+import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { Plus } from 'lucide-react'
@@ -26,8 +27,21 @@ import CRMTopbar from '@/components/crm/Topbar'
 import CRMProviders from '@/components/crm/CRMProviders'
 import AddLeadModal from '@/components/crm/leads/AddLeadModal'
 
+// CRM pages must never be indexed by search engines
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+    },
+  },
+};
+
 // ---------------------------------------------------------------------------
 // Props
+
 // ---------------------------------------------------------------------------
 
 interface CRMLayoutProps {

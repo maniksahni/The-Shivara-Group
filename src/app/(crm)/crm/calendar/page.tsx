@@ -4,13 +4,11 @@ import { CalendarDays, Clock3, MapPin, Phone, Plus } from "lucide-react";
 import { getServerSession } from "@/lib/auth";
 import prisma, { isDatabaseConfigured } from "@/lib/prisma";
 import { CRMEmptyState, CRMHero, CRMPanel, CRMMiniStat } from "@/components/crm/CRMPrimitives";
+import { getISTDayRange, formatDateTime } from "@/lib/utils";
 
 function range(daysAhead: number) {
-  const start = new Date();
-  start.setHours(0, 0, 0, 0);
-  const end = new Date(start);
-  end.setDate(end.getDate() + daysAhead);
-  end.setHours(23, 59, 59, 999);
+  const start = getISTDayRange(0).start;
+  const end = getISTDayRange(daysAhead).end;
   return { start, end };
 }
 
@@ -81,9 +79,16 @@ export default async function CRMCalendarPage() {
       ])
     : [[], []];
 
-  const today = new Date().toDateString();
-  const todaysVisits = siteVisits.filter((visit) => new Date(visit.scheduledAt).toDateString() === today);
-  const todaysFollowUps = followUps.filter((lead) => lead.followUpDate ? new Date(lead.followUpDate).toDateString() === today : false);
+  const { start: todayStart, end: todayEnd } = getISTDayRange(0);
+  const todaysVisits = siteVisits.filter((visit) => {
+    const t = new Date(visit.scheduledAt).getTime();
+    return t >= todayStart.getTime() && t <= todayEnd.getTime();
+  });
+  const todaysFollowUps = followUps.filter((lead) => {
+    if (!lead.followUpDate) return false;
+    const t = new Date(lead.followUpDate).getTime();
+    return t >= todayStart.getTime() && t <= todayEnd.getTime();
+  });
 
   return (
     <div className="space-y-6 text-white">

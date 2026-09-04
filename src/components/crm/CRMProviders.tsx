@@ -16,20 +16,36 @@ interface CRMProvidersProps {
 
 export default function CRMProviders({ children, session }: CRMProvidersProps) {
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(() => {
+    // If session is already passed from server, initialize to true
+    return Boolean(session?.user);
+  });
 
   useEffect(() => {
     const isLocalAuth =
       localStorage.getItem("shivara_admin_auth") === "true" ||
       document.cookie.includes("shivara_admin_auth=true");
 
-    if (!isLocalAuth) {
+    const hasValidSession = Boolean(session?.user);
+
+    if (hasValidSession) {
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem("shivara_admin_auth", "true");
+          document.cookie = "shivara_admin_auth=true; path=/; max-age=2592000; SameSite=Lax";
+        } catch {}
+      }
+      setIsAuthenticated(true);
+      return;
+    }
+
+    if (!isLocalAuth && !hasValidSession) {
       setIsAuthenticated(false);
       router.replace("/crm/login");
     } else {
       setIsAuthenticated(true);
     }
-  }, [router]);
+  }, [router, session]);
 
   if (isAuthenticated === false) {
     return null;

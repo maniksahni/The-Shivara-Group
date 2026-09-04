@@ -4,6 +4,7 @@ import { Activity, History, UserRound } from "lucide-react";
 import { getServerSession } from "@/lib/auth";
 import prisma, { isDatabaseConfigured } from "@/lib/prisma";
 import { CRMEmptyState, CRMHero, CRMPanel, CRMMiniStat } from "@/components/crm/CRMPrimitives";
+import { getISTDayRange } from "@/lib/utils";
 
 export default async function CRMActivitiesPage() {
   const session = await getServerSession();
@@ -35,10 +36,12 @@ export default async function CRMActivitiesPage() {
         .catch(() => [])
     : [];
 
+  const { start: todayStart, end: todayEnd } = getISTDayRange(0);
   const systemCount = activities.filter((item) => !item.user).length;
-  const todayCount = activities.filter(
-    (item) => new Date(item.createdAt).toDateString() === new Date().toDateString(),
-  ).length;
+  const todayCount = activities.filter((item) => {
+    const t = new Date(item.createdAt).getTime();
+    return t >= todayStart.getTime() && t <= todayEnd.getTime();
+  }).length;
 
   return (
     <div className="space-y-6 text-white">

@@ -12,38 +12,28 @@
  *  - getTodayFollowUps()   → LeadWithAgent[]
  */
 
-import prisma from '@/lib/prisma'
+import prisma, { isDatabaseConfigured } from '@/lib/prisma'
 import { getServerSession } from '@/lib/auth'
 import type { DashboardStats, LeadWithAgent } from '@/types'
 import { getPrimarySalesAgentWhere } from '@/lib/crm-agent-policy'
+import { getISTDayRange } from '@/lib/utils'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** Returns a Date set to midnight (00:00:00.000) today in the local timezone. */
+/** Returns a Date set to midnight (00:00:00.000) today in IST. */
 function startOfToday(): Date {
-  const d = new Date()
-  d.setHours(0, 0, 0, 0)
-  return d
+  return getISTDayRange(0).start
 }
 
-/** Returns a Date set to 23:59:59.999 today. */
+/** Returns a Date set to 23:59:59.999 today in IST. */
 function endOfToday(): Date {
-  const d = new Date()
-  d.setHours(23, 59, 59, 999)
-  return d
+  return getISTDayRange(0).end
 }
 
 function dayRange(offsetDays = 0) {
-  const start = new Date()
-  start.setDate(start.getDate() + offsetDays)
-  start.setHours(0, 0, 0, 0)
-
-  const end = new Date(start)
-  end.setHours(23, 59, 59, 999)
-
-  return { start, end }
+  return getISTDayRange(offsetDays)
 }
 
 export interface DailyLeadItem {
@@ -114,6 +104,19 @@ export interface DailyOperationsData {
  * Agents see only their own leads; admins see all leads.
  */
 export async function getDashboardStats(): Promise<DashboardStats> {
+  if (!isDatabaseConfigured) {
+    return {
+      totalLeads: 0,
+      todayLeads: 0,
+      pendingFollowUps: 0,
+      siteVisitsScheduled: 0,
+      closedDeals: 0,
+      leadsBySource: [],
+      leadsByStatus: [],
+      recentActivities: [],
+    }
+  }
+
   const session = await getServerSession()
 
   // Build the optional "filter by assignedTo" clause for agents
@@ -237,6 +240,8 @@ export async function getDashboardStats(): Promise<DashboardStats> {
  * Agents see only their own leads; admins see all.
  */
 export async function getTodayFollowUps(): Promise<LeadWithAgent[]> {
+  if (!isDatabaseConfigured) return []
+
   const session = await getServerSession()
 
   const agentFilter =
@@ -275,6 +280,21 @@ export async function getTodayFollowUps(): Promise<LeadWithAgent[]> {
  * every active agent.
  */
 export async function getDailyOperations(): Promise<DailyOperationsData> {
+  if (!isDatabaseConfigured) {
+    return {
+      todayLeads: [],
+      newAssignedLeads: [],
+      pendingFollowUps: [],
+      missedFollowUps: [],
+      overdueLeads: [],
+      todaySiteVisits: [],
+      tomorrowMeetings: [],
+      upcomingSiteVisits: [],
+      completedVisits: [],
+      agentWorkload: [],
+    }
+  }
+
   const session = await getServerSession()
 
   const isAdmin = session?.user?.role === 'ADMIN'

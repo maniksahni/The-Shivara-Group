@@ -81,22 +81,48 @@ export function formatCurrency(amount: number | string): string {
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
+ * Returns Date boundaries for a day in Indian Standard Time (IST, UTC+5:30).
+ * @param offsetDays 0 for today, 1 for tomorrow, -1 for yesterday, etc.
+ * @param baseDate Reference date (defaults to now)
+ */
+export function getISTDayRange(offsetDays = 0, baseDate: Date = new Date()): { start: Date; end: Date } {
+  // IST is UTC + 5 hours 30 minutes
+  const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000
+  const istTimeMs = baseDate.getTime() + IST_OFFSET_MS
+  const istDate = new Date(istTimeMs)
+
+  const year = istDate.getUTCFullYear()
+  const month = istDate.getUTCMonth()
+  const date = istDate.getUTCDate() + offsetDays
+
+  const startUtcMs = Date.UTC(year, month, date, 0, 0, 0, 0) - IST_OFFSET_MS
+  const endUtcMs = Date.UTC(year, month, date, 23, 59, 59, 999) - IST_OFFSET_MS
+
+  return {
+    start: new Date(startUtcMs),
+    end: new Date(endUtcMs),
+  }
+}
+
+/**
  * Formats a date into a readable string like "3 Jul 2026".
  *
  * @param date - A `Date` object or an ISO date string.
+ * @param timeZone - Timezone identifier (default: 'Asia/Kolkata')
  * @returns Formatted date string, or "—" if the input is falsy.
  *
  * @example
  *   formatDate(new Date('2026-07-03'))  // "3 Jul 2026"
  *   formatDate('2026-12-25')            // "25 Dec 2026"
  */
-export function formatDate(date: Date | string | null | undefined): string {
+export function formatDate(date: Date | string | null | undefined, timeZone = 'Asia/Kolkata'): string {
   if (!date) return '—'
 
   const d = typeof date === 'string' ? new Date(date) : date
   if (isNaN(d.getTime())) return '—'
 
   return d.toLocaleDateString('en-IN', {
+    timeZone,
     day:   'numeric',
     month: 'short',
     year:  'numeric',
@@ -107,18 +133,20 @@ export function formatDate(date: Date | string | null | undefined): string {
  * Formats a date-time into a readable string like "3 Jul 2026, 2:30 PM".
  *
  * @param date - A `Date` object or an ISO date string.
+ * @param timeZone - Timezone identifier (default: 'Asia/Kolkata')
  * @returns Formatted date+time string, or "—" if the input is falsy.
  *
  * @example
  *   formatDateTime(new Date('2026-07-03T14:30:00'))  // "3 Jul 2026, 2:30 PM"
  */
-export function formatDateTime(date: Date | string | null | undefined): string {
+export function formatDateTime(date: Date | string | null | undefined, timeZone = 'Asia/Kolkata'): string {
   if (!date) return '—'
 
   const d = typeof date === 'string' ? new Date(date) : date
   if (isNaN(d.getTime())) return '—'
 
   return d.toLocaleString('en-IN', {
+    timeZone,
     day:    'numeric',
     month:  'short',
     year:   'numeric',

@@ -8,7 +8,9 @@ import StatsCard from "@/components/crm/dashboard/StatsCard";
 import Charts from "@/components/crm/dashboard/Charts";
 import ActivityFeed from "@/components/crm/dashboard/ActivityFeed";
 import DailyOperationsPanel from "@/components/crm/dashboard/DailyOperationsPanel";
+import DashboardHeader from "@/components/crm/dashboard/DashboardHeader";
 import prisma, { isDatabaseConfigured } from "@/lib/prisma";
+import { getISTDayRange } from "@/lib/utils";
 import Link from "next/link";
 
 function cleanPhoneNumber(phone: string | null | undefined): string {
@@ -69,16 +71,13 @@ export default async function DashboardPage() {
     }
   }
 
-  // Fetch today's follow-up leads
+  // Fetch today's follow-up leads (aligned with IST calendar date)
   let todaysFollowUps: Array<Awaited<ReturnType<typeof prisma.lead.findMany>>[number] & {
     assignedTo: { name: string } | null
   }> = [];
   if (isDatabaseConfigured) {
     try {
-      const todayStart = new Date();
-      todayStart.setHours(0, 0, 0, 0);
-      const todayEnd = new Date();
-      todayEnd.setHours(23, 59, 59, 999);
+      const { start: todayStart, end: todayEnd } = getISTDayRange(0);
 
       todaysFollowUps = await prisma.lead.findMany({
         where: {
@@ -104,28 +103,11 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-5 text-white font-[family-name:var(--font-inter)] md:space-y-8">
-      {/* Header */}
-      <div className="relative overflow-hidden rounded-[24px] border border-white/10 bg-[#162032]/80 p-4 shadow-2xl shadow-black/20 backdrop-blur-xl sm:p-8 md:rounded-[28px]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(244,180,0,0.18),transparent_32%),radial-gradient(circle_at_82%_12%,rgba(59,130,246,0.16),transparent_30%)]" />
-        <div className="relative flex flex-col justify-between gap-5 lg:flex-row lg:items-center">
-        <div>
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#F4B400]/30 bg-[#F4B400]/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.22em] text-[#F4B400]">
-            <Sparkles className="h-3.5 w-3.5" />
-            Luxury CRM Workspace
-          </div>
-          <h1 className="text-2xl font-black tracking-tight sm:text-4xl">
-            Good {new Date().getHours() < 12 ? "morning" : new Date().getHours() < 18 ? "afternoon" : "evening"}, {session.user.name}
-          </h1>
-          <p className="text-gray-400 text-sm mt-2 max-w-2xl">
-            Track premium enquiries, site visits, follow-ups, agent performance, and conversion momentum from one beautiful control room.
-          </p>
-        </div>
-        <div className="rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-gray-300 shadow-inner shadow-white/5 sm:px-5 sm:py-4">
-          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-gray-500">Today</p>
-          <p className="mt-1 font-semibold text-white">{new Date().toLocaleDateString("en-IN", { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' })}</p>
-        </div>
-        </div>
-      </div>
+      {/* Live dynamic greeting & real-time date/clock header */}
+      <DashboardHeader
+        userName={session.user.name ?? "Shivam Sahani"}
+        userRole={session.user.role}
+      />
 
       <div className="grid gap-3 md:grid-cols-4">
         {[

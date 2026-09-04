@@ -147,15 +147,10 @@ async function logActivity(
   })
 }
 
+import { getISTDayRange } from '@/lib/utils'
+
 function getDayRange(offsetDays = 0) {
-  const start = new Date()
-  start.setDate(start.getDate() + offsetDays)
-  start.setHours(0, 0, 0, 0)
-
-  const end = new Date(start)
-  end.setHours(23, 59, 59, 999)
-
-  return { start, end }
+  return getISTDayRange(offsetDays)
 }
 
 function parseOptionalDateTime(value: string | null | undefined) {

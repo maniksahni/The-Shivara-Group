@@ -36,9 +36,14 @@ export async function handleCrmSignOut() {
     console.error("[handleCrmSignOut] Error clearing local session", err);
   }
 
-  // 3. Gracefully attempt NextAuth signOut (catches network failure on static export)
+  // 3. Gracefully attempt NextAuth signOut — time-boxed to 1.5s.
+  //    On static Firebase exports the /api/auth endpoint doesn't exist,
+  //    so this call would otherwise hang until a network timeout fires.
   try {
-    await signOut({ redirect: false });
+    await Promise.race([
+      signOut({ redirect: false }),
+      new Promise<void>((resolve) => setTimeout(resolve, 1500)),
+    ]);
   } catch {
     // Expected on static exports without backend /api/auth
   }

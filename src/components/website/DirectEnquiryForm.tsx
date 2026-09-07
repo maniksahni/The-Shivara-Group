@@ -11,6 +11,7 @@ type FormState = {
   name: string;
   phone: string;
   intent: IntentType;
+  siteVisitDate: string;
   message: string;
 };
 
@@ -18,6 +19,7 @@ const initialFormState: FormState = {
   name: "",
   phone: "",
   intent: "BUY",
+  siteVisitDate: "",
   message: "",
 };
 
@@ -61,6 +63,7 @@ export default function DirectEnquiryForm({
 
     const fullMessage = [
       `Intent: ${formData.intent}`,
+      formData.intent === "SITE_VISIT" && formData.siteVisitDate ? `Preferred Site Visit Date: ${formData.siteVisitDate}` : "",
       formData.message ? `Requirement Notes: ${formData.message.trim()}` : "",
       "Source: Website Direct Lead Advisory Form",
     ]
@@ -248,13 +251,28 @@ export default function DirectEnquiryForm({
                 </div>
               </div>
 
+              {/* Site Visit Date — shown only when SITE_VISIT is selected */}
+              {formData.intent === "SITE_VISIT" && (
+                <div>
+                  <label className="mb-1.5 block text-[10px] font-black uppercase tracking-[0.16em] text-[#4B5563]">
+                    Preferred Visit Date
+                  </label>
+                  <input
+                    type="date"
+                    value={formData.siteVisitDate}
+                    min={new Date(Date.now() + 86400000).toISOString().split("T")[0]}
+                    onChange={(e) => updateField("siteVisitDate", e.target.value)}
+                    className="min-h-11 w-full rounded-xl border border-[#081120]/10 bg-[#F8F5EE] px-3.5 text-sm font-semibold text-[#081120] outline-none transition focus:border-[#D4AF37] focus:bg-white focus:ring-2 focus:ring-[#D4AF37]/20"
+                  />
+                </div>
+              )}
+
               {/* Requirement Note */}
-              <div>
+              <div className="flex flex-1 flex-col">
                 <label className="mb-1.5 block text-[10px] font-black uppercase tracking-[0.16em] text-[#4B5563]">
                   Specific Requirements (Optional)
                 </label>
                 <textarea
-                  rows={compact ? 2 : 3}
                   value={formData.message}
                   onChange={(e) => updateField("message", e.target.value)}
                   placeholder="e.g. Looking for a 3BHK ready-to-move near Hartmann College, park-facing preferred..."

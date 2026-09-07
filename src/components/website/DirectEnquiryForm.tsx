@@ -116,7 +116,7 @@ export default function DirectEnquiryForm({
       id="send-enquiry"
       className={`relative scroll-mt-24 overflow-hidden rounded-[1.6rem] border border-[#081120]/10 bg-white shadow-[0_24px_80px_rgba(8,17,32,0.08)] sm:scroll-mt-28 sm:rounded-[2.4rem] ${className}`}
     >
-      <div className="grid min-w-0 lg:grid-cols-[0.8fr_1.2fr]">
+      <div className="grid min-w-0 lg:grid-cols-[0.8fr_1.2fr] lg:[&>*]:h-full">
         {/* Left Editorial Brand Panel */}
         <div className="bg-[#081120] p-6 text-white sm:p-8 lg:p-10">
           <div className="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-3.5 py-1.5 text-[10px] font-black uppercase tracking-[0.22em] text-[#F5D67B]">
@@ -160,7 +160,7 @@ export default function DirectEnquiryForm({
         </div>
 
         {/* Right Form Panel */}
-        <div className="p-5 sm:p-8 lg:p-10">
+        <div className="flex flex-col p-5 sm:p-8 lg:p-10">
           {submitted ? (
             <div className="rounded-2xl border border-emerald-500/30 bg-emerald-50/60 p-6 text-emerald-950">
               <div className="flex items-center gap-3">
@@ -192,7 +192,7 @@ export default function DirectEnquiryForm({
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="flex flex-1 flex-col gap-4">
               {/* Intent Selection Buttons */}
               <div>
                 <label className="mb-2 block text-[10px] font-black uppercase tracking-[0.16em] text-[#4B5563]">
@@ -258,7 +258,7 @@ export default function DirectEnquiryForm({
                   value={formData.message}
                   onChange={(e) => updateField("message", e.target.value)}
                   placeholder="e.g. Looking for a 3BHK ready-to-move near Hartmann College, park-facing preferred..."
-                  className="w-full resize-none rounded-xl border border-[#081120]/10 bg-[#F8F5EE] p-3 text-sm font-semibold text-[#081120] outline-none transition placeholder:text-[#9CA3AF] focus:border-[#D4AF37] focus:bg-white focus:ring-2 focus:ring-[#D4AF37]/20"
+                  className="w-full flex-1 resize-none rounded-xl border border-[#081120]/10 bg-[#F8F5EE] p-3 text-sm font-semibold text-[#081120] outline-none transition placeholder:text-[#9CA3AF] focus:border-[#D4AF37] focus:bg-white focus:ring-2 focus:ring-[#D4AF37]/20"
                 />
               </div>
 

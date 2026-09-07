@@ -241,28 +241,7 @@ export default function AddLeadModal({ agents, trigger, lead }: AddLeadModalProp
                   </div>
                 </div>
 
-                <div className="mt-4 grid grid-cols-1 gap-4">
-                  <div>
-                    <label className={labelClass}>WhatsApp Number</label>
-                    <input
-                      type="tel"
-                      inputMode="tel"
-                      {...register("whatsappNumber")}
-                      placeholder="Same or alternate number"
-                      className={fieldClass}
-                    />
-                  </div>
-                  <div>
-                    <label className={labelClass}>Email Address</label>
-                    <input
-                      type="email"
-                      {...register("email")}
-                      placeholder="email@example.com"
-                      className={fieldClass}
-                    />
-                    {errors.email && <p className="text-red-400 text-[10px] mt-1">{errors.email.message}</p>}
-                  </div>
-                </div>
+
               </div>
 
               {/* Requirement Section */}

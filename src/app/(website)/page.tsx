@@ -17,7 +17,7 @@ import {
 import DirectEnquiryForm from "@/components/website/DirectEnquiryForm";
 import HomepageSearchModule from "@/components/website/HomepageSearchModule";
 import PropertyCard from "@/components/website/PropertyCard";
-import TrustSection from "@/components/website/TrustSection";
+
 import AutoScrollRail from "@/components/website/AutoScrollRail";
 import {
   bareillyGuide,
@@ -286,10 +286,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ============================================================ */}
-      {/* 5. TRUST / CREDIBILITY SYSTEM ("Why Shivara" & Process) */}
-      {/* ============================================================ */}
-      <TrustSection />
 
       {/* ============================================================ */}
       {/* PROPERTY UNIVERSE / CATEGORIES */}

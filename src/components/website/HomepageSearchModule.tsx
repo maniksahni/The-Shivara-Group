@@ -40,10 +40,7 @@ export default function HomepageSearchModule() {
             What are you looking for?
           </h2>
         </div>
-        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[11px] font-bold text-emerald-300">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          Live Catalog
-        </span>
+
       </div>
 
       <form onSubmit={handleSearch} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[1.1fr_1fr_1fr_auto]">

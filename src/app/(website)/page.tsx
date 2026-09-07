@@ -229,6 +229,15 @@ export default function HomePage() {
       </section>
 
       {/* ============================================================ */}
+      {/* 8. LEAD GENERATION SECTION */}
+      {/* ============================================================ */}
+      <section className="py-14 sm:py-20 lg:py-24" id="send-enquiry">
+        <div className="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
+          <DirectEnquiryForm />
+        </div>
+      </section>
+
+      {/* ============================================================ */}
       {/* KEY STATS & HIGHLIGHTS RAIL */}
       {/* ============================================================ */}
       <section className="border-b border-[#081120]/10 bg-white py-6 shadow-sm">
@@ -408,14 +417,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ============================================================ */}
-      {/* 8. LEAD GENERATION SECTION */}
-      {/* ============================================================ */}
-      <section className="py-14 sm:py-20 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-8 lg:px-12">
-          <DirectEnquiryForm />
-        </div>
-      </section>
+
 
       {/* ============================================================ */}
       {/* FAQ SECTION */}

@@ -6,29 +6,18 @@ import { siteConfig } from "@/components/website/site-data";
 import { useToast } from "@/components/ui/toast";
 
 type IntentType = "BUY" | "SELL" | "INVEST" | "SITE_VISIT";
-type TimelineType = "Immediately" | "1–3 Months" | "3–6 Months" | "Just Exploring";
 
 type FormState = {
   name: string;
   phone: string;
-  email: string;
   intent: IntentType;
-  propertyType: string;
-  budget: string;
-  preferredLocation: string;
-  timeline: TimelineType;
   message: string;
 };
 
 const initialFormState: FormState = {
   name: "",
   phone: "",
-  email: "",
   intent: "BUY",
-  propertyType: "Villa",
-  budget: "50 Lakh – 1 Crore",
-  preferredLocation: "Bareilly",
-  timeline: "1–3 Months",
   message: "",
 };
 
@@ -72,10 +61,6 @@ export default function DirectEnquiryForm({
 
     const fullMessage = [
       `Intent: ${formData.intent}`,
-      `Timeline: ${formData.timeline}`,
-      `Property Type: ${formData.propertyType}`,
-      `Budget: ${formData.budget}`,
-      `Preferred Location: ${formData.preferredLocation}`,
       formData.message ? `Requirement Notes: ${formData.message.trim()}` : "",
       "Source: Website Direct Lead Advisory Form",
     ]
@@ -90,22 +75,9 @@ export default function DirectEnquiryForm({
           name: formData.name.trim(),
           phone: cleanPhone,
           whatsappNumber: cleanPhone,
-          email: formData.email.trim() || null,
-          budget: formData.budget,
-          preferredLocation: formData.preferredLocation,
-          propertyType:
-            formData.propertyType === "Villa"
-              ? "VILLA"
-              : formData.propertyType === "Apartment"
-              ? "APARTMENT"
-              : formData.propertyType === "Plot"
-              ? "PLOT"
-              : formData.propertyType === "Commercial"
-              ? "COMMERCIAL"
-              : "OTHER",
           source: "WEBSITE",
           status: formData.intent === "SITE_VISIT" ? "SITE_VISIT_SCHEDULED" : "NEW",
-          priority: formData.timeline === "Immediately" ? "HIGH" : "MEDIUM",
+          priority: "MEDIUM",
           message: fullMessage,
         }),
       });
@@ -136,9 +108,7 @@ export default function DirectEnquiryForm({
   const whatsappBackupHref = `https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent(
     `Hi The Shivara Group, my name is ${formData.name || "Client"}. I am looking to ${
       formData.intent
-    } a ${formData.propertyType} in ${formData.preferredLocation} (Budget: ${
-      formData.budget
-    }, Timeline: ${formData.timeline}). ${formData.message}`
+    }. ${formData.message}`
   )}`;
 
   return (
@@ -275,103 +245,6 @@ export default function DirectEnquiryForm({
                     placeholder="10-digit mobile number"
                     className="min-h-11 w-full rounded-xl border border-[#081120]/10 bg-[#F8F5EE] px-3.5 text-sm font-semibold text-[#081120] outline-none transition focus:border-[#D4AF37] focus:bg-white focus:ring-2 focus:ring-[#D4AF37]/20"
                   />
-                </div>
-              </div>
-
-              {/* Email & Location */}
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1.5 block text-[10px] font-black uppercase tracking-[0.16em] text-[#4B5563]">
-                    Email Address (Optional)
-                  </label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => updateField("email", e.target.value)}
-                    placeholder="name@domain.com"
-                    className="min-h-11 w-full rounded-xl border border-[#081120]/10 bg-[#F8F5EE] px-3.5 text-sm font-semibold text-[#081120] outline-none transition focus:border-[#D4AF37] focus:bg-white focus:ring-2 focus:ring-[#D4AF37]/20"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-1.5 block text-[10px] font-black uppercase tracking-[0.16em] text-[#4B5563]">
-                    Preferred Location
-                  </label>
-                  <select
-                    value={formData.preferredLocation}
-                    onChange={(e) => updateField("preferredLocation", e.target.value)}
-                    className="min-h-11 w-full rounded-xl border border-[#081120]/10 bg-[#F8F5EE] px-3 text-sm font-semibold text-[#081120] outline-none transition focus:border-[#D4AF37] focus:bg-white focus:ring-2 focus:ring-[#D4AF37]/20"
-                  >
-                    <option value="Bareilly">Bareilly (All Areas)</option>
-                    <option value="Rajendra Nagar">Rajendra Nagar, Bareilly</option>
-                    <option value="Pilibhit Road">Pilibhit Road, Bareilly</option>
-                    <option value="Civil Lines">Civil Lines, Bareilly</option>
-                    <option value="Delhi NCR">Delhi NCR</option>
-                    <option value="Noida">Noida / Greater Noida</option>
-                    <option value="Yamuna Expressway">Yamuna Expressway</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Property Type & Budget */}
-              <div className="grid gap-3 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1.5 block text-[10px] font-black uppercase tracking-[0.16em] text-[#4B5563]">
-                    Property Type
-                  </label>
-                  <select
-                    value={formData.propertyType}
-                    onChange={(e) => updateField("propertyType", e.target.value)}
-                    className="min-h-11 w-full rounded-xl border border-[#081120]/10 bg-[#F8F5EE] px-3 text-sm font-semibold text-[#081120] outline-none transition focus:border-[#D4AF37] focus:bg-white focus:ring-2 focus:ring-[#D4AF37]/20"
-                  >
-                    <option value="Villa">Villa / Independent Kothi</option>
-                    <option value="Apartment">Apartment / Penthouse</option>
-                    <option value="Plot">Residential Plot</option>
-                    <option value="Commercial">Commercial / Retail</option>
-                    <option value="Farmhouse">Farmhouse / Land</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="mb-1.5 block text-[10px] font-black uppercase tracking-[0.16em] text-[#4B5563]">
-                    Budget Range
-                  </label>
-                  <select
-                    value={formData.budget}
-                    onChange={(e) => updateField("budget", e.target.value)}
-                    className="min-h-11 w-full rounded-xl border border-[#081120]/10 bg-[#F8F5EE] px-3 text-sm font-semibold text-[#081120] outline-none transition focus:border-[#D4AF37] focus:bg-white focus:ring-2 focus:ring-[#D4AF37]/20"
-                  >
-                    <option value="Under ₹50 Lakh">Under ₹50 Lakh</option>
-                    <option value="₹50 Lakh – ₹1 Crore">₹50 Lakh – ₹1 Crore</option>
-                    <option value="₹1–2 Crore">₹1–2 Crore</option>
-                    <option value="₹2–5 Crore">₹2–5 Crore</option>
-                    <option value="₹5 Crore+">₹5 Crore+</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Timeline */}
-              <div>
-                <label className="mb-1.5 block text-[10px] font-black uppercase tracking-[0.16em] text-[#4B5563]">
-                  Planning Timeline
-                </label>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  {(["Immediately", "1–3 Months", "3–6 Months", "Just Exploring"] as TimelineType[]).map(
-                    (timeOption) => (
-                      <button
-                        key={timeOption}
-                        type="button"
-                        onClick={() => updateField("timeline", timeOption)}
-                        className={`min-h-9 rounded-lg px-2 text-[11px] font-bold transition ${
-                          formData.timeline === timeOption
-                            ? "bg-[#D4AF37] text-[#081120] shadow-sm"
-                            : "bg-[#F8F5EE] text-[#4B5563] hover:bg-slate-200"
-                        }`}
-                      >
-                        {timeOption}
-                      </button>
-                    )
-                  )}
                 </div>
               </div>
 
